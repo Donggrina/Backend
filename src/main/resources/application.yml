@@ -1,0 +1,9 @@
+# local 과 prod 환경 공통적으로 사용하는 환경구성은 src/main/resources/application.yml에 작성합니다.
+spring:
+  profiles:
+    active: local
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
