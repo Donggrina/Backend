@@ -12,6 +12,7 @@ env:
   EC2_HOST: 43.201.196.190
   EC2_SSH_USER: ec2-user
   PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+  CONTAINER_NAME: donggrina-app
 
 jobs:
   build-and-push-docker:
