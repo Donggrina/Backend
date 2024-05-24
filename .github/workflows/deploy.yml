@@ -8,6 +8,7 @@ on:
 
 env:
   DOCKER_IMAGE_NAME: donggrina
+  DOCKER_HUB: hyunzxn/donggrina
   EC2_HOST: 43.201.196.190
   EC2_SSH_USER: ec2-user
   PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
@@ -40,7 +41,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Push the Docker image
-        run: docker push ${{ env.DOCKER_IMAGE_NAME }}:latest
+        run: docker push ${{secrets.DOCKER_USERNAME}}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
 
   deploy-to-ec2:
