@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "families")
+@Table(name = "clusters")
 public class Group extends Timestamp {
 
     @Id
