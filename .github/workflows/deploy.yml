@@ -1,5 +1,5 @@
 name: CI/CD to AWS EC2 using Docker
-# github action trigger test
+
 on:
   push:
     branches:
@@ -29,8 +29,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set up application.yml
-        run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
+      - name: Set up application.properties
+        run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
 
       - name: Build with Gradle
         run: ./gradlew build
