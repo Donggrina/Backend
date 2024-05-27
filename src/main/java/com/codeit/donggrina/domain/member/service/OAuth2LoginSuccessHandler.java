@@ -28,12 +28,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
         String username = customOAuth2User.getUserName();
+        Long id = customOAuth2User.getMemberId();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         String role = iterator.next().getAuthority();
 
-        String token = jwtUtil.createJwt(username, role);
+        String token = jwtUtil.createJwt(id, username, role);
         response.addCookie(createCookie("Authorization", token));
     }
 

@@ -1,7 +1,7 @@
 package com.codeit.donggrina.domain.member.jwt;
 
 import com.codeit.donggrina.domain.member.dto.CustomOAuth2User;
-import com.codeit.donggrina.domain.member.dto.UserDto;
+import com.codeit.donggrina.domain.member.dto.MemberSecurityDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -39,10 +39,11 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        Long id = jwtUtil.getMemberId(token);
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
 
-        CustomOAuth2User customOAuth2User = new CustomOAuth2User(new UserDto(role, username));
+        CustomOAuth2User customOAuth2User = new CustomOAuth2User(new MemberSecurityDto(id, role, username));
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(customOAuth2User, null,
             customOAuth2User.getAuthorities());

@@ -19,6 +19,11 @@ public class JwtUtil {
             SIG.HS256.key().build().getAlgorithm());
     }
 
+    public Long getMemberId(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+            .get("id", Long.class);
+    }
+
     public String getUsername(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
             .get("username", String.class);
@@ -34,8 +39,9 @@ public class JwtUtil {
             .getExpiration().before(new Date());
     }
 
-    public String createJwt(String username, String role) {
+    public String createJwt(Long id, String username, String role) {
         return Jwts.builder()
+            .claim("id", id)
             .claim("username", username)
             .claim("role", role)
             .issuedAt(new Date(System.currentTimeMillis()))

@@ -2,7 +2,7 @@ package com.codeit.donggrina.domain.member.service;
 
 import com.codeit.donggrina.domain.member.dto.CustomOAuth2User;
 import com.codeit.donggrina.domain.member.dto.KakaoResponse;
-import com.codeit.donggrina.domain.member.dto.UserDto;
+import com.codeit.donggrina.domain.member.dto.MemberSecurityDto;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import java.util.Optional;
@@ -35,7 +35,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String username = kakaoResponse.getProvider() + " " + kakaoResponse.getProviderId();
 
         Optional<Member> foundMemberOptional = memberRepository.findByUsername(username);
-        UserDto userDto = null;
+        MemberSecurityDto memberSecurityDto = null;
         if(foundMemberOptional.isEmpty()) {
             Member member = Member.builder()
                 .username(username)
@@ -43,13 +43,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .role("ROLE_USER")
                 .build();
 
-            memberRepository.save(member);
-            userDto = new UserDto(member.getRole(), member.getUsername(), member.getName());
+            Member savedMember = memberRepository.save(member);
+
+            memberSecurityDto = new MemberSecurityDto(savedMember.getId(), savedMember.getRole(),
+                savedMember.getName(), savedMember.getUsername());
         } else {
-            Member member = foundMemberOptional.get();
-            userDto = new UserDto(member.getRole(), member.getUsername(), member.getName());
+            Member foundMember = foundMemberOptional.get();
+            memberSecurityDto = new MemberSecurityDto(foundMember.getId(), foundMember.getRole(),
+                foundMember.getName(), foundMember.getUsername());
         }
 
-        return new CustomOAuth2User(userDto);
+        return new CustomOAuth2User(memberSecurityDto);
     }
 }
