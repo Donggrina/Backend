@@ -3,6 +3,8 @@ spring:
   config:
     activate:
       on-profile: local
+    import: optional:file:.env[.properties]
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/donggrina
@@ -23,8 +25,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${DONGGRINA_KAKAO_CLIENT_ID}
-            client-secret: ${DONGGRINA_KAKAO_CLIENT_SECRET}
+            client-id: ${OAUTH2_KAKAO_CLIENT_ID}
+            client-secret: ${OAUTH2_KAKAO_CLIENT_SECRET}
             redirect-uri: http://localhost:8080/members/login/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
