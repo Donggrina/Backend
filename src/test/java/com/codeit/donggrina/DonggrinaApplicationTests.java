@@ -3,7 +3,7 @@ package com.codeit.donggrina;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = DonggrinaApplication.class)
 class DonggrinaApplicationTests {
 
     @Test
