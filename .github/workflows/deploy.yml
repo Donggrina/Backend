@@ -1,5 +1,5 @@
 name: CI/CD to AWS EC2 using Docker
-
+# github actions trigger event 주석
 on:
   push:
     branches:
