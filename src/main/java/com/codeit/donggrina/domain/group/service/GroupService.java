@@ -1,5 +1,6 @@
 package com.codeit.donggrina.domain.group.service;
 
+
 import com.codeit.donggrina.domain.group.dto.request.GroupAppendRequest;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
@@ -14,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GroupService {
 
-    private final static int INVITATION_CODE_LENGTH = 8;
-    private final static String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private final GroupRepository groupRepository;
 
     @Transactional
@@ -35,10 +34,13 @@ public class GroupService {
     }
 
     private String generateRandomInvitationCode() {
+        int codeLength = 8;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
         Random random = new Random();
-        return IntStream.range(0, INVITATION_CODE_LENGTH)
-            .map(i -> random.nextInt(CHARACTERS.length()))
-            .mapToObj(CHARACTERS::charAt)
+        return IntStream.range(0, codeLength)
+            .map(i -> random.nextInt(characters.length()))
+            .mapToObj(characters::charAt)
             .map(Object::toString)
             .collect(Collectors.joining());
     }
