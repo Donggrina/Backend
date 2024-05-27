@@ -14,11 +14,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Timestamp {
 
-  @CreatedDate
-  @Column(updatable = false)
-  private LocalDateTime createdAt;
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
-  @LastModifiedDate
-  @Column
-  private LocalDateTime modifiedAt;
+    @LastModifiedDate
+    @Column
+    private LocalDateTime modifiedAt;
 }

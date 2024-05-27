@@ -18,20 +18,20 @@ import lombok.NoArgsConstructor;
 @Table(name = "families")
 public class Group extends Timestamp {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  @Column(nullable = false)
-  private String name;
-  @Column(nullable = false)
-  private String code;
-  @Column(nullable = false)
-  private String creatorName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false)
+    private String name;
+    @Column(nullable = false)
+    private String code;
+    @Column(nullable = false)
+    private String creatorName;
 
-  @Builder
-  private Group(String name, String code, String creatorName) {
-    this.name = name;
-    this.code = code;
-    this.creatorName = creatorName;
-  }
+    @Builder
+    private Group(String name, String code, String creatorName) {
+        this.name = name;
+        this.code = code;
+        this.creatorName = creatorName;
+    }
 }

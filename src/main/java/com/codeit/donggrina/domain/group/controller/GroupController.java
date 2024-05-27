@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class GroupController {
 
-  private final GroupService groupService;
+    private final GroupService groupService;
 
-  @PostMapping("/my/groups")
-  public ApiResponse<Long> append(@RequestBody @Validated GroupAppendRequest request) {
-    Long result = groupService.append(request);
-    return ApiResponse.<Long>builder()
-        .code(HttpStatus.OK.value())
-        .message("가족(그룹) 등록 성공")
-        .data(result)
-        .build();
-  }
+    @PostMapping("/my/groups")
+    public ApiResponse<Long> append(@RequestBody @Validated GroupAppendRequest request) {
+        Long result = groupService.append(request);
+        return ApiResponse.<Long>builder()
+            .code(HttpStatus.OK.value())
+            .message("가족(그룹) 등록 성공")
+            .data(result)
+            .build();
+    }
 }
