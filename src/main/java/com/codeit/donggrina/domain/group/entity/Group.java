@@ -32,16 +32,16 @@ public class Group extends Timestamp {
     @Column(nullable = false)
     private String code;
     @Column(nullable = false)
-    private String creatorName;
+    private String creator;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Member> members = new ArrayList<>();
 
     @Builder
-    private Group(String name, String code, String creatorName) {
+    private Group(String name, String code, String creator) {
         this.name = name;
         this.code = code;
-        this.creatorName = creatorName;
+        this.creator = creator;
     }
 
     public void addMember(Member member) {

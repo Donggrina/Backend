@@ -22,6 +22,7 @@ public class Member {
     private String username;
     private String name;
     private String role;
+    private String nickname; // 그룹 내에서 사용할 닉네임
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
@@ -36,5 +37,9 @@ public class Member {
 
     public void joinGroup(Group group) {
         this.group = group;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
