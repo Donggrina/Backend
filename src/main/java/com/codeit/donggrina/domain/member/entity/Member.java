@@ -22,7 +22,7 @@ public class Member {
     private String role;
 
     @Builder
-    public Member(Long id, String username, String name, String role) {
+    private Member(Long id, String username, String name, String role) {
         this.id = id;
         this.username = username;
         this.name = name;
