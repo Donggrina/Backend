@@ -1,5 +1,5 @@
 name: CI/CD to AWS EC2 using Docker
-# github actions trigger event 주석
+
 on:
   push:
     branches:
@@ -62,7 +62,7 @@ jobs:
             
             if [ ! -z "$CONTAINER_ID" ]; then
               sudo docker stop $CONTAINER_ID
-              sudo docker rm $CONTAINER_ID
+              sudo docker rm donggrina-app
             fi
             
             sudo docker pull ${{ env.DOCKER_HUB }}
