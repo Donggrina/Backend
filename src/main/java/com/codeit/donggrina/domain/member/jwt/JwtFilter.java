@@ -1,7 +1,7 @@
 package com.codeit.donggrina.domain.member.jwt;
 
-import com.codeit.donggrina.domain.member.dto.CustomOAuth2User;
-import com.codeit.donggrina.domain.member.dto.MemberSecurityDto;
+import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
+import com.codeit.donggrina.domain.member.dto.request.MemberSecurityDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

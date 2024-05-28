@@ -1,4 +1,4 @@
-package com.codeit.donggrina.domain.member.dto;
+package com.codeit.donggrina.domain.member.dto.request;
 
 import java.util.ArrayList;
 import java.util.Collection;

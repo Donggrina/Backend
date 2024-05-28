@@ -1,8 +1,8 @@
 package com.codeit.donggrina.domain.member.service;
 
-import com.codeit.donggrina.domain.member.dto.CustomOAuth2User;
-import com.codeit.donggrina.domain.member.dto.KakaoResponse;
-import com.codeit.donggrina.domain.member.dto.MemberSecurityDto;
+import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
+import com.codeit.donggrina.domain.member.dto.response.KakaoResponse;
+import com.codeit.donggrina.domain.member.dto.request.MemberSecurityDto;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import java.util.Optional;
