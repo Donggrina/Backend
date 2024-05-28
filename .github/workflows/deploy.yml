@@ -20,7 +20,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: application.properties 만들기
+      - name: application.yml 만들기
         run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
 
       - name: 빌드하기
