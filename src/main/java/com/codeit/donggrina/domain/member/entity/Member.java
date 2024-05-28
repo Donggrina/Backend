@@ -34,14 +34,13 @@ public class Member {
 
     @Builder
     private Member(Long id, String username, String name, String role, ProfileImage profileImage,
-        String nickname, Group group) {
+        String nickname) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.role = role;
         this.profileImage = profileImage;
         this.nickname = nickname;
-        this.group = group;
     }
 
     public void joinGroup(Group group) {
