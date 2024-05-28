@@ -5,7 +5,7 @@ import com.codeit.donggrina.domain.group.dto.request.GroupAppendRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupMemberAddRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupUpdateRequest;
 import com.codeit.donggrina.domain.group.service.GroupService;
-import com.codeit.donggrina.domain.member.dto.CustomOAuth2User;
+import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

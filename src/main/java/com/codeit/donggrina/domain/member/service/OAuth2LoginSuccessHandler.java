@@ -1,6 +1,6 @@
 package com.codeit.donggrina.domain.member.service;
 
-import com.codeit.donggrina.domain.member.dto.CustomOAuth2User;
+import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import com.codeit.donggrina.domain.member.jwt.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -36,6 +36,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String token = jwtUtil.createJwt(id, username, role);
         response.addCookie(createCookie("Authorization", token));
+        response.sendRedirect("http://localhost:3000/start-family");
     }
 
     private Cookie createCookie(String key, String value) {
