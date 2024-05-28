@@ -42,7 +42,6 @@ public class GroupController {
         return ApiResponse.<Void>builder()
             .code(HttpStatus.OK.value())
             .message("가족(그룹) 멤버 추가 성공")
-            .data(null)
             .build();
     }
 
@@ -57,7 +56,6 @@ public class GroupController {
         return ApiResponse.<Void>builder()
             .code(HttpStatus.OK.value())
             .message("가족(그룹) 정보 수정 성공")
-            .data(null)
             .build();
     }
 }
