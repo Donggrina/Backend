@@ -48,4 +48,8 @@ public class Group extends Timestamp {
         members.add(member);
         member.joinGroup(this);
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }
