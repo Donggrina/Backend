@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,6 +57,19 @@ public class GroupController {
         return ApiResponse.<Void>builder()
             .code(HttpStatus.OK.value())
             .message("가족(그룹) 정보 수정 성공")
+            .build();
+    }
+
+    @DeleteMapping("/my/groups/{groupId}")
+    public ApiResponse<Void> delete(
+        @PathVariable Long groupId,
+        @AuthenticationPrincipal CustomOAuth2User user
+    ) {
+        Long userId = user.getMemberId();
+        groupService.delete(groupId, userId);
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.OK.value())
+            .message("가족(그룹) 삭제 성공")
             .build();
     }
 }

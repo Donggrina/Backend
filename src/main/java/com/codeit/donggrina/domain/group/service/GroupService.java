@@ -35,13 +35,14 @@ public class GroupService {
         String nickname = request.nickname();
         member.updateNickname(nickname);
 
-        // 초대 코드를 생성하고 그룹을 생성하고 DB에 저장합니다.
+        // 초대 코드를 생성하고 그룹을 생성하고 생성한 사람을 그룹에 추가해주고 그룹을 DB에 저장합니다.
         String code = generateRandomInvitationCode();
         Group group = Group.builder()
             .name(name)
             .code(code)
             .creator(member.getUsername())
             .build();
+        member.joinGroup(group);
         return groupRepository.save(group).getId();
     }
 
@@ -75,6 +76,24 @@ public class GroupService {
 
         // 그룹 이름을 업데이트 합니다.
         group.updateName(request.name());
+    }
+
+    @Transactional
+    public void delete(Long groupId, Long userId) {
+        Member member = memberRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Group group = groupRepository.findById(groupId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
+
+        // 그룹의 생성자가 아닌 경우에는 그룹을 삭제할 수 없습니다.
+        if (!group.getCreator().equals(member.getUsername())) {
+            throw new IllegalArgumentException("그룹을 삭제할 권한이 없습니다.");
+        }
+        // 그룹에 방장 외의 멤버가 존재하면 그룹을 삭제할 수 없습니다.
+        if (!group.isDeletable()) {
+            throw new IllegalArgumentException("그룹에 멤버가 존재하면 그룹을 삭제할 수 없습니다.");
+        }
+        groupRepository.delete(group);
     }
 
     private String generateRandomInvitationCode() {

@@ -52,4 +52,9 @@ public class Group extends Timestamp {
     public void updateName(String name) {
         this.name = name;
     }
+
+    public boolean isDeletable() {
+        return members.stream()
+            .allMatch(member -> member.getUsername().equals(this.creator));
+    }
 }
