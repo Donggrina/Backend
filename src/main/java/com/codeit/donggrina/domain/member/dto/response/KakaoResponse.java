@@ -1,4 +1,4 @@
-package com.codeit.donggrina.domain.member.dto;
+package com.codeit.donggrina.domain.member.dto.response;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
