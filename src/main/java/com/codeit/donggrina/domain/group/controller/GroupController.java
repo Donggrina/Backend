@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +43,19 @@ public class GroupController {
             .code(HttpStatus.OK.value())
             .message("가족(그룹) 멤버 추가 성공")
             .data(null)
+            .build();
+    }
+
+    @DeleteMapping("/my/groups/{groupId}")
+    public ApiResponse<Void> delete(
+        @PathVariable Long groupId,
+        @AuthenticationPrincipal CustomOAuth2User user
+    ) {
+        Long userId = user.getMemberId();
+        groupService.delete(groupId, userId);
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.OK.value())
+            .message("가족(그룹) 삭제 성공")
             .build();
     }
 }

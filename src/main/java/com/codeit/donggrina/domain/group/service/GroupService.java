@@ -60,6 +60,24 @@ public class GroupService {
         group.addMember(member);
     }
 
+    @Transactional
+    public void delete(Long groupId, Long userId) {
+        Member member = memberRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Group group = groupRepository.findById(groupId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
+
+        // 그룹의 생성자가 아닌 경우에는 그룹을 삭제할 수 없습니다.
+        if (!group.getCreator().equals(member.getUsername())) {
+            throw new IllegalArgumentException("그룹을 삭제할 권한이 없습니다.");
+        }
+        // 그룹에 방장 외의 멤버가 존재하면 그룹을 삭제할 수 없습니다.
+        if (!group.isDeletable()) {
+            throw new IllegalArgumentException("그룹에 멤버가 존재하면 그룹을 삭제할 수 없습니다.");
+        }
+        groupRepository.delete(group);
+    }
+
     private String generateRandomInvitationCode() {
         int codeLength = 8;
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

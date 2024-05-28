@@ -48,4 +48,9 @@ public class Group extends Timestamp {
         members.add(member);
         member.joinGroup(this);
     }
+
+    public boolean isDeletable() {
+        return members.stream()
+            .allMatch(member -> member.getUsername().equals(this.creator));
+    }
 }
