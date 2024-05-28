@@ -34,13 +34,14 @@ public class GroupService {
         String nickname = request.nickname();
         member.updateNickname(nickname);
 
-        // 초대 코드를 생성하고 그룹을 생성하고 DB에 저장합니다.
+        // 초대 코드를 생성하고 그룹을 생성하고 생성한 사람을 그룹에 추가해주고 그룹을 DB에 저장합니다.
         String code = generateRandomInvitationCode();
         Group group = Group.builder()
             .name(name)
             .code(code)
             .creator(member.getUsername())
             .build();
+        member.joinGroup(group);
         return groupRepository.save(group).getId();
     }
 
