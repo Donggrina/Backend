@@ -94,7 +94,7 @@ public class GroupService {
             throw new IllegalArgumentException("그룹에 멤버가 존재하면 그룹을 삭제할 수 없습니다.");
         }
         // 외래키 제약 조건 때문에 멤버와 그룹을 먼저 연관관계를 끊어주고 그룹을 삭제합니다.
-        group.getMembers().forEach(Member::leaveGroup);
+        member.leaveGroup();
         groupRepository.delete(group);
     }
 
