@@ -2,6 +2,7 @@ package com.codeit.donggrina.domain.group.service;
 
 import com.codeit.donggrina.domain.group.dto.request.GroupAppendRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupMemberAddRequest;
+import com.codeit.donggrina.domain.group.dto.request.GroupUpdateRequest;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
@@ -59,6 +60,22 @@ public class GroupService {
         String nickname = request.nickname();
         member.updateNickname(nickname);
         group.addMember(member);
+    }
+
+    @Transactional
+    public void update(Long groupId, GroupUpdateRequest request, Long userId) {
+        Member member = memberRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Group group = groupRepository.findById(groupId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
+
+        // 그룹의 생성자와 로그인한 사용자가 일치하는지 확인하고 일치하지 않으면 예외를 발생시킵니다.
+        if (!group.getCreator().equals(member.getUsername())) {
+            throw new IllegalArgumentException("그룹을 수정할 권한이 없습니다.");
+        }
+
+        // 그룹 이름을 업데이트 합니다.
+        group.updateName(request.name());
     }
 
     @Transactional
