@@ -47,6 +47,10 @@ public class Member {
         this.group = group;
     }
 
+    public void leaveGroup() {
+        this.group = null;
+    }
+
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }

@@ -93,7 +93,27 @@ public class GroupService {
         if (!group.isDeletable()) {
             throw new IllegalArgumentException("그룹에 멤버가 존재하면 그룹을 삭제할 수 없습니다.");
         }
+        // 외래키 제약 조건 때문에 멤버와 그룹을 먼저 연관관계를 끊어주고 그룹을 삭제합니다.
+        member.leaveGroup();
         groupRepository.delete(group);
+    }
+
+    @Transactional
+    public void deleteMember(Long targetId, Long groupId, Long userId) {
+        // 그룹과 로그인 유저, 삭제 대상 유저를 조회합니다.
+        Group group = groupRepository.findById(groupId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
+        Member loginMember = memberRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Member targetMember = memberRepository.findById(targetId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 방장이 아니라면 멤버를 삭제할 수 없습니다.
+        if (!loginMember.getUsername().equals(group.getCreator())) {
+            throw new IllegalArgumentException("그룹 멤버를 삭제할 권한이 없습니다.");
+        }
+        // 그룹과 멤버의 연관관계를 끊어줌으로써 그룹에서 멤버를 삭제합니다.
+        targetMember.leaveGroup();
     }
 
     private String generateRandomInvitationCode() {
