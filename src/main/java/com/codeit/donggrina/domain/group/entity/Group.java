@@ -2,7 +2,6 @@ package com.codeit.donggrina.domain.group.entity;
 
 import com.codeit.donggrina.common.Timestamp;
 import com.codeit.donggrina.domain.member.entity.Member;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,7 +33,7 @@ public class Group extends Timestamp {
     @Column(nullable = false)
     private String creator;
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private final List<Member> members = new ArrayList<>();
 
     @Builder

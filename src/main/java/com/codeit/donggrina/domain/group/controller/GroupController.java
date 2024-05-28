@@ -72,4 +72,18 @@ public class GroupController {
             .message("가족(그룹) 삭제 성공")
             .build();
     }
+
+    @PostMapping("/my/groups/{groupId}/members/{targetId}")
+    public ApiResponse<Void> deleteMember(
+        @PathVariable Long targetId,
+        @PathVariable Long groupId,
+        @AuthenticationPrincipal CustomOAuth2User user
+    ) {
+        Long userId = user.getMemberId();
+        groupService.deleteMember(targetId, groupId, userId);
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.OK.value())
+            .message("가족(그룹) 멤버 삭제 성공")
+            .build();
+    }
 }
