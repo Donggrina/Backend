@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.group.service;
 import com.codeit.donggrina.domain.group.dto.request.GroupAppendRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupMemberAddRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupUpdateRequest;
+import com.codeit.donggrina.domain.group.dto.response.GroupDetailResponse;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
@@ -20,6 +21,11 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
+
+    @Transactional(readOnly = true)
+    public GroupDetailResponse getDetail(Long groupId) {
+        return groupRepository.findGroupDetail(groupId);
+    }
 
     @Transactional
     public Long append(GroupAppendRequest request, Long userId) {
