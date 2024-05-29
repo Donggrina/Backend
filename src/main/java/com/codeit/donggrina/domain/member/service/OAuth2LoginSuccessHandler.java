@@ -36,8 +36,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String token = jwtUtil.createJwt(id, username, role);
         response.addCookie(createCookie("Authorization", token));
-        response.setHeader("Authorization", token);
-        response.sendRedirect("http://localhost:3000/start-family?toekn=" + token);
+        response.sendRedirect("https://ftontend.vercel.app/start-family");
     }
 
     private Cookie createCookie(String key, String value) {
