@@ -6,6 +6,7 @@ import com.codeit.donggrina.domain.member.service.CustomOAuth2UserService;
 import com.codeit.donggrina.domain.member.service.OAuth2LoginSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,8 +40,8 @@ public class SecurityConfig {
 
                     configuration.setAllowedOrigins(Collections.singletonList("https://ftontend.vercel.app"));
                     configuration.setAllowedMethods(Collections.singletonList("*"));
+                    configuration.setAllowedHeaders(List.of("*"));
                     configuration.setAllowCredentials(true);
-                    configuration.setAllowedHeaders(Collections.singletonList("*"));
                     configuration.setMaxAge(3600L);
 
                     configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
