@@ -12,7 +12,7 @@ public class CorsMvcConfig implements WebMvcConfigurer {
 
         corsRegistry.addMapping("/**")
             .exposedHeaders("Set-Cookie")
-            .allowedOrigins("http://localhost:3000")
+            .allowedOrigins("https://ftontend.vercel.app")
             .allowedMethods(ALLOWED_METHODS.split(","))
             .allowCredentials(true);
     }
