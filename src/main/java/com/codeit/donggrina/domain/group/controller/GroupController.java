@@ -25,9 +25,10 @@ public class GroupController {
 
     private final GroupService groupService;
 
-    @GetMapping("/my/groups/{groupId}")
-    public ApiResponse<GroupDetailResponse> getDetail(@PathVariable Long groupId) {
-        GroupDetailResponse result = groupService.getDetail(groupId);
+    @GetMapping("/my/groups")
+    public ApiResponse<GroupDetailResponse> getDetail(@AuthenticationPrincipal CustomOAuth2User user) {
+        Long userId = user.getMemberId();
+        GroupDetailResponse result = groupService.getDetail(userId);
         return ApiResponse.<GroupDetailResponse>builder()
             .code(HttpStatus.OK.value())
             .message("가족(그룹) 상세 조회 성공")
