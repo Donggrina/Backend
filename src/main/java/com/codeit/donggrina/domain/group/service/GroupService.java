@@ -26,10 +26,10 @@ public class GroupService {
     public GroupDetailResponse getDetail(Long userId) {
         Member member = memberRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        Long groupId = member.getGroup().getId();
-        if (groupId == null) {
+        if (member.getGroup() == null) {
             throw new IllegalArgumentException("그룹에 소속되어 있지 않습니다.");
         }
+        Long groupId = member.getGroup().getId();
         return groupRepository.findGroupDetail(groupId);
     }
 
