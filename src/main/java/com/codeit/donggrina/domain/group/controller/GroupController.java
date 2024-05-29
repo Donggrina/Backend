@@ -4,6 +4,7 @@ import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.group.dto.request.GroupAppendRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupMemberAddRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupUpdateRequest;
+import com.codeit.donggrina.domain.group.dto.response.GroupDetailResponse;
 import com.codeit.donggrina.domain.group.service.GroupService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,6 +24,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupController {
 
     private final GroupService groupService;
+
+    @GetMapping("/my/groups/{groupId}")
+    public ApiResponse<GroupDetailResponse> getDetail(@PathVariable Long groupId) {
+        GroupDetailResponse result = groupService.getDetail(groupId);
+        return ApiResponse.<GroupDetailResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("가족(그룹) 상세 조회 성공")
+            .data(result)
+            .build();
+    }
 
     @PostMapping("/my/groups")
     public ApiResponse<Long> append(@RequestBody @Validated GroupAppendRequest request,
