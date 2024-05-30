@@ -45,7 +45,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             .maxAge(60 * 60 * 60 * 60)
             .httpOnly(true)
             .secure(true)
-            .domain("frontend.donggrina.click")
+            .domain("donggrina.click")
             .sameSite("None")
             .path("/")
             .build();
