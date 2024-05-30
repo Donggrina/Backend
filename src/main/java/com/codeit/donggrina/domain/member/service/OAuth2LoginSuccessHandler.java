@@ -37,7 +37,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String token = jwtUtil.createJwt(id, username, role);
         response.setHeader(HttpHeaders.SET_COOKIE, createCookie("Authorization", token).toString());
-        response.sendRedirect("https://ftontend.vercel.app/start-family");
+        response.sendRedirect("https://frontend.donggrina.click/start-family");
     }
 
     private ResponseCookie createCookie(String key, String value) {
@@ -45,7 +45,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             .maxAge(60 * 60 * 60 * 60)
             .httpOnly(true)
             .secure(true)
-            .domain("ftontend.vercel.app")
+            .domain("frontend.donggrina.click")
             .sameSite("None")
             .path("/")
             .build();
