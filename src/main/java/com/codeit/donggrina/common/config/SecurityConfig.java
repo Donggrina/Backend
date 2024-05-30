@@ -4,7 +4,7 @@ import com.codeit.donggrina.domain.member.jwt.JwtFilter;
 import com.codeit.donggrina.domain.member.jwt.JwtUtil;
 import com.codeit.donggrina.domain.member.service.CustomOAuth2UserService;
 import com.codeit.donggrina.domain.member.service.OAuth2LoginSuccessHandler;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -31,24 +30,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-            .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-
-                @Override
-                public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-
-                    CorsConfiguration configuration = new CorsConfiguration();
-
-                    configuration.setAllowedOrigins(Collections.singletonList("https://ftontend.vercel.app"));
-                    configuration.setAllowedMethods(Collections.singletonList("*"));
-                    configuration.setAllowedHeaders(List.of("*"));
-                    configuration.setAllowCredentials(true);
-                    configuration.setMaxAge(3600L);
-
-                    configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                    configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-
-                    return configuration;
-                }
+            .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(
+                    Collections.singletonList("https://ftontend.vercel.app"));
+                configuration.setAllowedMethods(
+                    Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedHeaders(List.of("*"));
+                configuration.setAllowCredentials(true);
+                configuration.setMaxAge(3600L);
+                configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
+                return configuration;
             }))
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session ->
