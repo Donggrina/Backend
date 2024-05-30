@@ -8,12 +8,17 @@ import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
+import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
+import com.codeit.donggrina.domain.pet.dto.response.PetAddResponse;
+import com.codeit.donggrina.domain.pet.entity.Pet;
+import com.codeit.donggrina.domain.pet.repository.PetRepository;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,7 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
+    private final PetRepository petRepository;
 
     @Transactional(readOnly = true)
     public GroupDetailResponse getDetail(Long userId) {
@@ -145,5 +151,29 @@ public class GroupService {
                 return code;
             }
         }
+    }
+
+    public PetAddResponse addPet(Long memberId, PetAddRequest petAddRequest) {
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(RuntimeException::new);
+
+        // Todo: 이미지 가져오기
+
+        Pet pet = Pet.builder()
+            .name(petAddRequest.name())
+            .sex(petAddRequest.sex())
+            .birthDate(petAddRequest.birthDate())
+            .adoptionDate(petAddRequest.adoptionDate())
+            .type(petAddRequest.type())
+            .species(petAddRequest.species())
+            .weight(petAddRequest.weight())
+            .isNeutered(petAddRequest.isNeutered())
+            .registrationNumber(petAddRequest.registrationNumber())
+            .group(currentMember.getGroup())
+            .profileImage(null)
+            .build();
+
+        Pet savedPet = petRepository.save(pet);
+        return PetAddResponse.from(savedPet, "image");
     }
 }
