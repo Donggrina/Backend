@@ -45,6 +45,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             .maxAge(60 * 60 * 60 * 60)
             .httpOnly(true)
             .secure(true)
+            .domain("ftontend.vercel.app")
             .sameSite("None")
             .path("/")
             .build();
