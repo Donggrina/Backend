@@ -44,7 +44,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60*60*60*60);
         cookie.setPath("/");
-        cookie.setDomain("frontend.vercel.app");
+        cookie.setDomain("ftontend.vercel.app");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setAttribute("SameSite", "None");
