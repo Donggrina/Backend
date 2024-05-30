@@ -37,7 +37,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String token = jwtUtil.createJwt(id, username, role);
         response.setHeader(HttpHeaders.SET_COOKIE, createCookie("Authorization", token).toString());
-        response.sendRedirect("https://frontend.donggrina.click/start-family");
+        response.sendRedirect("https://www.donggrina.click/start-family");
     }
 
     private ResponseCookie createCookie(String key, String value) {
