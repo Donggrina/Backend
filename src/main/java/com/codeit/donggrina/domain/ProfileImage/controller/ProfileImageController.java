@@ -17,11 +17,13 @@ public class ProfileImageController {
     private final ProfileImageService imageService;
 
     @PostMapping("/images")
-    public ApiResponse<String> uploadImage(@RequestParam List<MultipartFile> files) {
-        imageService.uploadImage(files);
-        return ApiResponse.<String>builder()
+    public ApiResponse<List<Long>> uploadImage(
+        @RequestParam List<MultipartFile> files) {
+        List<Long> result = imageService.uploadImage(files);
+        return ApiResponse.<List<Long>>builder()
             .code(HttpStatus.OK.value())
             .message("이미지 업로드 성공")
+            .data(result)
             .build();
     }
 }
