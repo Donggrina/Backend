@@ -2,6 +2,7 @@ package com.codeit.donggrina.domain.ProfileImage.controller;
 
 import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.ProfileImage.service.ProfileImageService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +17,8 @@ public class ProfileImageController {
     private final ProfileImageService imageService;
 
     @PostMapping("/images")
-    public ApiResponse<String> uploadImage(@RequestParam MultipartFile file) {
-        imageService.uploadImage(file);
+    public ApiResponse<String> uploadImage(@RequestParam List<MultipartFile> files) {
+        imageService.uploadImage(files);
         return ApiResponse.<String>builder()
             .code(HttpStatus.OK.value())
             .message("이미지 업로드 성공")
