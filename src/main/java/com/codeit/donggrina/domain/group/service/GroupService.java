@@ -9,16 +9,14 @@ import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
-import com.codeit.donggrina.domain.pet.dto.response.PetAddResponse;
 import com.codeit.donggrina.domain.pet.entity.Pet;
-import com.codeit.donggrina.domain.pet.repository.PetRepository;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.filter.RequestContextFilter;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +24,7 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
-    private final PetRepository petRepository;
+    private final RequestContextFilter requestContextFilter;
 
     @Transactional(readOnly = true)
     public GroupDetailResponse getDetail(Long userId) {
@@ -153,12 +151,12 @@ public class GroupService {
         }
     }
 
-    public PetAddResponse addPet(Long memberId, PetAddRequest petAddRequest) {
+    @Transactional
+    public void addPet(Long memberId, PetAddRequest petAddRequest) {
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(RuntimeException::new);
 
-        // Todo: 이미지 가져오기
-
+        Group myGroup = currentMember.getGroup();
         Pet pet = Pet.builder()
             .name(petAddRequest.name())
             .sex(petAddRequest.sex())
@@ -169,11 +167,9 @@ public class GroupService {
             .weight(petAddRequest.weight())
             .isNeutered(petAddRequest.isNeutered())
             .registrationNumber(petAddRequest.registrationNumber())
-            .group(currentMember.getGroup())
-            .profileImage(null)
+            .group(myGroup)
             .build();
 
-        Pet savedPet = petRepository.save(pet);
-        return PetAddResponse.from(savedPet, "image");
+        myGroup.addPet(pet);
     }
 }
