@@ -9,7 +9,9 @@ import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
+import com.codeit.donggrina.domain.pet.dto.response.PetFindListResponse;
 import com.codeit.donggrina.domain.pet.entity.Pet;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -171,5 +173,15 @@ public class GroupService {
             .build();
 
         myGroup.addPet(pet);
+    }
+
+    public List<PetFindListResponse> findPetList(Long memberId) {
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(RuntimeException::new);
+
+        List<Pet> pets = currentMember.getGroup().getPets();
+        return pets.stream()
+            .map(PetFindListResponse::from)
+            .collect(Collectors.toList());
     }
 }
