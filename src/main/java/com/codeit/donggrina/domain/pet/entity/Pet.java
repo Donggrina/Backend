@@ -2,9 +2,8 @@ package com.codeit.donggrina.domain.pet.entity;
 
 import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
 import com.codeit.donggrina.domain.group.entity.Group;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +15,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Entity
 @Getter
@@ -26,7 +24,7 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = SexValueConverter.class)
     private Sex sex;
     private LocalDate birthDate;
     private LocalDate adoptionDate;
