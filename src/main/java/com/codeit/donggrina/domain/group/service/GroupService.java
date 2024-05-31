@@ -8,12 +8,15 @@ import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
+import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
+import com.codeit.donggrina.domain.pet.entity.Pet;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.filter.RequestContextFilter;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
+    private final RequestContextFilter requestContextFilter;
 
     @Transactional(readOnly = true)
     public GroupDetailResponse getDetail(Long userId) {
@@ -145,5 +149,27 @@ public class GroupService {
                 return code;
             }
         }
+    }
+
+    @Transactional
+    public void addPet(Long memberId, PetAddRequest petAddRequest) {
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(RuntimeException::new);
+
+        Group myGroup = currentMember.getGroup();
+        Pet pet = Pet.builder()
+            .name(petAddRequest.name())
+            .sex(petAddRequest.sex())
+            .birthDate(petAddRequest.birthDate())
+            .adoptionDate(petAddRequest.adoptionDate())
+            .type(petAddRequest.type())
+            .species(petAddRequest.species())
+            .weight(petAddRequest.weight())
+            .isNeutered(petAddRequest.isNeutered())
+            .registrationNumber(petAddRequest.registrationNumber())
+            .group(myGroup)
+            .build();
+
+        myGroup.addPet(pet);
     }
 }

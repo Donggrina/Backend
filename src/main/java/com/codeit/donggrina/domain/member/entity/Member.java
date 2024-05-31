@@ -29,7 +29,7 @@ public class Member {
     private ProfileImage profileImage;
     private String nickname; // 그룹 내에서 사용할 닉네임
     @ManyToOne
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "clusters_id")
     private Group group;
 
     @Builder

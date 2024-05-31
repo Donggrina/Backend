@@ -7,6 +7,7 @@ import com.codeit.donggrina.domain.group.dto.request.GroupUpdateRequest;
 import com.codeit.donggrina.domain.group.dto.response.GroupDetailResponse;
 import com.codeit.donggrina.domain.group.service.GroupService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
+import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +27,8 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping("/my/groups")
-    public ApiResponse<GroupDetailResponse> getDetail(@AuthenticationPrincipal CustomOAuth2User user) {
+    public ApiResponse<GroupDetailResponse> getDetail(
+        @AuthenticationPrincipal CustomOAuth2User user) {
         Long userId = user.getMemberId();
         GroupDetailResponse result = groupService.getDetail(userId);
         return ApiResponse.<GroupDetailResponse>builder()
@@ -97,6 +99,17 @@ public class GroupController {
         return ApiResponse.<Void>builder()
             .code(HttpStatus.OK.value())
             .message("가족(그룹) 멤버 삭제 성공")
+            .build();
+    }
+
+    @PostMapping("/my/pets")
+    public ApiResponse<Void> addPet(@AuthenticationPrincipal CustomOAuth2User user,
+        @RequestBody @Validated PetAddRequest petAddRequest) {
+
+        groupService.addPet(user.getMemberId(), petAddRequest);
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.OK.value())
+            .message("반려동물 등록 성공")
             .build();
     }
 }
