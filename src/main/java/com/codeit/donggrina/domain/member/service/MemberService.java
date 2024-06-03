@@ -2,6 +2,7 @@ package com.codeit.donggrina.domain.member.service;
 
 import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
 import com.codeit.donggrina.domain.ProfileImage.repository.ProfileImageRepository;
+import com.codeit.donggrina.domain.member.dto.request.MemberUpdateRequest;
 import com.codeit.donggrina.domain.member.dto.response.MyProfileGetResponse;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
@@ -21,13 +22,13 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMyProfile(Long memberId, Long imageId, String name) {
+    public void updateMyProfile(Long memberId, MemberUpdateRequest memberUpdateRequest) {
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(RuntimeException::new);
-        ProfileImage updatedProfileImage = profileImageRepository.findById(imageId)
-            .orElseThrow(RuntimeException::new);
+        ProfileImage updatedProfileImage = profileImageRepository.findById(
+                memberUpdateRequest.imageId()).orElseThrow(RuntimeException::new);
 
-        currentMember.updateNickname(name);
+        currentMember.updateNickname(memberUpdateRequest.name());
         currentMember.updateProfileImage(updatedProfileImage);
     }
 }
