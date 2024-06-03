@@ -57,6 +57,7 @@ public class PetService {
         return petRepository.findPetResponseById(petId).orElseThrow(RuntimeException::new);
     }
 
+    @Transactional
     public void deletePet(Long petId) {
         petRepository.deleteById(petId);
     }
