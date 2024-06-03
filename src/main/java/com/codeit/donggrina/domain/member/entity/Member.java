@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.member.entity;
 import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
 import com.codeit.donggrina.domain.group.entity.Group;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,11 +25,11 @@ public class Member {
     private String username;
     private String name;
     private String role;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id")
     private ProfileImage profileImage;
     private String nickname; // 그룹 내에서 사용할 닉네임
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clusters_id")
     private Group group;
 

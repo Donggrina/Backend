@@ -4,6 +4,7 @@ import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
 import com.codeit.donggrina.domain.group.entity.Group;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,10 +34,10 @@ public class Pet {
     private double weight;
     private boolean isNeutered;
     private String registrationNumber;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id")
     private ProfileImage profileImage;
 
