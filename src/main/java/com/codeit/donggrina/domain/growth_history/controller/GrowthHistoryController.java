@@ -6,6 +6,7 @@ import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryUpdat
 import com.codeit.donggrina.domain.growth_history.service.GrowthHistoryService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,7 @@ public class GrowthHistoryController {
         Long memberId = member.getMemberId();
         Long result = growthHistoryService.append(memberId, request);
         return ApiResponse.<Long>builder()
-            .code(200)
+            .code(HttpStatus.OK.value())
             .message("성장기록 추가 성공")
             .data(result)
             .build();
@@ -42,7 +43,7 @@ public class GrowthHistoryController {
         Long memberId = member.getMemberId();
         growthHistoryService.update(memberId, growthId, request);
         return ApiResponse.<Void>builder()
-            .code(200)
+            .code(HttpStatus.OK.value())
             .message("성장기록 수정 성공")
             .build();
     }
