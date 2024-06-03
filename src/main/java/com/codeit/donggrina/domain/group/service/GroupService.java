@@ -152,36 +152,4 @@ public class GroupService {
             }
         }
     }
-
-    @Transactional
-    public void addPet(Long memberId, PetAddRequest petAddRequest) {
-        Member currentMember = memberRepository.findById(memberId)
-            .orElseThrow(RuntimeException::new);
-
-        Group myGroup = currentMember.getGroup();
-        Pet pet = Pet.builder()
-            .name(petAddRequest.name())
-            .sex(petAddRequest.sex())
-            .birthDate(petAddRequest.birthDate())
-            .adoptionDate(petAddRequest.adoptionDate())
-            .type(petAddRequest.type())
-            .species(petAddRequest.species())
-            .weight(petAddRequest.weight())
-            .isNeutered(petAddRequest.isNeutered())
-            .registrationNumber(petAddRequest.registrationNumber())
-            .group(myGroup)
-            .build();
-
-        myGroup.addPet(pet);
-    }
-
-    public List<PetFindListResponse> findPetList(Long memberId) {
-        Member currentMember = memberRepository.findById(memberId)
-            .orElseThrow(RuntimeException::new);
-
-        List<Pet> pets = currentMember.getGroup().getPets();
-        return pets.stream()
-            .map(PetFindListResponse::from)
-            .collect(Collectors.toList());
-    }
 }
