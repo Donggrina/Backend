@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.growth_history.service;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryAppendRequest;
+import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryUpdateRequest;
 import com.codeit.donggrina.domain.growth_history.entity.GrowthHistory;
 import com.codeit.donggrina.domain.growth_history.repository.GrowthHistoryRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
@@ -57,5 +58,17 @@ public class GrowthHistoryService {
             .memo(request.content().memo())
             .build();
         return growthHistoryRepository.save(growthHistory).getId();
+    }
+
+    @Transactional
+    public void update(Long memberId, Long growthId, GrowthHistoryUpdateRequest request) {
+        // 로그인 한 사용자를 조회합니다.
+        memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // GrowthHistory를 조회하고 수정합니다.
+        GrowthHistory growthHistory = growthHistoryRepository.findById(growthId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장기록입니다."));
+        growthHistory.update(request);
     }
 }
