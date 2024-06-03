@@ -54,4 +54,13 @@ public class CustomGroupRepositoryImpl implements CustomGroupRepository {
             .membersCount(membersCount)
             .build();
     }
+
+    @Override
+    public Group findWithPets(Long groupId) {
+        return queryFactory
+            .selectFrom(QGroup.group)
+            .leftJoin(QGroup.group.pets).fetchJoin()
+            .where(QGroup.group.id.eq(groupId))
+            .fetchOne();
+    }
 }
