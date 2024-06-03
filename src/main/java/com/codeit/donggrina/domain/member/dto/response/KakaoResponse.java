@@ -19,4 +19,14 @@ public class KakaoResponse {
         Map<String, String> properties = (Map<String, String>) attribute.get("properties");
         return properties.get("nickname");
     }
+
+    public String getProfileImageUrl(){
+        Map<String, String> properties = (Map<String, String>) attribute.get("properties");
+        return properties.getOrDefault("profile_image_url", null);
+    }
+
+    public boolean hasProfileImageUrl() {
+        Map<String, String> properties = (Map<String, String>) attribute.get("properties");
+        return properties.containsKey("profile_image_url");
+    }
 }
