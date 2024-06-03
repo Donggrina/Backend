@@ -8,6 +8,7 @@ import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -45,6 +46,19 @@ public class GrowthHistoryController {
         return ApiResponse.<Void>builder()
             .code(HttpStatus.OK.value())
             .message("성장기록 수정 성공")
+            .build();
+    }
+
+    @DeleteMapping("/growth/{growthId}")
+    public ApiResponse<Void> delete(
+        @PathVariable Long growthId,
+        @AuthenticationPrincipal CustomOAuth2User member
+    ) {
+        Long memberId = member.getMemberId();
+        growthHistoryService.delete(memberId, growthId);
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.OK.value())
+            .message("성장기록 삭제 성공")
             .build();
     }
 }

@@ -69,6 +69,24 @@ public class GrowthHistoryService {
         // GrowthHistory를 조회하고 수정합니다.
         GrowthHistory growthHistory = growthHistoryRepository.findById(growthId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장기록입니다."));
+        if (!growthHistory.getMember().getId().equals(memberId)) {
+            throw new IllegalArgumentException("본인의 성장기록만 수정할 수 있습니다.");
+        }
         growthHistory.update(request);
+    }
+
+    @Transactional
+    public void delete(Long memberId, Long growthId) {
+        // 로그인 한 사용자를 조회합니다.
+        memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // GrowthHistory를 조회하고 삭제합니다.
+        GrowthHistory growthHistory = growthHistoryRepository.findById(growthId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장기록입니다."));
+        if (!growthHistory.getMember().getId().equals(memberId)) {
+            throw new IllegalArgumentException("본인의 성장기록만 삭제할 수 있습니다.");
+        }
+        growthHistoryRepository.delete(growthHistory);
     }
 }
