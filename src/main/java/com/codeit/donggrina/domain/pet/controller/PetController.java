@@ -4,6 +4,7 @@ import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
 import com.codeit.donggrina.domain.pet.dto.response.PetFindListResponse;
+import com.codeit.donggrina.domain.pet.dto.response.PetFindResponse;
 import com.codeit.donggrina.domain.pet.service.PetService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +42,16 @@ public class PetController {
             .code(HttpStatus.OK.value())
             .message("반려동물 전체 조회 성공")
             .data(petService.findPetList(user.getMemberId()))
+            .build();
+    }
+
+    @GetMapping("/my/pets/{petId}")
+    public ApiResponse<PetFindResponse> findPetList(@PathVariable Long petId) {
+
+        return ApiResponse.<PetFindResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("반려동물 조회 성공")
+            .data(petService.findPet(petId))
             .build();
     }
 

@@ -5,7 +5,9 @@ import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
 import com.codeit.donggrina.domain.pet.dto.response.PetFindListResponse;
+import com.codeit.donggrina.domain.pet.dto.response.PetFindResponse;
 import com.codeit.donggrina.domain.pet.entity.Pet;
+import com.codeit.donggrina.domain.pet.repository.PetRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PetService {
 
     private final MemberRepository memberRepository;
+    private final PetRepository petRepository;
 
     @Transactional
     public void addPet(Long memberId, PetAddRequest petAddRequest) {
@@ -50,4 +53,7 @@ public class PetService {
             .collect(Collectors.toList());
     }
 
+    public PetFindResponse findPet(Long petId) {
+        return petRepository.findPetResponseById(petId).orElseThrow(RuntimeException::new);
+    }
 }
