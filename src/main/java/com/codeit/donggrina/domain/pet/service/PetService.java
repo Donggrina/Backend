@@ -56,4 +56,8 @@ public class PetService {
     public PetFindResponse findPet(Long petId) {
         return petRepository.findPetResponseById(petId).orElseThrow(RuntimeException::new);
     }
+
+    public void deletePet(Long petId) {
+        petRepository.deleteById(petId);
+    }
 }

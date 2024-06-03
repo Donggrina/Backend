@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,16 @@ public class PetController {
             .code(HttpStatus.OK.value())
             .message("반려동물 조회 성공")
             .data(petService.findPet(petId))
+            .build();
+    }
+
+    @DeleteMapping("/my/pets/{petId}")
+    public ApiResponse<Void> deletePet(@PathVariable Long petId) {
+        petService.deletePet(petId);
+
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.OK.value())
+            .message("반려동물 삭제 성공")
             .build();
     }
 
