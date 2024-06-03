@@ -1,5 +1,7 @@
 package com.codeit.donggrina.domain.member.service;
 
+import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
+import com.codeit.donggrina.domain.ProfileImage.repository.ProfileImageRepository;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import com.codeit.donggrina.domain.member.dto.response.KakaoResponse;
 import com.codeit.donggrina.domain.member.dto.request.MemberSecurityDto;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
+    private final ProfileImageRepository profileImageRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -37,9 +40,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Optional<Member> foundMemberOptional = memberRepository.findByUsername(username);
         MemberSecurityDto memberSecurityDto = null;
         if(foundMemberOptional.isEmpty()) {
+            ProfileImage profileImage = null;
+
+            if(kakaoResponse.hasProfileImageUrl()) {
+                profileImage = ProfileImage.builder()
+                    .name("kakao_profile_image")
+                    .url(kakaoResponse.getProfileImageUrl())
+                    .build();
+            }
+
             Member member = Member.builder()
                 .username(username)
                 .name(kakaoResponse.getName())
+                .profileImage(profileImage)
                 .role("ROLE_USER")
                 .build();
 
