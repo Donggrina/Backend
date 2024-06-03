@@ -7,7 +7,7 @@ import lombok.Builder;
 
 @Builder
 public record PetFindResponse(
-    String petProfileImageUrl,
+    String url,
     String name,
     Sex sex,
     LocalDate birthDate,
@@ -20,7 +20,7 @@ public record PetFindResponse(
 ) {
     public static PetFindResponse from(Pet pet) {
         return PetFindResponse.builder()
-            .petProfileImageUrl(pet.getProfileImage().getUrl())
+            .url(pet.getProfileImage().getUrl())
             .name(pet.getName())
             .sex(pet.getSex())
             .birthDate(pet.getBirthDate())
