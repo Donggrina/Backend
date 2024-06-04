@@ -73,8 +73,8 @@ public class PetService {
                 petUpdateRequest.imageId())
             .orElseThrow(RuntimeException::new);
 
-        targetPet.update(targetPet.getName(), targetPet.getSex(), targetPet.getBirthDate(),
-            targetPet.getAdoptionDate(), targetPet.getType(), targetPet.getSpecies(),
-            targetPet.getWeight(), targetPet.isNeutered(), updatedProfileImage);
+        targetPet.update(petUpdateRequest.name(), petUpdateRequest.sex(), petUpdateRequest.birthDate(),
+            petUpdateRequest.adoptionDate(), petUpdateRequest.type(), petUpdateRequest.species(),
+            petUpdateRequest.weight(), petUpdateRequest.isNeutered(), updatedProfileImage);
     }
 }
