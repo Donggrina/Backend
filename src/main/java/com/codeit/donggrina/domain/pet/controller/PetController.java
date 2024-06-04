@@ -69,7 +69,7 @@ public class PetController {
     }
 
     @PutMapping("my/pets/{petId}")
-    public ApiResponse<Void> updatePet(@PathVariable Long petId,
+    public ApiResponse<Void> updatePet(@PathVariable @Validated Long petId,
         @RequestBody PetUpdateRequest petUpdateRequest) {
         petService.updatePet(petId, petUpdateRequest);
 
