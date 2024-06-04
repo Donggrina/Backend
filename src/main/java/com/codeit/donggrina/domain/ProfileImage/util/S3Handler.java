@@ -2,6 +2,7 @@ package com.codeit.donggrina.domain.ProfileImage.util;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.codeit.donggrina.domain.ProfileImage.exception.ImageDeleteException;
 import com.codeit.donggrina.domain.ProfileImage.exception.ImageUploadException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +57,8 @@ public class S3Handler {
                 log.info("S3 이미지 삭제 완료, fileName={}", fileName);
             })
             .exceptionally(e -> {
-                throw new RuntimeException("S3 이미지 삭제 중 오류가 발생했습니다.", e);
+                log.error("S3에서 이미지 삭제 중 오류 발생, fileName={}", fileName, e);
+                throw new ImageDeleteException("S3 이미지 삭제 중 오류가 발생했습니다.", e);
             });
     }
 }
