@@ -1,9 +1,12 @@
 package com.codeit.donggrina.domain.pet.service;
 
+import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
+import com.codeit.donggrina.domain.ProfileImage.repository.ProfileImageRepository;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
+import com.codeit.donggrina.domain.pet.dto.request.PetUpdateRequest;
 import com.codeit.donggrina.domain.pet.dto.response.PetFindListResponse;
 import com.codeit.donggrina.domain.pet.dto.response.PetFindResponse;
 import com.codeit.donggrina.domain.pet.entity.Pet;
@@ -20,6 +23,7 @@ public class PetService {
 
     private final MemberRepository memberRepository;
     private final PetRepository petRepository;
+    private final ProfileImageRepository profileImageRepository;
 
     @Transactional
     public void addPet(Long memberId, PetAddRequest petAddRequest) {
@@ -60,5 +64,17 @@ public class PetService {
     @Transactional
     public void deletePet(Long petId) {
         petRepository.deleteById(petId);
+    }
+
+    @Transactional
+    public void updatePet(Long petId, PetUpdateRequest petUpdateRequest) {
+        Pet targetPet = petRepository.findById(petId).orElseThrow(RuntimeException::new);
+        ProfileImage updatedProfileImage = profileImageRepository.findById(
+                petUpdateRequest.imageId())
+            .orElseThrow(RuntimeException::new);
+
+        targetPet.update(targetPet.getName(), targetPet.getSex(), targetPet.getBirthDate(),
+            targetPet.getAdoptionDate(), targetPet.getType(), targetPet.getSpecies(),
+            targetPet.getWeight(), targetPet.isNeutered(), updatedProfileImage);
     }
 }
