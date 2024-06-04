@@ -1,5 +1,8 @@
-package com.codeit.donggrina.domain.growth_history.dto.request;
+package com.codeit.donggrina.domain.growth_history.dto;
 
+import lombok.Builder;
+
+@Builder
 public record GrowthHistoryContentDto(
     String food,
     String snack,
