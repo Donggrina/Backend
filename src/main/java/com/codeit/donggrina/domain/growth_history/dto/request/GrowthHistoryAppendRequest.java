@@ -1,5 +1,6 @@
 package com.codeit.donggrina.domain.growth_history.dto.request;
 
+import com.codeit.donggrina.domain.growth_history.dto.GrowthHistoryContentDto;
 import com.codeit.donggrina.domain.growth_history.entity.GrowthHistoryCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

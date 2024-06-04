@@ -4,6 +4,7 @@ import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryAppendRequest;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryUpdateRequest;
+import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryDetailResponse;
 import com.codeit.donggrina.domain.growth_history.entity.GrowthHistory;
 import com.codeit.donggrina.domain.growth_history.repository.GrowthHistoryRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
@@ -20,6 +21,10 @@ public class GrowthHistoryService {
     private final GrowthHistoryRepository growthHistoryRepository;
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
+
+    public GrowthHistoryDetailResponse getDetail(Long growthId) {
+        return growthHistoryRepository.findGrowthHistoryDetail(growthId);
+    }
 
     @Transactional
     public Long append(Long memberId, GrowthHistoryAppendRequest request) {
