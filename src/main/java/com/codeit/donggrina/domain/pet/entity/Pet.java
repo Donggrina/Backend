@@ -59,4 +59,17 @@ public class Pet {
         this.group = group;
         this.profileImage = profileImage;
     }
+
+    public void update(String name, Sex sex, LocalDate birthDate, LocalDate adoptionDate, String type,
+        String species, double weight, boolean isNeutered, ProfileImage profileImage) {
+        this.name = name;
+        this.sex = sex;
+        this.birthDate = birthDate;
+        this.adoptionDate = adoptionDate;
+        this.type = type;
+        this.species = species;
+        this.weight = weight;
+        this.isNeutered = isNeutered;
+        this.profileImage = profileImage;
+    }
 }
