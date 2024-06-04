@@ -4,8 +4,12 @@ import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryAppendRequest;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryUpdateRequest;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryDetailResponse;
+import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryListResponse;
 import com.codeit.donggrina.domain.growth_history.service.GrowthHistoryService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
+import jakarta.annotation.Nullable;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,6 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class GrowthHistoryController {
 
     private final GrowthHistoryService growthHistoryService;
+
+    @GetMapping("/growth")
+    public ApiResponse<List<GrowthHistoryListResponse>> getByDate(
+        @RequestParam @Nullable LocalDate date
+    ) {
+        return ApiResponse.<List<GrowthHistoryListResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .message("성장기록 날짜별 조회 성공")
+            .data(growthHistoryService.getByDate(date))
+            .build();
+    }
 
     @GetMapping("/growth/{growthId}")
     public ApiResponse<GrowthHistoryDetailResponse> getDetail(
