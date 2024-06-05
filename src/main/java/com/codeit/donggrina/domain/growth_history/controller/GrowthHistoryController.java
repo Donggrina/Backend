@@ -14,6 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,7 +65,7 @@ public class GrowthHistoryController {
 
     @PostMapping("/growth")
     public ApiResponse<Long> append(
-        @RequestBody GrowthHistoryAppendRequest request,
+        @RequestBody @Validated GrowthHistoryAppendRequest request,
         @AuthenticationPrincipal CustomOAuth2User member
     ) {
         Long memberId = member.getMemberId();
@@ -79,7 +80,7 @@ public class GrowthHistoryController {
     @PutMapping("/growth/{growthId}")
     public ApiResponse<Void> update(
         @PathVariable Long growthId,
-        @RequestBody GrowthHistoryUpdateRequest request,
+        @RequestBody @Validated GrowthHistoryUpdateRequest request,
         @AuthenticationPrincipal CustomOAuth2User member
     ) {
         Long memberId = member.getMemberId();
