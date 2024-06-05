@@ -1,5 +1,6 @@
 package com.codeit.donggrina.common.api;
 
+import com.codeit.donggrina.domain.ProfileImage.exception.ImageDeleteException;
 import com.codeit.donggrina.domain.ProfileImage.exception.ImageUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -61,14 +62,27 @@ public class ApiControllerAdvice {
     }
 
     /**
-     * ImageUploadException 발생 시, 잘못된 요청에 대한 응답을 반환합니다.
+     * ImageUploadException 발생 시, 서버 에러에 대한 응답을 반환합니다.
      *
-     * @param e ImageUploadException
      * @return ErrorResponse
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ImageUploadException.class)
-    public ErrorResponse imageUploadExceptionHandler(ImageUploadException e) {
+    public ErrorResponse imageUploadExceptionHandler() {
+        return ErrorResponse.builder()
+            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+            .message("서버 에러입니다.")
+            .build();
+    }
+
+    /**
+     * ImageDeleteException 발생 시, 서버 에러에 대한 응답을 반환합니다.
+     *
+     * @return ErrorResponse
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ImageDeleteException.class)
+    public ErrorResponse imageDeleteExceptionHandler() {
         return ErrorResponse.builder()
             .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
             .message("서버 에러입니다.")
