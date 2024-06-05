@@ -4,6 +4,7 @@ import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryAppendRequest;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryUpdateRequest;
+import com.codeit.donggrina.domain.growth_history.dto.request.SearchFilter;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryDetailResponse;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryListResponse;
 import com.codeit.donggrina.domain.growth_history.entity.GrowthHistory;
@@ -31,6 +32,10 @@ public class GrowthHistoryService {
 
     public GrowthHistoryDetailResponse getDetail(Long growthId) {
         return growthHistoryRepository.findGrowthHistoryDetail(growthId);
+    }
+
+    public List<GrowthHistoryListResponse> search(SearchFilter searchFilter) {
+        return growthHistoryRepository.findGrowthHistoryBySearchFilter(searchFilter);
     }
 
     @Transactional
