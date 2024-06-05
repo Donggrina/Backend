@@ -48,12 +48,12 @@ public class GrowthHistory extends Timestamp {
     private String abnormalSymptom;
     private String hospitalName;
     private String symptom;
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String diagnosis;
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String medicationMethod;
     private Integer price;
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String memo;
 
     @Builder
