@@ -9,6 +9,7 @@ import com.codeit.donggrina.domain.group.entity.QGroup;
 import com.codeit.donggrina.domain.member.dto.response.MyProfileGetResponse;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
@@ -56,11 +57,12 @@ public class CustomGroupRepositoryImpl implements CustomGroupRepository {
     }
 
     @Override
-    public Group findWithPets(Long groupId) {
-        return queryFactory
+    public Optional<Group> findWithPets(Long groupId) {
+        Group group = queryFactory
             .selectFrom(QGroup.group)
             .leftJoin(QGroup.group.pets).fetchJoin()
             .where(QGroup.group.id.eq(groupId))
             .fetchOne();
+        return Optional.ofNullable(group);
     }
 }

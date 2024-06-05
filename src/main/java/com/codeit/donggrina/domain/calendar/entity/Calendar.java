@@ -1,6 +1,7 @@
 package com.codeit.donggrina.domain.calendar.entity;
 
 import com.codeit.donggrina.common.Timestamp;
+import com.codeit.donggrina.domain.calendar.dto.request.CalendarUpdateRequest;
 import com.codeit.donggrina.domain.calendar.util.CalendarCategoryEnumConverter;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.pet.entity.Pet;
@@ -49,5 +50,13 @@ public class Calendar extends Timestamp {
         this.dateTime = dateTime;
         this.pet = pet;
         this.member = member;
+    }
+
+    public void update(CalendarUpdateRequest request, Pet pet) {
+        this.title = request.title();
+        this.memo = request.memo();
+        this.category = request.category();
+        this.dateTime = LocalDateTime.parse(request.dateTime());
+        this.pet = pet;
     }
 }

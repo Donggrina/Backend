@@ -47,10 +47,8 @@ public class GrowthHistoryService {
             throw new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다.");
         }
         Long groupId = member.getGroup().getId();
-        Group group = groupRepository.findWithPets(groupId);
-        if (group == null) {
-            throw new IllegalArgumentException("존재하지 않는 그룹입니다."); // fidnWithPets 결과가 Group 엔티티이므로 null 체크가 필요합니다.
-        }
+        Group group = groupRepository.findWithPets(groupId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
 
         // 그룹에 속한 반려동물들 중에서 사용자가 선택한 반려동물을 조회합니다.
         Pet pet = group.getPets().stream()
