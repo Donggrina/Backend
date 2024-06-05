@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.growth_history.controller;
 import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryAppendRequest;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryUpdateRequest;
+import com.codeit.donggrina.domain.growth_history.dto.request.SearchFilter;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryDetailResponse;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryListResponse;
 import com.codeit.donggrina.domain.growth_history.service.GrowthHistoryService;
@@ -47,6 +48,17 @@ public class GrowthHistoryController {
             .code(HttpStatus.OK.value())
             .message("성장기록 상세 조회 성공")
             .data(growthHistoryService.getDetail(growthId))
+            .build();
+    }
+
+    @GetMapping("/growth/search")
+    public ApiResponse<List<GrowthHistoryListResponse>> search(
+        SearchFilter searchFilter
+    ) {
+        return ApiResponse.<List<GrowthHistoryListResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .message("성장기록 검색 성공")
+            .data(growthHistoryService.search(searchFilter))
             .build();
     }
 
