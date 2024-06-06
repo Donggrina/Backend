@@ -82,4 +82,15 @@ public class CalendarService {
         }
         calendar.update(request, pet);
     }
+
+    @Transactional
+    public void delete(Long memberId, Long calendarId) {
+        // 일정을 조회하고 삭제합니다. 본인이 작성한 일정이 아니면 예외를 발생시킵니다.
+        Calendar calendar = calendarRepository.findById(calendarId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 일정입니다."));
+        if (!calendar.getMember().getId().equals(memberId)) {
+            throw new IllegalArgumentException("본인이 작성한 일정만 삭제할 수 있습니다.");
+        }
+        calendarRepository.delete(calendar);
+    }
 }
