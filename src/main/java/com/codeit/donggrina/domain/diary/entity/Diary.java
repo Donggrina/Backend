@@ -13,7 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -25,10 +27,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Diary {
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<DiaryPet> diaryPets = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", orphanRemoval = true)
-    List<DiaryImage> diaryImages = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,6 +37,10 @@ public class Diary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<DiaryPet> diaryPets = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", orphanRemoval = true)
+    List<DiaryImage> diaryImages = new ArrayList<>();
 
     @Builder
     private Diary(Long id, String content, String weather, boolean isShared, LocalDate date,
@@ -49,21 +51,51 @@ public class Diary {
         this.isShared = isShared;
         this.date = date;
         this.member = member;
-        this.diaryPets = convertToDiaryPets(pets);
-        setDiary(diaryImages);
+        addDiaryPets(pets);
+        linkDiaryImageToDiary(diaryImages);
     }
 
-    private List<DiaryPet> convertToDiaryPets(List<Pet> pets) {
-        return pets.stream()
-            .map((p) -> DiaryPet.builder()
-                .pet(p)
+    private void addDiaryPets(List<Pet> pets) {
+        List<DiaryPet> diaryPets = pets.stream()
+            .map((pet) -> DiaryPet.builder()
+                .pet(pet)
                 .diary(this)
                 .build()
             )
-            .collect(Collectors.toList());
+            .toList();
+
+        this.diaryPets.addAll(diaryPets);
     }
 
-    private void setDiary(List<DiaryImage> diaryImages) {
-        diaryImages.forEach(diaryImage -> diaryImage.setDiary(this));
+    private void linkDiaryImageToDiary(List<DiaryImage> diaryImages) {
+        diaryImages.forEach(diaryImage -> diaryImage.linkDiary(this));
     }
+
+    private void unLinkDiaryImageToDiary(List<DiaryImage> diaryImages) {
+        for(DiaryImage diaryImage : this.diaryImages) {
+            if(!diaryImages.contains(diaryImage)) {
+                diaryImage.unLinkDiary();
+            }
+        }
+    }
+
+    public void update(String content, String weather, boolean isShared, LocalDate date,
+        List<Pet> pets, List<DiaryImage> images) {
+        this.content = content;
+        this.weather = weather;
+        this.isShared = isShared;
+        this.date = date;
+        updatePets(pets);
+        updateImages(images);
+    }
+
+    private void updatePets(List<Pet> pets) {
+        diaryPets.clear();
+        addDiaryPets(pets);
+    }
+    private void updateImages(List<DiaryImage> images){
+        linkDiaryImageToDiary(images);
+        unLinkDiaryImageToDiary(images);
+    }
+
 }

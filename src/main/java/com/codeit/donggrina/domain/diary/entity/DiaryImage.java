@@ -32,7 +32,11 @@ public class DiaryImage {
         this.url = url;
     }
 
-    public void setDiary(Diary diary) {
+    public void linkDiary(Diary diary) {
         this.diary = diary;
+    }
+
+    public void unLinkDiary() {
+        this.diary = null;
     }
 }
