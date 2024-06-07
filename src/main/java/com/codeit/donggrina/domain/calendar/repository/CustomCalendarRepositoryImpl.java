@@ -5,12 +5,15 @@ import static com.codeit.donggrina.domain.calendar.entity.QCalendar.calendar;
 import static com.codeit.donggrina.domain.member.entity.QMember.member;
 import static com.codeit.donggrina.domain.pet.entity.QPet.pet;
 
+import com.codeit.donggrina.domain.calendar.dto.response.CalendarDailyCountResponse;
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarListResponse;
 import com.codeit.donggrina.domain.calendar.entity.Calendar;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +21,34 @@ import lombok.RequiredArgsConstructor;
 public class CustomCalendarRepositoryImpl implements CustomCalendarRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public List<CalendarDailyCountResponse> getDailyCountByMonth(Long groupId,
+        YearMonth yearMonth) {
+
+        LocalDate startOfMonth = yearMonth.atDay(1);
+        LocalDate endOfMonth = yearMonth.atEndOfMonth();
+        LocalDateTime startOfDay = startOfMonth.atStartOfDay();
+        LocalDateTime endOfDay = endOfMonth.atTime(23, 59, 59);
+
+        return queryFactory
+            .select(Projections.constructor(CalendarDailyCountResponse.class,
+                calendar.dateTime.year(),
+                calendar.dateTime.month(),
+                calendar.dateTime.dayOfMonth(),
+                calendar.id.count()
+            ))
+            .from(calendar)
+            .where(calendar.member.group.id.eq(groupId)
+                .and(calendar.dateTime.between(startOfDay, endOfDay))
+            )
+            .groupBy(
+                calendar.dateTime.year(),
+                calendar.dateTime.month(),
+                calendar.dateTime.dayOfMonth()
+            )
+            .fetch();
+    }
 
     @Override
     public List<CalendarListResponse> getDayListByDate(Long groupId, LocalDate date) {

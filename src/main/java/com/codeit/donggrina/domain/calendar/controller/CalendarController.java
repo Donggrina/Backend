@@ -3,11 +3,13 @@ package com.codeit.donggrina.domain.calendar.controller;
 import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarAppendRequest;
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarUpdateRequest;
+import com.codeit.donggrina.domain.calendar.dto.response.CalendarDailyCountResponse;
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarListResponse;
 import com.codeit.donggrina.domain.calendar.service.CalendarService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class CalendarController {
 
     private final CalendarService calendarService;
+
+    @GetMapping("/calendar/month")
+    public ApiResponse<List<CalendarDailyCountResponse>> getDailyCountByMonth(
+        @RequestParam YearMonth yearMonth,
+        @AuthenticationPrincipal CustomOAuth2User member
+    ) {
+        Long memberId = member.getMemberId();
+        return ApiResponse.<List<CalendarDailyCountResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .message("일정 목록 월별 조회 성공")
+            .data(calendarService.getDailyCountByMonth(memberId, yearMonth))
+            .build();
+    }
 
     @GetMapping("/calendar/day")
     public ApiResponse<List<CalendarListResponse>> getDayListByDate(
