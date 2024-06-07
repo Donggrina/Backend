@@ -40,6 +40,18 @@ public class GroupController {
             .build();
     }
 
+    @GetMapping("/my/groups/id")
+    public ApiResponse<Long> getGroupId(
+        @AuthenticationPrincipal CustomOAuth2User member
+    ) {
+        Long memberId = member.getMemberId();
+        return ApiResponse.<Long>builder()
+            .code(HttpStatus.OK.value())
+            .message("가족(그룹) ID 조회 성공")
+            .data(groupService.getGroupId(memberId))
+            .build();
+    }
+
     @PostMapping("/my/groups")
     public ApiResponse<Long> append(@RequestBody @Validated GroupAppendRequest request,
         @AuthenticationPrincipal CustomOAuth2User user) {

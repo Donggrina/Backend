@@ -39,6 +39,15 @@ public class GroupService {
         return groupRepository.findGroupDetail(groupId);
     }
 
+    public Long getGroupId(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        if (member.getGroup() == null) {
+            throw new IllegalArgumentException("그룹에 소속되어 있지 않습니다.");
+        }
+        return member.getGroup().getId();
+    }
+
     @Transactional
     public Long append(GroupAppendRequest request, Long userId) {
         // 그룹 이름으로 조회를 하고 중복된 그룹이 있다면 예외를 발생시킵니다.
