@@ -2,6 +2,7 @@ package com.codeit.donggrina.domain.calendar.service;
 
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarAppendRequest;
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarUpdateRequest;
+import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
 import com.codeit.donggrina.domain.calendar.entity.Calendar;
 import com.codeit.donggrina.domain.calendar.repository.CalendarRepository;
 import com.codeit.donggrina.domain.group.entity.Group;
@@ -21,6 +22,10 @@ public class CalendarService {
     private final CalendarRepository calendarRepository;
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
+
+    public CalendarDetailResponse getDetail(Long calendarId) {
+        return calendarRepository.getDetail(calendarId);
+    }
 
     @Transactional
     public Long append(Long memberId, CalendarAppendRequest request) {

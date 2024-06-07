@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.calendar.controller;
 import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarAppendRequest;
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarUpdateRequest;
+import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
 import com.codeit.donggrina.domain.calendar.service.CalendarService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class CalendarController {
 
     private final CalendarService calendarService;
+
+    @GetMapping("/calendar/{calendarId}")
+    public ApiResponse<CalendarDetailResponse> getDetail(
+        @PathVariable Long calendarId
+    ) {
+        return ApiResponse.<CalendarDetailResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("일정 상세 조회 성공")
+            .data(calendarService.getDetail(calendarId))
+            .build();
+    }
 
     @PostMapping("/calendar")
     public ApiResponse<Long> append(
