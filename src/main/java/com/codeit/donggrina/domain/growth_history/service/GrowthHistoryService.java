@@ -26,8 +26,11 @@ public class GrowthHistoryService {
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
 
-    public List<GrowthHistoryListResponse> getByDate(LocalDate date) {
-        return growthHistoryRepository.findGrowthHistoryDetailByDate(date);
+    public List<GrowthHistoryListResponse> getByDate(Long memberId, LocalDate date) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Long groupId = member.getGroup().getId();
+        return growthHistoryRepository.findGrowthHistoryDetailByDate(groupId, date);
     }
 
     public GrowthHistoryDetailResponse getDetail(Long growthId) {
