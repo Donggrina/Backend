@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,6 +47,18 @@ public class DiaryController {
         return ApiResponse.<Void>builder()
             .code(HttpStatus.NO_CONTENT.value())
             .message("다이어리 수정 성공")
+            .build();
+    }
+
+    @DeleteMapping("/{diaryId}")
+    public ApiResponse<Void> deleteDiary(@PathVariable Long diaryId,
+        @AuthenticationPrincipal CustomOAuth2User user) {
+
+        diaryService.deleteDiary(diaryId, user.getMemberId());
+
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.NO_CONTENT.value())
+            .message("다이어리 삭제 성공")
             .build();
     }
 

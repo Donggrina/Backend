@@ -80,4 +80,14 @@ public class DiaryService {
         targetDiary.update(diaryUpdateRequest.content(), diaryUpdateRequest.weather(),
             diaryUpdateRequest.isShare(), diaryUpdateRequest.date(), pets, images);
     }
+
+    @Transactional
+    public void deleteDiary(Long diaryId, Long memberId) {
+        Diary targetDiary = diaryRepository.findById(diaryId).orElseThrow(RuntimeException::new);
+        if(targetDiary.getMember().getId() == memberId) {
+            diaryRepository.delete(targetDiary);
+            return;
+        }
+        throw new RuntimeException("본인만 삭제 가능");
+    }
 }
