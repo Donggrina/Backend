@@ -2,6 +2,7 @@ package com.codeit.donggrina.domain.member.service;
 
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import com.codeit.donggrina.domain.member.jwt.JwtUtil;
+import com.codeit.donggrina.domain.member.repository.RefreshTokenRedisRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +21,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
+//    private final long ACCESS_EXPIRED_MS = 1000 * 60 * 60 * 3;
+    private final long ACCESS_EXPIRED_MS = 3;
+    private final long REFRESH_EXPIRED_MS = 1000 * 60 * 60 * 24 * 7;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -35,10 +40,16 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         String role = iterator.next().getAuthority();
 
-        String token = jwtUtil.createJwt(id, username, role);
-        response.setHeader(HttpHeaders.SET_COOKIE, createCookie("Authorization", token).toString());
-//        response.sendRedirect("https://www.donggrina.click/start-family"); todo 최종 배포 시에 이걸로 변경
-        response.sendRedirect("http://localhost:3000/start-family?token=" + token);
+        String accessToken = jwtUtil.createJwt(id, username, role, ACCESS_EXPIRED_MS);
+        String refreshToken = jwtUtil.createJwt(id, username, role, REFRESH_EXPIRED_MS);
+        refreshTokenRedisRepository.save(refreshToken);
+
+        response.setHeader(HttpHeaders.SET_COOKIE, createCookie("AccessToken", accessToken).toString());
+        response.setHeader(HttpHeaders.SET_COOKIE, createCookie("RefreshToken", refreshToken).toString());
+//        response.sendRedirect("https://www.donggrina.click/start-family");
+        response.sendRedirect(
+            "http://localhost:3000/start-family?accessToken=" + accessToken + "&refreshToken="
+                + refreshToken);
     }
 
     private ResponseCookie createCookie(String key, String value) {
