@@ -9,6 +9,7 @@ import com.codeit.donggrina.domain.calendar.entity.Calendar;
 import com.codeit.donggrina.domain.calendar.repository.CalendarRepository;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
+import com.codeit.donggrina.common.api.SearchFilter;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.entity.Pet;
@@ -51,6 +52,10 @@ public class CalendarService {
 
     public CalendarDetailResponse getDetail(Long calendarId) {
         return calendarRepository.getDetail(calendarId);
+    }
+
+    public List<CalendarListResponse> search(SearchFilter searchFilter) {
+        return calendarRepository.findBySearchFilter(searchFilter);
     }
 
     @Transactional

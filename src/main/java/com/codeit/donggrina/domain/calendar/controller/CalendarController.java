@@ -7,6 +7,7 @@ import com.codeit.donggrina.domain.calendar.dto.response.CalendarDailyCountRespo
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarListResponse;
 import com.codeit.donggrina.domain.calendar.service.CalendarService;
+import com.codeit.donggrina.common.api.SearchFilter;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import jakarta.annotation.Nullable;
 import java.time.LocalDate;
@@ -65,6 +66,15 @@ public class CalendarController {
             .code(HttpStatus.OK.value())
             .message("일정 상세 조회 성공")
             .data(calendarService.getDetail(calendarId))
+            .build();
+    }
+
+    @GetMapping("/calendar/search")
+    public ApiResponse<List<CalendarListResponse>> search(SearchFilter searchFilter) {
+        return ApiResponse.<List<CalendarListResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .message("일정 검색 성공")
+            .data(calendarService.search(searchFilter))
             .build();
     }
 
