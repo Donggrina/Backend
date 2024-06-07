@@ -40,6 +40,7 @@ public class Calendar extends Timestamp {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+    private boolean isFinished;
 
     @Builder
     private Calendar(String title, String memo, CalendarCategory category, LocalDateTime dateTime,
