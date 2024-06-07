@@ -32,6 +32,10 @@ public class CalendarService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         Long groupId = member.getGroup().getId();
+
+        if (yearMonth == null) {
+            yearMonth = YearMonth.now();
+        }
         return calendarRepository.getDailyCountByMonth(groupId, yearMonth);
     }
 
@@ -39,6 +43,9 @@ public class CalendarService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         Long groupId = member.getGroup().getId();
+        if (date == null) {
+            date = LocalDate.now();
+        }
         return calendarRepository.getDayListByDate(groupId, date);
     }
 

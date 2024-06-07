@@ -8,6 +8,7 @@ import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarListResponse;
 import com.codeit.donggrina.domain.calendar.service.CalendarService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
+import jakarta.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -32,7 +33,7 @@ public class CalendarController {
 
     @GetMapping("/calendar/month")
     public ApiResponse<List<CalendarDailyCountResponse>> getDailyCountByMonth(
-        @RequestParam YearMonth yearMonth,
+        @RequestParam @Nullable YearMonth yearMonth,
         @AuthenticationPrincipal CustomOAuth2User member
     ) {
         Long memberId = member.getMemberId();
@@ -45,7 +46,7 @@ public class CalendarController {
 
     @GetMapping("/calendar/day")
     public ApiResponse<List<CalendarListResponse>> getDayListByDate(
-        @RequestParam LocalDate date,
+        @RequestParam @Nullable LocalDate date,
         @AuthenticationPrincipal CustomOAuth2User member
     ) {
         Long memberId = member.getMemberId();
