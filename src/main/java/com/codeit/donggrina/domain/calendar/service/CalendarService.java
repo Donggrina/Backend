@@ -2,7 +2,9 @@ package com.codeit.donggrina.domain.calendar.service;
 
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarAppendRequest;
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarUpdateRequest;
+import com.codeit.donggrina.domain.calendar.dto.response.CalendarDailyCountResponse;
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
+import com.codeit.donggrina.domain.calendar.dto.response.CalendarListResponse;
 import com.codeit.donggrina.domain.calendar.entity.Calendar;
 import com.codeit.donggrina.domain.calendar.repository.CalendarRepository;
 import com.codeit.donggrina.domain.group.entity.Group;
@@ -10,7 +12,10 @@ import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.entity.Pet;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +27,27 @@ public class CalendarService {
     private final CalendarRepository calendarRepository;
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
+
+    public List<CalendarDailyCountResponse> getDailyCountByMonth(Long memberId, YearMonth yearMonth) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Long groupId = member.getGroup().getId();
+
+        if (yearMonth == null) {
+            yearMonth = YearMonth.now();
+        }
+        return calendarRepository.getDailyCountByMonth(groupId, yearMonth);
+    }
+
+    public List<CalendarListResponse> getDayListByDate(Long memberId, LocalDate date) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Long groupId = member.getGroup().getId();
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        return calendarRepository.getDayListByDate(groupId, date);
+    }
 
     public CalendarDetailResponse getDetail(Long calendarId) {
         return calendarRepository.getDetail(calendarId);
