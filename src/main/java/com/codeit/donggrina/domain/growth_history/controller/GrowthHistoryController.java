@@ -32,12 +32,14 @@ public class GrowthHistoryController {
 
     @GetMapping("/growth")
     public ApiResponse<List<GrowthHistoryListResponse>> getByDate(
-        @RequestParam @Nullable LocalDate date
+        @RequestParam @Nullable LocalDate date,
+        @AuthenticationPrincipal CustomOAuth2User member
     ) {
+        Long memberId = member.getMemberId();
         return ApiResponse.<List<GrowthHistoryListResponse>>builder()
             .code(HttpStatus.OK.value())
             .message("성장기록 날짜별 조회 성공")
-            .data(growthHistoryService.getByDate(date))
+            .data(growthHistoryService.getByDate(memberId, date))
             .build();
     }
 

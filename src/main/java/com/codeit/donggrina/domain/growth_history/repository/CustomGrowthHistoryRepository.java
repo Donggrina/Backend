@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CustomGrowthHistoryRepository {
 
-    List<GrowthHistoryListResponse> findGrowthHistoryDetailByDate(LocalDate date);
+    List<GrowthHistoryListResponse> findGrowthHistoryDetailByDate(Long groupId, LocalDate date);
 
     GrowthHistoryDetailResponse findGrowthHistoryDetail(Long growthId);
 

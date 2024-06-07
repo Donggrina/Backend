@@ -20,7 +20,7 @@ public class CustomGrowthHistoryRepositoryImpl implements CustomGrowthHistoryRep
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<GrowthHistoryListResponse> findGrowthHistoryDetailByDate(LocalDate date) {
+    public List<GrowthHistoryListResponse> findGrowthHistoryDetailByDate(Long groupId, LocalDate date) {
         if (date == null) {
             date = LocalDate.now();
         }
@@ -30,7 +30,10 @@ public class CustomGrowthHistoryRepositoryImpl implements CustomGrowthHistoryRep
             .leftJoin(member.profileImage).fetchJoin()
             .leftJoin(growthHistory.pet, pet).fetchJoin()
             .leftJoin(pet.profileImage).fetchJoin()
-            .where(growthHistory.date.eq(date))
+            .where(
+                growthHistory.date.eq(date)
+                    .and(member.group.id.eq(groupId))
+            )
             .orderBy(growthHistory.id.desc())
             .fetch()
             .stream()
