@@ -62,6 +62,19 @@ public class CalendarController {
             .build();
     }
 
+    @PutMapping("/calendar/completion/{calendarId}")
+    public ApiResponse<Void> updateCompletionState(
+        @PathVariable Long calendarId,
+        @AuthenticationPrincipal CustomOAuth2User member
+    ) {
+        Long memberId = member.getMemberId();
+        calendarService.updateCompletionState(memberId, calendarId);
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.OK.value())
+            .message("일정 완료 여부 변경 성공")
+            .build();
+    }
+
     @DeleteMapping("/calendar/{calendarId}")
     public ApiResponse<Void> delete(
         @PathVariable Long calendarId,

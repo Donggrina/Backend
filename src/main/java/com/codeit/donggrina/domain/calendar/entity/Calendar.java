@@ -60,4 +60,8 @@ public class Calendar extends Timestamp {
         this.dateTime = LocalDateTime.parse(request.dateTime());
         this.pet = pet;
     }
+
+    public void updateCompletion() {
+        this.isFinished = !this.isFinished;
+    }
 }
