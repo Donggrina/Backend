@@ -9,7 +9,9 @@ import com.codeit.donggrina.domain.calendar.dto.response.CalendarDailyCountRespo
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarListResponse;
 import com.codeit.donggrina.domain.calendar.entity.Calendar;
+import com.codeit.donggrina.common.api.SearchFilter;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -86,5 +88,40 @@ public class CustomCalendarRepositoryImpl implements CustomCalendarRepository {
             throw new IllegalArgumentException("존재하지 않는 일정입니다.");
         }
         return CalendarDetailResponse.from(findCalendar);
+    }
+
+    @Override
+    public List<CalendarListResponse> findBySearchFilter(SearchFilter searchFilter) {
+        return queryFactory
+            .selectFrom(calendar)
+            .leftJoin(calendar.member, member).fetchJoin()
+            .leftJoin(member.profileImage).fetchJoin()
+            .leftJoin(calendar.pet, pet).fetchJoin()
+            .leftJoin(pet.profileImage).fetchJoin()
+            .where(
+                containsKeyword(searchFilter.keyword()),
+                inPetNames(searchFilter.petNames()),
+                inWriterNames(searchFilter.writerNames())
+            )
+            .fetch()
+            .stream()
+            .map(CalendarListResponse::from)
+            .toList();
+    }
+
+    private BooleanExpression containsKeyword(String keyword) {
+        if (keyword == null) {
+            return null;
+        }
+        return calendar.title.contains(keyword)
+            .or(calendar.memo.contains(keyword));
+    }
+
+    private BooleanExpression inPetNames(List<String> petNames) {
+        return petNames.isEmpty() ? null : pet.name.in(petNames);
+    }
+
+    private BooleanExpression inWriterNames(List<String> writerNames) {
+        return writerNames.isEmpty() ? null : member.nickname.in(writerNames);
     }
 }
