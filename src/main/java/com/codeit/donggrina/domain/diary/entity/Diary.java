@@ -1,5 +1,7 @@
 package com.codeit.donggrina.domain.diary.entity;
 
+import com.codeit.donggrina.common.Timestamp;
+import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.pet.entity.Pet;
 import jakarta.persistence.CascadeType;
@@ -25,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Diary {
+public class Diary extends Timestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +39,9 @@ public class Diary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clusters_id")
+    private Group group;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<DiaryPet> diaryPets = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", orphanRemoval = true)
