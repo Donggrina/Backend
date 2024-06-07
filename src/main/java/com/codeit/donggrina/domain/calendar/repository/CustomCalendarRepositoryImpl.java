@@ -103,6 +103,7 @@ public class CustomCalendarRepositoryImpl implements CustomCalendarRepository {
                 inPetNames(searchFilter.petNames()),
                 inWriterNames(searchFilter.writerNames())
             )
+            .orderBy(calendar.id.desc())
             .fetch()
             .stream()
             .map(CalendarListResponse::from)
