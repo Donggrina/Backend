@@ -4,7 +4,7 @@ import static com.codeit.donggrina.domain.growth_history.entity.QGrowthHistory.g
 import static com.codeit.donggrina.domain.member.entity.QMember.member;
 import static com.codeit.donggrina.domain.pet.entity.QPet.pet;
 
-import com.codeit.donggrina.domain.growth_history.dto.request.SearchFilter;
+import com.codeit.donggrina.common.api.SearchFilter;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryDetailResponse;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryListResponse;
 import com.codeit.donggrina.domain.growth_history.entity.GrowthHistory;

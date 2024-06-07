@@ -1,4 +1,4 @@
-package com.codeit.donggrina.domain.growth_history.dto.request;
+package com.codeit.donggrina.common.api;
 
 import java.util.List;
 
