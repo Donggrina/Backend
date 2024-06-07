@@ -4,8 +4,11 @@ import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarAppendRequest;
 import com.codeit.donggrina.domain.calendar.dto.request.CalendarUpdateRequest;
 import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
+import com.codeit.donggrina.domain.calendar.dto.response.CalendarListResponse;
 import com.codeit.donggrina.domain.calendar.service.CalendarService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,6 +27,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class CalendarController {
 
     private final CalendarService calendarService;
+
+    @GetMapping("/calendar/day")
+    public ApiResponse<List<CalendarListResponse>> getDayListByDate(
+        @RequestParam LocalDate date,
+        @AuthenticationPrincipal CustomOAuth2User member
+    ) {
+        Long memberId = member.getMemberId();
+        return ApiResponse.<List<CalendarListResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .message("일정 목록 일별 조회 성공")
+            .data(calendarService.getDayListByDate(memberId, date))
+            .build();
+    }
 
     @GetMapping("/calendar/{calendarId}")
     public ApiResponse<CalendarDetailResponse> getDetail(
