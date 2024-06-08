@@ -4,12 +4,10 @@ import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.group.dto.request.GroupAppendRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupMemberAddRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupUpdateRequest;
+import com.codeit.donggrina.domain.group.dto.response.GroupCodeResponse;
 import com.codeit.donggrina.domain.group.dto.response.GroupDetailResponse;
 import com.codeit.donggrina.domain.group.service.GroupService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
-import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
-import com.codeit.donggrina.domain.pet.dto.response.PetFindListResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,15 +38,15 @@ public class GroupController {
             .build();
     }
 
-    @GetMapping("/my/groups/id")
-    public ApiResponse<Long> getGroupId(
+    @GetMapping("/my/groups/code")
+    public ApiResponse<GroupCodeResponse> getGroupCode(
         @AuthenticationPrincipal CustomOAuth2User member
     ) {
         Long memberId = member.getMemberId();
-        return ApiResponse.<Long>builder()
+        return ApiResponse.<GroupCodeResponse>builder()
             .code(HttpStatus.OK.value())
-            .message("가족(그룹) ID 조회 성공")
-            .data(groupService.getGroupId(memberId))
+            .message("가족(그룹) 초대코드 조회 성공")
+            .data(groupService.getGroupCode(memberId))
             .build();
     }
 
