@@ -50,7 +50,7 @@ public class HeartService {
 
         // 멤버가 해당 다이어리에 좋아요를 눌렀는지 조회하고 없다면 예외를 발생시킵니다.
         Heart heart = heartRepository.findByMemberAndDiary(member, diary)
-            .orElseThrow(() -> new IllegalArgumentException("멤버가 좋아요를 누른 이력이 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("좋아요를 누른 이력이 없습니다."));
 
         // 좋아요를 삭제하고 다이어리의 좋아요 수를 -1 합니다.
         heartRepository.delete(heart);
