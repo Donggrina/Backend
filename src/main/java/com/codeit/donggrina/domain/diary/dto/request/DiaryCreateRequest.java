@@ -7,6 +7,7 @@ import java.util.List;
 public record DiaryCreateRequest(
     @NotNull(message = "반려동물을 선택해주세요.")
     List<Long> pets,
+    @NotNull(message = "이미지를 null로 보내면 안됩니다.")
     List<Long> images,
     @NotNull(message = "내용을 입력해주세요")
     String content,
