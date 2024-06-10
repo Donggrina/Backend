@@ -4,8 +4,8 @@ import com.codeit.donggrina.domain.diary.entity.Diary;
 
 public interface CustomDiaryRepository {
 
-    void addLikeCount(Diary diary);
+    void addHeartCount(Diary diary);
 
-    void subLikeCount(Diary diary);
+    void subHeartCount(Diary diary);
 
 }

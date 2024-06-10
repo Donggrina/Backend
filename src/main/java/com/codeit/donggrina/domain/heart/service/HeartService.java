@@ -37,7 +37,7 @@ public class HeartService {
             .diary(diary)
             .build();
         heartRepository.save(heart);
-        diaryRepository.addLikeCount(diary);
+        diaryRepository.addHeartCount(diary);
     }
 
     @Transactional
@@ -54,6 +54,6 @@ public class HeartService {
 
         // 좋아요를 삭제하고 다이어리의 좋아요 수를 -1 합니다.
         heartRepository.delete(heart);
-        diaryRepository.subLikeCount(diary);
+        diaryRepository.subHeartCount(diary);
     }
 }

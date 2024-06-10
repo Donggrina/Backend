@@ -12,7 +12,7 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public void addLikeCount(Diary selectedDiary) {
+    public void addHeartCount(Diary selectedDiary) {
         queryFactory.update(diary)
             .set(diary.heartCount, diary.heartCount.add(1))
             .where(diary.eq(selectedDiary))
@@ -20,7 +20,7 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
     }
 
     @Override
-    public void subLikeCount(Diary selectedDiary) {
+    public void subHeartCount(Diary selectedDiary) {
         queryFactory.update(diary)
             .set(diary.heartCount, diary.heartCount.subtract(1))
             .where(diary.eq(selectedDiary))
