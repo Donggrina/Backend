@@ -46,6 +46,7 @@ public class Diary extends Timestamp {
     Set<DiaryPet> diaryPets = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", orphanRemoval = true)
     List<DiaryImage> diaryImages = new ArrayList<>();
+    private int heartCount;
 
     @Builder
     private Diary(Long id, String content, String weather, boolean isShared, LocalDate date,
