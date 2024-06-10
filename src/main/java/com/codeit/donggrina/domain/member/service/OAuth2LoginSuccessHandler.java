@@ -21,8 +21,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-//    private final long ACCESS_EXPIRED_MS = 1000 * 60 * 60 * 3;
-    private final long ACCESS_EXPIRED_MS = 3;
+    private final long ACCESS_EXPIRED_MS = 1000 * 60 * 60 * 3;
     private final long REFRESH_EXPIRED_MS = 1000 * 60 * 60 * 24 * 7;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;

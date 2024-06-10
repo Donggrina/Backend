@@ -26,11 +26,4 @@ public class TokenController {
             .build();
     }
 
-    @GetMapping("/test")
-    public ApiResponse<String> test() {
-        return ApiResponse.<String>builder()
-            .code(HttpStatus.CREATED.value())
-            .message("토큰 재발급 성공")
-            .data("tester")
-            .build();    }
 }
