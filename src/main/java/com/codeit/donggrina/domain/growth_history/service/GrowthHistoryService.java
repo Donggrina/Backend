@@ -4,6 +4,7 @@ import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryAppendRequest;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryUpdateRequest;
+import com.codeit.donggrina.common.api.SearchFilter;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryDetailResponse;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryListResponse;
 import com.codeit.donggrina.domain.growth_history.entity.GrowthHistory;
@@ -25,12 +26,19 @@ public class GrowthHistoryService {
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
 
-    public List<GrowthHistoryListResponse> getByDate(LocalDate date) {
-        return growthHistoryRepository.findGrowthHistoryDetailByDate(date);
+    public List<GrowthHistoryListResponse> getByDate(Long memberId, LocalDate date) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Long groupId = member.getGroup().getId();
+        return growthHistoryRepository.findGrowthHistoryDetailByDate(groupId, date);
     }
 
     public GrowthHistoryDetailResponse getDetail(Long growthId) {
         return growthHistoryRepository.findGrowthHistoryDetail(growthId);
+    }
+
+    public List<GrowthHistoryListResponse> search(SearchFilter searchFilter) {
+        return growthHistoryRepository.findGrowthHistoryBySearchFilter(searchFilter);
     }
 
     @Transactional
@@ -42,10 +50,8 @@ public class GrowthHistoryService {
             throw new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다.");
         }
         Long groupId = member.getGroup().getId();
-        Group group = groupRepository.findWithPets(groupId);
-        if (group == null) {
-            throw new IllegalArgumentException("존재하지 않는 그룹입니다."); // fidnWithPets 결과가 Group 엔티티이므로 null 체크가 필요합니다.
-        }
+        Group group = groupRepository.findWithPets(groupId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
 
         // 그룹에 속한 반려동물들 중에서 사용자가 선택한 반려동물을 조회합니다.
         Pet pet = group.getPets().stream()

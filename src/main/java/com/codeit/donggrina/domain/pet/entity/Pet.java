@@ -35,7 +35,7 @@ public class Pet {
     private boolean isNeutered;
     private String registrationNumber;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "clusters_id")
     private Group group;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id")

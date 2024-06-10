@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.group.service;
 import com.codeit.donggrina.domain.group.dto.request.GroupAppendRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupMemberAddRequest;
 import com.codeit.donggrina.domain.group.dto.request.GroupUpdateRequest;
+import com.codeit.donggrina.domain.group.dto.response.GroupCodeResponse;
 import com.codeit.donggrina.domain.group.dto.response.GroupDetailResponse;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
@@ -37,6 +38,20 @@ public class GroupService {
         }
         Long groupId = member.getGroup().getId();
         return groupRepository.findGroupDetail(groupId);
+    }
+
+    public GroupCodeResponse getGroupCode(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        if (member.getGroup() == null) {
+            throw new IllegalArgumentException("그룹에 소속되어 있지 않습니다.");
+        }
+        Long groupId = member.getGroup().getId();
+        String invitationCode = member.getGroup().getCode();
+        return GroupCodeResponse.builder()
+            .id(groupId)
+            .code(invitationCode)
+            .build();
     }
 
     @Transactional

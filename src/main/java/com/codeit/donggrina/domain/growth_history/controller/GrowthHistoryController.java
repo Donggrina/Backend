@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.growth_history.controller;
 import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryAppendRequest;
 import com.codeit.donggrina.domain.growth_history.dto.request.GrowthHistoryUpdateRequest;
+import com.codeit.donggrina.common.api.SearchFilter;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryDetailResponse;
 import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryListResponse;
 import com.codeit.donggrina.domain.growth_history.service.GrowthHistoryService;
@@ -13,6 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,12 +32,14 @@ public class GrowthHistoryController {
 
     @GetMapping("/growth")
     public ApiResponse<List<GrowthHistoryListResponse>> getByDate(
-        @RequestParam @Nullable LocalDate date
+        @RequestParam @Nullable LocalDate date,
+        @AuthenticationPrincipal CustomOAuth2User member
     ) {
+        Long memberId = member.getMemberId();
         return ApiResponse.<List<GrowthHistoryListResponse>>builder()
             .code(HttpStatus.OK.value())
             .message("성장기록 날짜별 조회 성공")
-            .data(growthHistoryService.getByDate(date))
+            .data(growthHistoryService.getByDate(memberId, date))
             .build();
     }
 
@@ -50,9 +54,20 @@ public class GrowthHistoryController {
             .build();
     }
 
+    @GetMapping("/growth/search")
+    public ApiResponse<List<GrowthHistoryListResponse>> search(
+        SearchFilter searchFilter
+    ) {
+        return ApiResponse.<List<GrowthHistoryListResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .message("성장기록 검색 성공")
+            .data(growthHistoryService.search(searchFilter))
+            .build();
+    }
+
     @PostMapping("/growth")
     public ApiResponse<Long> append(
-        @RequestBody GrowthHistoryAppendRequest request,
+        @RequestBody @Validated GrowthHistoryAppendRequest request,
         @AuthenticationPrincipal CustomOAuth2User member
     ) {
         Long memberId = member.getMemberId();
@@ -67,7 +82,7 @@ public class GrowthHistoryController {
     @PutMapping("/growth/{growthId}")
     public ApiResponse<Void> update(
         @PathVariable Long growthId,
-        @RequestBody GrowthHistoryUpdateRequest request,
+        @RequestBody @Validated GrowthHistoryUpdateRequest request,
         @AuthenticationPrincipal CustomOAuth2User member
     ) {
         Long memberId = member.getMemberId();

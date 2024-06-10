@@ -36,7 +36,7 @@ public class SecurityConfig {
             .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
                 CorsConfiguration configuration = new CorsConfiguration();
                 configuration.setAllowedOrigins(
-                    Collections.singletonList("https://www.donggrina.click"));
+                    Arrays.asList("https://www.donggrina.click", "http://localhost:3000"));
                 configuration.setAllowedMethods(
                     Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
