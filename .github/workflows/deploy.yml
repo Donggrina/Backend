@@ -53,7 +53,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
-            docker stop donggrina || true 
             docker rm donggrina || true
             docker pull ${{ steps.login-ecr.outputs.registry }}/donggrina:latest
-            docker run -d --name donggrina -p 8080:8080 ${{ steps.login-ecr.outputs.registry }}/donggrina:latest
+            docker-compose up -d
+            LATEST_IMAGE_ID=$(docker images -q ${{ steps.login-ecr.outputs.registry }}/donggrina:latest)
+            docker rmi $(docker images -q | grep -v $LATEST_IMAGE_ID) || true
