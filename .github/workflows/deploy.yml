@@ -56,6 +56,8 @@ jobs:
             docker compose stop
             docker rm -f $(docker ps -qa)
             docker pull ${{ steps.login-ecr.outputs.registry }}/donggrina:latest
+            docker tag ${{ steps.login-ecr.outputs.registry }}/donggrina:latest donggrina
             docker-compose up -d
-            LATEST_IMAGE_ID=$(docker images -q ${{ steps.login-ecr.outputs.registry }}/donggrina:latest)
+            echo 123
+            LATEST_IMAGE_ID=$(docker images -q donggrina)
             docker rmi $(docker images -q | grep -v $LATEST_IMAGE_ID) || true
