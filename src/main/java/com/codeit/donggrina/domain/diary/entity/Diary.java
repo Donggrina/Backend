@@ -50,13 +50,14 @@ public class Diary extends Timestamp {
 
     @Builder
     private Diary(Long id, String content, String weather, boolean isShared, LocalDate date,
-        Member member, List<Pet> pets, List<DiaryImage> diaryImages) {
+        Member member, Group group, List<Pet> pets, List<DiaryImage> diaryImages) {
         this.id = id;
         this.content = content;
         this.weather = weather;
         this.isShared = isShared;
         this.date = date;
         this.member = member;
+        this.group = group;
         addDiaryPets(pets);
         linkDiaryImageToDiary(diaryImages);
     }

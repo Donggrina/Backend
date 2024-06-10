@@ -48,6 +48,7 @@ public class DiaryService {
             .isShared(diaryCreateRequest.isShare())
             .diaryImages(images)
             .member(currentMember)
+            .group(currentMember.getGroup())
             .pets(pets)
             .date(diaryCreateRequest.date())
             .build();
