@@ -15,5 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         + " from Member m join ProfileImage pi on m.profileImage.id = pi.id where m.id=:memberId")
     Optional<MyProfileGetResponse> findMyProfileById(Long memberId);
 
+    @Query("select m from Member m join fetch m.group join fetch m.profileImage where m.id = :memberId")
+    Optional<Member> findByIdWithGroupAndProfileImage(Long memberId);
 
 }

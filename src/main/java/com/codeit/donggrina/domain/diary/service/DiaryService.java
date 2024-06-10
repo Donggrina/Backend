@@ -2,6 +2,7 @@ package com.codeit.donggrina.domain.diary.service;
 
 import com.codeit.donggrina.domain.diary.dto.request.DiaryCreateRequest;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryUpdateRequest;
+import com.codeit.donggrina.domain.diary.dto.response.DiaryFindListResponse;
 import com.codeit.donggrina.domain.diary.entity.Diary;
 import com.codeit.donggrina.domain.diary.entity.DiaryImage;
 import com.codeit.donggrina.domain.diary.repository.DiaryImageRepository;
@@ -10,7 +11,7 @@ import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.entity.Pet;
 import com.codeit.donggrina.domain.pet.repository.PetRepository;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -89,5 +90,30 @@ public class DiaryService {
             return;
         }
         throw new RuntimeException("본인만 삭제 가능");
+    }
+
+    public List<DiaryFindListResponse> findDiaries(Long memberId, LocalDate date) {
+        Member currentMember = memberRepository.findByIdWithGroupAndProfileImage(memberId)
+            .orElseThrow(RuntimeException::new);
+        List<Diary> foundDiaries = diaryRepository.findAllByDate(date, currentMember.getGroup());
+
+        return foundDiaries.stream()
+            .map(diary -> {
+
+                List<String> petImages = diary.getDiaryPets().stream()
+                    .map(diaryPet -> diaryPet.getPet().getProfileImage().getUrl())
+                    .toList();
+
+                return DiaryFindListResponse.builder()
+                    .diaryId(diary.getId())
+                    .authorImage(currentMember.getProfileImage().getUrl())
+                    .author(currentMember.getNickname())
+                    .petImages(petImages)
+                    .content(diary.getContent())
+                    .contentImage(diary.getDiaryImages().get(0).getUrl())
+                    .isMyDiary(currentMember.getId() == diary.getMember().getId())
+                    .build();
+            })
+            .toList();
     }
 }

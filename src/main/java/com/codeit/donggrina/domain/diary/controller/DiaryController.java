@@ -3,18 +3,25 @@ package com.codeit.donggrina.domain.diary.controller;
 import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryCreateRequest;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryUpdateRequest;
+import com.codeit.donggrina.domain.diary.dto.response.DiaryFindListResponse;
 import com.codeit.donggrina.domain.diary.service.DiaryService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -59,6 +66,21 @@ public class DiaryController {
         return ApiResponse.<Void>builder()
             .code(HttpStatus.NO_CONTENT.value())
             .message("다이어리 삭제 성공")
+            .build();
+    }
+
+    @GetMapping
+    public ApiResponse<List<DiaryFindListResponse>> findDiaries(
+        @AuthenticationPrincipal CustomOAuth2User user, @RequestParam(required = false) LocalDate date) {
+
+        if(date == null) {
+            date = LocalDate.now();
+        }
+
+        return ApiResponse.<List<DiaryFindListResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .message("다이어리 전체 조회 성공")
+            .data(diaryService.findDiaries(user.getMemberId(), date))
             .build();
     }
 
