@@ -1,5 +1,6 @@
 package com.codeit.donggrina.domain.member.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
-    private final long expiredMs = 60 * 60 * 60 * 60L;
     private final SecretKey secretKey;
 
     public JwtUtil(@Value("${spring.jwt.secret}") String secret) {
@@ -35,11 +35,15 @@ public class JwtUtil {
     }
 
     public Boolean isExpired(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-            .getExpiration().before(new Date());
+        try {
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+        }catch (ExpiredJwtException e) {
+            return true;
+        }
+        return false;
     }
 
-    public String createJwt(Long id, String username, String role) {
+    public String createJwt(Long id, String username, String role, long expiredMs) {
         return Jwts.builder()
             .claim("id", id)
             .claim("username", username)

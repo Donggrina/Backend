@@ -1,9 +1,11 @@
 package com.codeit.donggrina.common.config;
 
+import com.codeit.donggrina.domain.member.jwt.JwtAuthenticationEntryPoint;
 import com.codeit.donggrina.domain.member.jwt.JwtFilter;
 import com.codeit.donggrina.domain.member.jwt.JwtUtil;
 import com.codeit.donggrina.domain.member.service.CustomOAuth2UserService;
 import com.codeit.donggrina.domain.member.service.OAuth2LoginSuccessHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +27,7 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
 
     @Bean
@@ -46,17 +49,19 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((request) -> request
-                .requestMatchers("/members/**", "/", "/health").permitAll()
+                .requestMatchers("/members/**", "/", "/health", "/refresh").permitAll()
                 .anyRequest().authenticated()
             )
+            .formLogin(AbstractHttpConfigurer::disable)
             .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+            .exceptionHandling(e -> e
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
+            )
             .oauth2Login((oauth2) -> oauth2
                 .redirectionEndpoint(endpoint -> endpoint.baseUri("/members/login/kakao"))
-                .userInfoEndpoint((userInfoEndpointConfig) ->
-                    userInfoEndpointConfig.userService(customOAuth2UserService))
+                .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+                    .userService(customOAuth2UserService))
                 .successHandler(oAuth2LoginSuccessHandler)
             );
 
