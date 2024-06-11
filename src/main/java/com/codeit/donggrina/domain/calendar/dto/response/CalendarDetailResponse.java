@@ -15,10 +15,11 @@ public record CalendarDetailResponse(
     String writerProfileImageUrl,
     String writerNickName,
     String petProfileImageUrl,
-    boolean isFinished
+    boolean isFinished,
+    boolean isMine
 ) {
 
-    public static CalendarDetailResponse from(Calendar calendar) {
+    public static CalendarDetailResponse from(Calendar calendar, boolean isMine) {
         return CalendarDetailResponse.builder()
             .id(calendar.getId())
             .title(calendar.getTitle())
@@ -29,6 +30,7 @@ public record CalendarDetailResponse(
             .writerNickName(calendar.getMember().getNickname())
             .petProfileImageUrl(calendar.getPet().getProfileImage().getUrl())
             .isFinished(calendar.isFinished())
+            .isMine(isMine)
             .build();
     }
 }
