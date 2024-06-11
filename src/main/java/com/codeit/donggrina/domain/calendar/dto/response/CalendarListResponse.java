@@ -13,7 +13,8 @@ public record CalendarListResponse(
     LocalDateTime dateTime,
     String memberProfileImageUrl,
     String nickname,
-    String petProfileImageUrl
+    String petProfileImageUrl,
+    boolean isFinished
 ) {
 
     public static CalendarListResponse from(Calendar calendar) {
@@ -25,6 +26,7 @@ public record CalendarListResponse(
             .memberProfileImageUrl(calendar.getMember().getProfileImage().getUrl())
             .nickname(calendar.getMember().getNickname())
             .petProfileImageUrl(calendar.getPet().getProfileImage().getUrl())
+            .isFinished(calendar.isFinished())
             .build();
     }
 
