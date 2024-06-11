@@ -43,8 +43,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtUtil.createJwt(id, username, role, REFRESH_EXPIRED_MS);
         refreshTokenRedisRepository.save(refreshToken);
 
-        response.setHeader(HttpHeaders.SET_COOKIE, createCookie("AccessToken", accessToken).toString());
-        response.setHeader(HttpHeaders.SET_COOKIE, createCookie("RefreshToken", refreshToken).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, createCookie("AccessToken", accessToken).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, createCookie("RefreshToken", refreshToken).toString());
 //        response.sendRedirect("https://www.donggrina.click/start-family");
         response.sendRedirect(
             "http://localhost:3000/start-family?accessToken=" + accessToken + "&refreshToken="
