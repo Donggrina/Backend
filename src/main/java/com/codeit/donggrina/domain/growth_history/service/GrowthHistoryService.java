@@ -67,9 +67,7 @@ public class GrowthHistoryService {
         if (member.getGroup() == null) {
             throw new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다.");
         }
-        Long groupId = member.getGroup().getId();
-        Group group = groupRepository.findWithPets(groupId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
+        Group group= member.getGroup();
 
         // 그룹에 속한 반려동물들 중에서 사용자가 선택한 반려동물을 조회합니다.
         Pet pet = group.getPets().stream()
@@ -99,13 +97,18 @@ public class GrowthHistoryService {
     @Transactional
     public void update(Long memberId, Long growthId, GrowthHistoryUpdateRequest request) {
         // 로그인 한 사용자를 조회합니다.
-        memberRepository.findById(memberId)
+        Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        if (member.getGroup() == null) {
+            throw new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다.");
+        }
+        Group group= member.getGroup();
+        String groupCreator = group.getCreator();
 
-        // GrowthHistory를 조회하고 수정합니다.
+        // GrowthHistory를 조회하고 수정합니다. 본인이 작성한 성장기록이 아니고 방장도 아니라면 예외가 발생합니다.
         GrowthHistory growthHistory = growthHistoryRepository.findById(growthId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장기록입니다."));
-        if (!growthHistory.getMember().getId().equals(memberId)) {
+        if (!growthHistory.getMember().getId().equals(memberId) && !member.getUsername().equals(groupCreator)) {
             throw new IllegalArgumentException("본인의 성장기록만 수정할 수 있습니다.");
         }
         growthHistory.update(request);
@@ -114,13 +117,18 @@ public class GrowthHistoryService {
     @Transactional
     public void delete(Long memberId, Long growthId) {
         // 로그인 한 사용자를 조회합니다.
-        memberRepository.findById(memberId)
+        Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        if (member.getGroup() == null) {
+            throw new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다.");
+        }
+        Group group= member.getGroup();
+        String groupCreator = group.getCreator();
 
-        // GrowthHistory를 조회하고 삭제합니다.
+        // GrowthHistory를 조회하고 삭제합니다. 본인이 작성한 성장기록이 아니고 방장도 아니라면 예외가 발생합니다.
         GrowthHistory growthHistory = growthHistoryRepository.findById(growthId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장기록입니다."));
-        if (!growthHistory.getMember().getId().equals(memberId)) {
+        if (!growthHistory.getMember().getId().equals(memberId) && !member.getUsername().equals(groupCreator)) {
             throw new IllegalArgumentException("본인의 성장기록만 삭제할 수 있습니다.");
         }
         growthHistoryRepository.delete(growthHistory);
