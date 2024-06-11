@@ -3,8 +3,10 @@ package com.codeit.donggrina.domain.diary.service;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryCreateRequest;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryUpdateRequest;
 import com.codeit.donggrina.domain.diary.dto.response.DiaryFindListResponse;
+import com.codeit.donggrina.domain.diary.dto.response.DiaryFindResponse;
 import com.codeit.donggrina.domain.diary.entity.Diary;
 import com.codeit.donggrina.domain.diary.entity.DiaryImage;
+import com.codeit.donggrina.domain.diary.entity.DiaryPet;
 import com.codeit.donggrina.domain.diary.repository.DiaryImageRepository;
 import com.codeit.donggrina.domain.diary.repository.DiaryRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
@@ -115,5 +117,32 @@ public class DiaryService {
                     .build();
             })
             .toList();
+    }
+
+    public DiaryFindResponse findDiary(Long diaryId, Long memberId) {
+        Diary foundDiary = diaryRepository.findByIdWithDetails(diaryId)
+            .orElseThrow(RuntimeException::new);
+
+        List<Pet> pets = foundDiary.getDiaryPets().stream()
+            .map(DiaryPet::getPet)
+            .toList();
+        List<String> petImageUrls = pets.stream()
+            .map(pet -> pet.getProfileImage().getUrl())
+            .toList();
+        List<String> contentImages = foundDiary.getDiaryImages().stream()
+            .map(DiaryImage::getUrl)
+            .toList();
+
+        Member author = foundDiary.getMember();
+
+        return DiaryFindResponse.builder()
+            .authorImage(author.getProfileImage().getUrl())
+            .author(author.getNickname())
+            .petImages(petImageUrls)
+            .contentImages(contentImages)
+            .content(foundDiary.getContent())
+            .weather(foundDiary.getWeather())
+            .isMyDiary(author.getId() == memberId)
+            .build();
     }
 }
