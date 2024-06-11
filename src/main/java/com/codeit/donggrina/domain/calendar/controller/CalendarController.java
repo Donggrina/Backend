@@ -60,21 +60,26 @@ public class CalendarController {
 
     @GetMapping("/calendar/{calendarId}")
     public ApiResponse<CalendarDetailResponse> getDetail(
-        @PathVariable Long calendarId
+        @PathVariable Long calendarId,
+        @AuthenticationPrincipal CustomOAuth2User member
     ) {
+        Long memberId = member.getMemberId();
         return ApiResponse.<CalendarDetailResponse>builder()
             .code(HttpStatus.OK.value())
             .message("일정 상세 조회 성공")
-            .data(calendarService.getDetail(calendarId))
+            .data(calendarService.getDetail(calendarId, memberId))
             .build();
     }
 
     @GetMapping("/calendar/search")
-    public ApiResponse<List<CalendarListResponse>> search(SearchFilter searchFilter) {
+    public ApiResponse<List<CalendarListResponse>> search(
+        SearchFilter searchFilter,
+        @AuthenticationPrincipal CustomOAuth2User member) {
+        Long memberId = member.getMemberId();
         return ApiResponse.<List<CalendarListResponse>>builder()
             .code(HttpStatus.OK.value())
             .message("일정 검색 성공")
-            .data(calendarService.search(searchFilter))
+            .data(calendarService.search(searchFilter, memberId))
             .build();
     }
 

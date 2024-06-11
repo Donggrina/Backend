@@ -1,9 +1,8 @@
 package com.codeit.donggrina.domain.calendar.repository;
 
-import com.codeit.donggrina.domain.calendar.dto.response.CalendarDailyCountResponse;
-import com.codeit.donggrina.domain.calendar.dto.response.CalendarDetailResponse;
-import com.codeit.donggrina.domain.calendar.dto.response.CalendarListResponse;
 import com.codeit.donggrina.common.api.SearchFilter;
+import com.codeit.donggrina.domain.calendar.dto.response.CalendarDailyCountResponse;
+import com.codeit.donggrina.domain.calendar.entity.Calendar;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -12,9 +11,9 @@ public interface CustomCalendarRepository {
 
     List<CalendarDailyCountResponse> getDailyCountByMonth(Long groupId, YearMonth yearMonth);
 
-    List<CalendarListResponse> getDayListByDate(Long groupId, LocalDate date);
+    List<Calendar> getDayListByDate(Long groupId, LocalDate date);
 
-    CalendarDetailResponse getDetail(Long calendarId);
+    Calendar getDetail(Long calendarId);
 
-    List<CalendarListResponse> findBySearchFilter(SearchFilter searchFilter);
+    List<Calendar> findBySearchFilter(SearchFilter searchFilter);
 }
