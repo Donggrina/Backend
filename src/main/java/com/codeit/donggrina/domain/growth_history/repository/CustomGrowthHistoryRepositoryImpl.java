@@ -5,8 +5,6 @@ import static com.codeit.donggrina.domain.member.entity.QMember.member;
 import static com.codeit.donggrina.domain.pet.entity.QPet.pet;
 
 import com.codeit.donggrina.common.api.SearchFilter;
-import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryDetailResponse;
-import com.codeit.donggrina.domain.growth_history.dto.response.GrowthHistoryListResponse;
 import com.codeit.donggrina.domain.growth_history.entity.GrowthHistory;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -20,7 +18,7 @@ public class CustomGrowthHistoryRepositoryImpl implements CustomGrowthHistoryRep
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<GrowthHistoryListResponse> findGrowthHistoryDetailByDate(Long groupId, LocalDate date) {
+    public List<GrowthHistory> findGrowthHistoryDetailByDate(Long groupId, LocalDate date) {
         if (date == null) {
             date = LocalDate.now();
         }
@@ -35,14 +33,11 @@ public class CustomGrowthHistoryRepositoryImpl implements CustomGrowthHistoryRep
                     .and(member.group.id.eq(groupId))
             )
             .orderBy(growthHistory.id.desc())
-            .fetch()
-            .stream()
-            .map(GrowthHistoryListResponse::from)
-            .toList();
+            .fetch();
     }
 
     @Override
-    public GrowthHistoryDetailResponse findGrowthHistoryDetail(Long growthId) {
+    public GrowthHistory findGrowthHistoryDetail(Long growthId) {
         GrowthHistory findGrowthHistory = queryFactory
             .selectFrom(growthHistory)
             .leftJoin(growthHistory.member, member).fetchJoin()
@@ -54,11 +49,11 @@ public class CustomGrowthHistoryRepositoryImpl implements CustomGrowthHistoryRep
         if (findGrowthHistory == null) {
             throw new IllegalArgumentException("존재하지 않는 성장기록입니다.");
         }
-        return GrowthHistoryDetailResponse.from(findGrowthHistory);
+        return findGrowthHistory;
     }
 
     @Override
-    public List<GrowthHistoryListResponse> findGrowthHistoryBySearchFilter(
+    public List<GrowthHistory> findGrowthHistoryBySearchFilter(
         SearchFilter searchFilter) {
         return queryFactory
             .selectFrom(growthHistory)
@@ -72,10 +67,7 @@ public class CustomGrowthHistoryRepositoryImpl implements CustomGrowthHistoryRep
                 inWriterNames(searchFilter.writerNames())
             )
             .orderBy(growthHistory.id.desc())
-            .fetch()
-            .stream()
-            .map(GrowthHistoryListResponse::from)
-            .toList();
+            .fetch();
     }
 
     private BooleanExpression containsKeyword(String keyword) {

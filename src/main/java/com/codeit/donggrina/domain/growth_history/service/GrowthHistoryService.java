@@ -30,15 +30,33 @@ public class GrowthHistoryService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         Long groupId = member.getGroup().getId();
-        return growthHistoryRepository.findGrowthHistoryDetailByDate(groupId, date);
+        return growthHistoryRepository.findGrowthHistoryDetailByDate(groupId, date)
+            .stream()
+            .map(growthHistory -> {
+                boolean isMine = growthHistory.getMember().equals(member);
+                return GrowthHistoryListResponse.from(growthHistory, isMine);
+                })
+            .toList();
     }
 
-    public GrowthHistoryDetailResponse getDetail(Long growthId) {
-        return growthHistoryRepository.findGrowthHistoryDetail(growthId);
+    public GrowthHistoryDetailResponse getDetail(Long growthId, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        GrowthHistory growthHistory = growthHistoryRepository.findGrowthHistoryDetail(growthId);
+        boolean isMine = growthHistory.getMember().equals(member);
+        return GrowthHistoryDetailResponse.from(growthHistory, isMine);
     }
 
-    public List<GrowthHistoryListResponse> search(SearchFilter searchFilter) {
-        return growthHistoryRepository.findGrowthHistoryBySearchFilter(searchFilter);
+    public List<GrowthHistoryListResponse> search(SearchFilter searchFilter, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        return growthHistoryRepository.findGrowthHistoryBySearchFilter(searchFilter)
+            .stream()
+            .map(growthHistory -> {
+                boolean isMine = growthHistory.getMember().equals(member);
+                return GrowthHistoryListResponse.from(growthHistory, isMine);
+            })
+            .toList();
     }
 
     @Transactional
