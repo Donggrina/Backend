@@ -90,9 +90,7 @@ public class CalendarService {
         if (member.getGroup() == null) {
             throw new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다.");
         }
-        Long groupId = member.getGroup().getId();
-        Group group = groupRepository.findWithPets(groupId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
+        Group group = member.getGroup();
 
         // 그룹에 속한 반려동물들 중에서 사용자가 선택한 반려동물을 조회합니다.
         Pet pet = group.getPets().stream()
@@ -122,9 +120,8 @@ public class CalendarService {
         if (member.getGroup() == null) {
             throw new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다.");
         }
-        Long groupId = member.getGroup().getId();
-        Group group = groupRepository.findWithPets(groupId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
+        Group group = member.getGroup();
+        String groupCreator = group.getCreator();
 
         // 그룹에 속한 반려동물들 중에서 사용자가 선택한 반려동물을 조회합니다.
         Pet pet = group.getPets().stream()
@@ -132,10 +129,10 @@ public class CalendarService {
             .findAny()
             .orElseThrow(() -> new IllegalArgumentException("그룹에 추가되지 않은 반려동물입니다."));
 
-        // 일정을 조회하고 수정합니다. 본인이 작성한 일정이 아니면 예외를 발생시킵니다.
+        // 일정을 조회하고 수정합니다. 본인이 작성한 일정이 아니거나 그룹 방장이 아니라면 예외를 발생시킵니다.
         Calendar calendar = calendarRepository.findById(calendarId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 일정입니다."));
-        if (!calendar.getMember().getId().equals(memberId)) {
+        if (!calendar.getMember().getId().equals(memberId) && !member.getUsername().equals(groupCreator)) {
             throw new IllegalArgumentException("본인이 작성한 일정만 수정할 수 있습니다.");
         }
         calendar.update(request, pet);
@@ -143,10 +140,19 @@ public class CalendarService {
 
     @Transactional
     public void updateCompletionState(Long memberId, Long calendarId) {
-        // 일정을 조회하고 완료 여부를 수정합니다. 본인이 작성한 일정이 아니면 예외를 발생시킵니다.
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        // 사용자가 속한 그룹을 조회하고, 그룹의 방장의 이름을 조회합니다.
+        if (member.getGroup() == null) {
+            throw new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다.");
+        }
+        Group group = member.getGroup();
+        String groupCreator = group.getCreator();
+
+        // 일정을 조회하고 완료 여부를 수정합니다. 본인이 작성한 일정이 아니거나 방장이 아니라면 예외를 발생시킵니다.
         Calendar calendar = calendarRepository.findById(calendarId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 일정입니다."));
-        if (!calendar.getMember().getId().equals(memberId)) {
+        if (!calendar.getMember().getId().equals(memberId) && !member.getUsername().equals(groupCreator)) {
             throw new IllegalArgumentException("본인이 작성한 일정만 완료 처리 할 수 있습니다.");
         }
         calendar.updateCompletion();
@@ -154,10 +160,19 @@ public class CalendarService {
 
     @Transactional
     public void delete(Long memberId, Long calendarId) {
-        // 일정을 조회하고 삭제합니다. 본인이 작성한 일정이 아니면 예외를 발생시킵니다.
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        // 사용자가 속한 그룹을 조회하고, 그룹의 방장의 이름을 조회합니다.
+        if (member.getGroup() == null) {
+            throw new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다.");
+        }
+        Group group = member.getGroup();
+        String groupCreator = group.getCreator();
+
+        // 일정을 조회하고 삭제합니다. 본인이 작성한 일정이 아니거나 방장이 아니라면 예외를 발생시킵니다.
         Calendar calendar = calendarRepository.findById(calendarId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 일정입니다."));
-        if (!calendar.getMember().getId().equals(memberId)) {
+        if (!calendar.getMember().getId().equals(memberId) && !member.getUsername().equals(groupCreator)) {
             throw new IllegalArgumentException("본인이 작성한 일정만 삭제할 수 있습니다.");
         }
         calendarRepository.delete(calendar);
