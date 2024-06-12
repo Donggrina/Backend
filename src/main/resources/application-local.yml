@@ -61,3 +61,8 @@ cloud:
     stack:
       auto: false
 
+image:
+  url:
+    default:
+      member: ${MEMBER_DEFAULT_IMAGE_URL}
+      dog: ${DOG_DEFAULT_IMAGE_URL}
