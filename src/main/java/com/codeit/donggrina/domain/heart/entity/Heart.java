@@ -4,6 +4,7 @@ import com.codeit.donggrina.domain.diary.entity.Diary;
 import com.codeit.donggrina.domain.member.entity.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,11 +25,11 @@ public class Heart {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(name = "fk_member_heart"))
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_id")
+    @JoinColumn(name = "diary_id", nullable = false, foreignKey = @ForeignKey(name ="fk_diary_heart"))
     private Diary diary;
 
     @Builder

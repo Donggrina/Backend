@@ -12,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,27 +33,40 @@ public class GrowthHistory extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(name = "fk_member_growth_history" ))
     private Member member;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_id")
+    @JoinColumn(name = "pet_id", nullable = false, foreignKey = @ForeignKey(name = "fk_pet_growth_history"))
     private Pet pet;
+
     @Column(nullable = false)
     private LocalDate date;
+
     @Column(nullable = false)
     @Convert(converter = CategoryEnumConverter.class)
     private GrowthHistoryCategory category;
+
     private String food;
+
     private String snack;
+
     private String abnormalSymptom;
+
     private String hospitalName;
+
     private String symptom;
+
     @Column(columnDefinition = "TEXT")
     private String diagnosis;
+
     @Column(columnDefinition = "TEXT")
     private String medicationMethod;
+
     private Integer price;
+
     @Column(columnDefinition = "TEXT")
     private String memo;
 

@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,18 +29,29 @@ public class Calendar extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String title;
-    @Column(columnDefinition = "TEXT")
+
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String memo;
+
+    @Column(nullable = false)
     @Convert(converter = CalendarCategoryEnumConverter.class)
     private CalendarCategory category;
+
+    @Column(nullable = false)
     private LocalDateTime dateTime;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_id")
+    @JoinColumn(name = "pet_id", nullable = false, foreignKey = @ForeignKey(name = "fk_pet_calendar"))
     private Pet pet;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(name = "fk_member_calendar"))
     private Member member;
+
+    @Column(nullable = false)
     private boolean isFinished;
 
     @Builder

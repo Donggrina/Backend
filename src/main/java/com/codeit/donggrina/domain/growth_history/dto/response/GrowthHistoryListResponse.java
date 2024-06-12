@@ -12,9 +12,10 @@ public record GrowthHistoryListResponse(
     String petProfileImageUrl,
     GrowthHistoryCategory category,
     LocalDateTime dateTime,
-    String nickname
+    String nickname,
+    boolean isMine
 ) {
-    public static GrowthHistoryListResponse from(GrowthHistory growthHistory) {
+    public static GrowthHistoryListResponse from(GrowthHistory growthHistory, boolean isMine) {
         return GrowthHistoryListResponse.builder()
             .id(growthHistory.getId())
             .writerProfileImageUrl(growthHistory.getMember().getProfileImage().getUrl())
@@ -22,6 +23,7 @@ public record GrowthHistoryListResponse(
             .category(growthHistory.getCategory())
             .dateTime(growthHistory.getCreatedAt())
             .nickname(growthHistory.getMember().getNickname())
+            .isMine(isMine)
             .build();
     }
 }

@@ -5,8 +5,10 @@ import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.pet.entity.Pet;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,20 +34,35 @@ public class Diary extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
     private String weather;
+
+    @Column(nullable = false)
     private boolean isShared;
+
+    @Column(nullable = false)
     private LocalDate date;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(name = "fk_member_diary"))
     private Member member;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clusters_id")
+    @JoinColumn(name = "clusters_id", nullable = false, foreignKey = @ForeignKey(name = "fk_group_diary"))
     private Group group;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(nullable = false)
     Set<DiaryPet> diaryPets = new HashSet<>();
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", orphanRemoval = true)
     List<DiaryImage> diaryImages = new ArrayList<>();
+
+    @Column(nullable = false)
     private int heartCount;
 
     @Builder
@@ -58,6 +75,7 @@ public class Diary extends Timestamp {
         this.date = date;
         this.member = member;
         this.group = group;
+        this.heartCount = 0;
         addDiaryPets(pets);
         linkDiaryImageToDiary(diaryImages);
     }

@@ -26,12 +26,15 @@ public class JwtFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws ServletException, IOException, RuntimeException, IllegalArgumentException {
 
         String token = null;
-        if(request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals("Authorization")) {
-                    token = cookie.getValue();
-                }
-            }
+//        if(request.getCookies() != null) {
+//            for (Cookie cookie : request.getCookies()) {
+//                if (cookie.getName().equals("Authorization")) {
+//                    token = cookie.getValue();
+//                }
+//            }
+//        }
+        if (request.getHeader("Authorization") != null) {
+            token = request.getHeader("Authorization").substring(7);
         }
         if (token == null) {
             request.setAttribute("exceptionCode", HttpStatus.BAD_REQUEST.value());

@@ -4,8 +4,10 @@ import com.codeit.donggrina.domain.pet.entity.Sex;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 public record PetAddRequest(
+    Long imageId,
     @NotBlank(message = "이름을 입력해주세요.")
     String name,
     Sex sex,
@@ -20,8 +22,7 @@ public record PetAddRequest(
     @NotNull(message = "몸무게를 입력해주세요.")
     Double weight,
     @NotNull(message = "중성화 여부를 입력해주세요.")
-    Boolean isNeutered,
-    String registrationNumber
+    Boolean isNeutered
 ) {
 
 }

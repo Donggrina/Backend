@@ -45,23 +45,27 @@ public class GrowthHistoryController {
 
     @GetMapping("/growth/{growthId}")
     public ApiResponse<GrowthHistoryDetailResponse> getDetail(
-        @PathVariable Long growthId
+        @PathVariable Long growthId,
+        @AuthenticationPrincipal CustomOAuth2User member
     ) {
+        Long memberId = member.getMemberId();
         return ApiResponse.<GrowthHistoryDetailResponse>builder()
             .code(HttpStatus.OK.value())
             .message("성장기록 상세 조회 성공")
-            .data(growthHistoryService.getDetail(growthId))
+            .data(growthHistoryService.getDetail(growthId, memberId))
             .build();
     }
 
     @GetMapping("/growth/search")
     public ApiResponse<List<GrowthHistoryListResponse>> search(
-        SearchFilter searchFilter
+        SearchFilter searchFilter,
+        @AuthenticationPrincipal CustomOAuth2User member
     ) {
+        Long memberId = member.getMemberId();
         return ApiResponse.<List<GrowthHistoryListResponse>>builder()
             .code(HttpStatus.OK.value())
             .message("성장기록 검색 성공")
-            .data(growthHistoryService.search(searchFilter))
+            .data(growthHistoryService.search(searchFilter, memberId))
             .build();
     }
 

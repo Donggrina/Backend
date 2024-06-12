@@ -1,16 +1,21 @@
 package com.codeit.donggrina.domain.member.entity;
 
+import com.codeit.donggrina.common.Timestamp;
 import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
 import com.codeit.donggrina.domain.group.entity.Group;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,19 +24,33 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_profile_image_member", columnNames = "profile_image_id")
+    }
+)
+public class Member extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String role;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_image_id")
+    @JoinColumn(name = "profile_image_id", nullable = false, foreignKey = @ForeignKey(name = "fk_profile_image_member"))
     private ProfileImage profileImage;
+
     private String nickname; // 그룹 내에서 사용할 닉네임
+    
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clusters_id")
+    @JoinColumn(name = "clusters_id", foreignKey = @ForeignKey(name = "fk_clusters_member"))
     private Group group;
 
     @Builder

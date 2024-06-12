@@ -4,11 +4,10 @@ import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryCreateRequest;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryUpdateRequest;
 import com.codeit.donggrina.domain.diary.dto.response.DiaryFindListResponse;
+import com.codeit.donggrina.domain.diary.dto.response.DiaryFindResponse;
 import com.codeit.donggrina.domain.diary.service.DiaryService;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -81,6 +80,17 @@ public class DiaryController {
             .code(HttpStatus.OK.value())
             .message("다이어리 전체 조회 성공")
             .data(diaryService.findDiaries(user.getMemberId(), date))
+            .build();
+    }
+
+    @GetMapping("/{diaryId}")
+    public ApiResponse<DiaryFindResponse> findDiary(@PathVariable Long diaryId,
+        @AuthenticationPrincipal CustomOAuth2User user) {
+
+        return ApiResponse.<DiaryFindResponse>builder()
+            .code(HttpStatus.CREATED.value())
+            .message("다이어리 상세 조회 성공")
+            .data(diaryService.findDiary(diaryId, user.getMemberId()))
             .build();
     }
 

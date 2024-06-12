@@ -14,9 +14,10 @@ public record GrowthHistoryDetailResponse(
     GrowthHistoryCategory category,
     GrowthHistoryContentDto content,
     LocalDateTime dateTime,
-    String nickname
+    String nickname,
+    boolean isMine
 ) {
-    public static GrowthHistoryDetailResponse from(GrowthHistory growthHistory) {
+    public static GrowthHistoryDetailResponse from(GrowthHistory growthHistory, boolean isMine) {
         GrowthHistoryContentDto content = GrowthHistoryContentDto.builder()
             .food(growthHistory.getFood())
             .snack(growthHistory.getSnack())
@@ -36,6 +37,7 @@ public record GrowthHistoryDetailResponse(
             .content(content)
             .dateTime(growthHistory.getCreatedAt())
             .nickname(growthHistory.getMember().getNickname())
+            .isMine(isMine)
             .build();
     }
 }

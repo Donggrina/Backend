@@ -1,6 +1,9 @@
 package com.codeit.donggrina.domain.diary.entity;
 
+import com.codeit.donggrina.common.Timestamp;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,15 +17,20 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DiaryImage {
+public class DiaryImage extends Timestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String url;
+
     @ManyToOne
-    @JoinColumn(name = "diary_id")
+    @JoinColumn(name = "diary_id", nullable = false, foreignKey = @ForeignKey(name = "fk_diary_diary_image"))
     private Diary diary;
 
     @Builder
