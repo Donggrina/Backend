@@ -66,7 +66,7 @@ public class Pet extends Timestamp {
     private Group group;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_image_id", foreignKey = @ForeignKey(name = "fk_profile_image_pet"))
+    @JoinColumn(name = "profile_image_id", nullable = false, foreignKey = @ForeignKey(name = "fk_profile_image_pet"))
     private ProfileImage profileImage;
 
     @Builder

@@ -17,6 +17,10 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    redis:
+      host: localhost
+      port: 6379
   jwt:
     secret: anmslkfnagkljasnkdkmaslmglnmalsmdlkmaskngnasnmd123125tklnmekldgf
   servlet:
@@ -57,7 +61,8 @@ cloud:
     stack:
       auto: false
 
-  data:
-    redis:
-      host: localhost
-      port: 6379
+image:
+  url:
+    default:
+      member: ${MEMBER_DEFAULT_IMAGE_URL}
+      dog: ${DOG_DEFAULT_IMAGE_URL}
