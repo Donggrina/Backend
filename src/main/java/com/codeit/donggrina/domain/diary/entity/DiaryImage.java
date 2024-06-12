@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.diary.entity;
 import com.codeit.donggrina.common.Timestamp;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +30,7 @@ public class DiaryImage extends Timestamp {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "diary_id", nullable = false)
+    @JoinColumn(name = "diary_id", nullable = false, foreignKey = @ForeignKey(name = "fk_diary_diary_image"))
     private Diary diary;
 
     @Builder

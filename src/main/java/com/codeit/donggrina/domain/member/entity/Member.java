@@ -7,12 +7,15 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +24,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_profile_image_member", columnNames = "profile_image_id")
+    }
+)
 public class Member extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +50,7 @@ public class Member extends Timestamp {
     private String nickname; // 그룹 내에서 사용할 닉네임
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clusters_id")
+    @JoinColumn(name = "clusters_id", foreignKey = @ForeignKey(name = "fk_clusters_member"))
     private Group group;
 
     @Builder

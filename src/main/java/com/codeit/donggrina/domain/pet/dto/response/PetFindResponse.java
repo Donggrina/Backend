@@ -15,8 +15,7 @@ public record PetFindResponse(
     String type,
     String species,
     double weight,
-    boolean isNeutered,
-    String registrationNumber
+    boolean isNeutered
 ) {
     public static PetFindResponse from(Pet pet) {
         return PetFindResponse.builder()
@@ -29,7 +28,6 @@ public record PetFindResponse(
             .species(pet.getSpecies())
             .weight(pet.getWeight())
             .isNeutered(pet.isNeutered())
-            .registrationNumber(pet.getRegistrationNumber())
             .build();
     }
 }
