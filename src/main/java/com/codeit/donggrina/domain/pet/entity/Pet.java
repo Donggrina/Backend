@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.pet.entity;
 import com.codeit.donggrina.common.Timestamp;
 import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
 import com.codeit.donggrina.domain.group.entity.Group;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -65,7 +66,7 @@ public class Pet extends Timestamp {
     @JoinColumn(name = "clusters_id", nullable = false, foreignKey = @ForeignKey(name = "fk_clusters_pet"))
     private Group group;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_image_id", nullable = false, foreignKey = @ForeignKey(name = "fk_profile_image_pet"))
     private ProfileImage profileImage;
 

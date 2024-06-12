@@ -14,6 +14,7 @@ import com.codeit.donggrina.domain.pet.repository.PetRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PetService {
 
+    @Value("${image.url.default.dog}")
+    private String DEFAULT_IMAGE_URL;
     private final MemberRepository memberRepository;
     private final PetRepository petRepository;
     private final ProfileImageRepository profileImageRepository;
@@ -29,6 +32,17 @@ public class PetService {
     public void addPet(Long memberId, PetAddRequest petAddRequest) {
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(RuntimeException::new);
+
+        ProfileImage image = null;
+        if(petAddRequest.imageId() != null) {
+            image = profileImageRepository.findById(petAddRequest.imageId()).orElseThrow(RuntimeException::new);
+
+        }else {
+            image = ProfileImage.builder()
+                .name("pet_default_image")
+                .url(DEFAULT_IMAGE_URL)
+                .build();
+        }
 
         Group myGroup = currentMember.getGroup();
         Pet pet = Pet.builder()
@@ -41,6 +55,7 @@ public class PetService {
             .weight(petAddRequest.weight())
             .isNeutered(petAddRequest.isNeutered())
             .group(myGroup)
+            .profileImage(image)
             .build();
 
         myGroup.addPet(pet);
