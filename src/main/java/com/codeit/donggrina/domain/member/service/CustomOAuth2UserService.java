@@ -9,6 +9,7 @@ import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+    @Value("${image.url.default.member}")
+    private  String DEFAULT_IMAGE_URL;
     private final MemberRepository memberRepository;
     private final ProfileImageRepository profileImageRepository;
 
@@ -30,7 +33,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         KakaoResponse kakaoResponse = null;
         if(registrationId.equals("kakao")) {
-            kakaoResponse = new KakaoResponse(oAuth2User.getAttributes());
+            kakaoResponse = new KakaoResponse(DEFAULT_IMAGE_URL, oAuth2User.getAttributes());
         }else {
             return null;
         }
@@ -40,14 +43,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Optional<Member> foundMemberOptional = memberRepository.findByUsername(username);
         MemberSecurityDto memberSecurityDto = null;
         if(foundMemberOptional.isEmpty()) {
-            ProfileImage profileImage = null;
-
-            if(kakaoResponse.hasProfileImageUrl()) {
-                profileImage = ProfileImage.builder()
+            ProfileImage profileImage = ProfileImage.builder()
                     .name("kakao_profile_image")
                     .url(kakaoResponse.getProfileImageUrl())
                     .build();
-            }
 
             Member member = Member.builder()
                 .username(username)
