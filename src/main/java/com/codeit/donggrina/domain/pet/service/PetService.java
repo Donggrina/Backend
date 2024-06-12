@@ -40,7 +40,6 @@ public class PetService {
             .species(petAddRequest.species())
             .weight(petAddRequest.weight())
             .isNeutered(petAddRequest.isNeutered())
-            .registrationNumber(petAddRequest.registrationNumber())
             .group(myGroup)
             .build();
 
