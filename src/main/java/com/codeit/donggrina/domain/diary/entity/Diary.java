@@ -1,6 +1,7 @@
 package com.codeit.donggrina.domain.diary.entity;
 
 import com.codeit.donggrina.common.Timestamp;
+import com.codeit.donggrina.domain.comment.entity.Comment;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.pet.entity.Pet;
@@ -25,10 +26,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class Diary extends Timestamp {
 
     @Id
@@ -64,6 +67,9 @@ public class Diary extends Timestamp {
 
     @Column(nullable = false)
     private int heartCount;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", cascade = CascadeType.REMOVE)
+    private final List<Comment> comments = new ArrayList<>();
 
     @Builder
     private Diary(Long id, String content, String weather, boolean isShared, LocalDate date,
@@ -121,6 +127,10 @@ public class Diary extends Timestamp {
     private void updateImages(List<DiaryImage> images){
         linkDiaryImageToDiary(images);
         unLinkDiaryImageToDiary(images);
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 
 }

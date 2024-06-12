@@ -35,6 +35,9 @@ public class CommentService {
             .content(request.content())
             .build();
 
+        // 다이어리에 있는 댓글 리스트에 댓글을 추가해줍니다.
+        diary.addComment(comment);
+
         // 부모 댓글이 있는 경우, 부모 댓글에 자식 댓글을 추가합니다.
         Optional.ofNullable(request.parentCommentId())
             .map(parentId -> commentRepository.findById(parentId)
