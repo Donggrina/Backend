@@ -1,5 +1,6 @@
 package com.codeit.donggrina.domain.heart.entity;
 
+import com.codeit.donggrina.common.Timestamp;
 import com.codeit.donggrina.domain.diary.entity.Diary;
 import com.codeit.donggrina.domain.member.entity.Member;
 import jakarta.persistence.Entity;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Heart {
+public class Heart extends Timestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
