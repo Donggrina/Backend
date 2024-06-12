@@ -44,7 +44,7 @@ public class Member extends Timestamp {
     private String role;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_image_id", foreignKey = @ForeignKey(name = "fk_profile_image_member"))
+    @JoinColumn(name = "profile_image_id", nullable = false, foreignKey = @ForeignKey(name = "fk_profile_image_member"))
     private ProfileImage profileImage;
 
     private String nickname; // 그룹 내에서 사용할 닉네임
