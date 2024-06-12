@@ -1,7 +1,9 @@
 package com.codeit.donggrina.domain.pet.entity;
 
+import com.codeit.donggrina.common.Timestamp;
 import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
 import com.codeit.donggrina.domain.group.entity.Group;
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,23 +22,41 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Pet {
+public class Pet extends Timestamp {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     @Convert(converter = SexValueConverter.class)
     private Sex sex;
+
+    @Column(nullable = false)
     private LocalDate birthDate;
+
+    @Column(nullable = false)
     private LocalDate adoptionDate;
+
+    @Column(nullable = false)
     private String type;
+
+    @Column(nullable = false)
     private String species;
+
+    @Column(nullable = false)
     private double weight;
+
+    @Column(nullable = false)
     private boolean isNeutered;
-    private String registrationNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clusters_id")
+    @JoinColumn(name = "clusters_id", nullable = false)
     private Group group;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id")
     private ProfileImage profileImage;
@@ -44,7 +64,7 @@ public class Pet {
     @Builder
     private Pet(Long id, String name, Sex sex, LocalDate birthDate, LocalDate adoptionDate,
         String type,
-        String species, double weight, boolean isNeutered, String registrationNumber, Group group,
+        String species, double weight, boolean isNeutered, Group group,
         ProfileImage profileImage) {
         this.id = id;
         this.name = name;
@@ -55,7 +75,6 @@ public class Pet {
         this.species = species;
         this.weight = weight;
         this.isNeutered = isNeutered;
-        this.registrationNumber = registrationNumber;
         this.group = group;
         this.profileImage = profileImage;
     }
