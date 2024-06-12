@@ -28,10 +28,13 @@ public class Group extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private String code;
+
     @Column(nullable = false)
     private String creator;
 
