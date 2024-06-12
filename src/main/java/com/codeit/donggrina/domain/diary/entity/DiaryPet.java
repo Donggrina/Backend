@@ -3,6 +3,7 @@ package com.codeit.donggrina.domain.diary.entity;
 import com.codeit.donggrina.common.Timestamp;
 import com.codeit.donggrina.domain.pet.entity.Pet;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,11 +24,11 @@ public class DiaryPet extends Timestamp {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "diary_id", nullable = false)
+    @JoinColumn(name = "diary_id", nullable = false, foreignKey = @ForeignKey(name = "fk_diary_diary_pet"))
     private Diary diary;
 
     @ManyToOne
-    @JoinColumn(name = "pet_id", nullable = false)
+    @JoinColumn(name = "pet_id", nullable = false, foreignKey = @ForeignKey(name = "fk_pet_diary_pet"))
     private Pet pet;
 
     @Builder
