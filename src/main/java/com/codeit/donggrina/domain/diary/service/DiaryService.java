@@ -14,6 +14,7 @@ import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.entity.Pet;
 import com.codeit.donggrina.domain.pet.repository.PetRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,11 +34,14 @@ public class DiaryService {
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(RuntimeException::new);
 
-        List<DiaryImage> images = diaryCreateRequest.images().stream()
-            .map((imageId) ->
-                diaryImageRepository.findById(imageId).orElseThrow(RuntimeException::new))
-            .toList();
+        List<DiaryImage> images = new ArrayList<>();
+        if(diaryCreateRequest.images() != null) {
+            images = diaryCreateRequest.images().stream()
+                .map((imageId) ->
+                    diaryImageRepository.findById(imageId).orElseThrow(RuntimeException::new))
+                .toList();
 
+        }
         List<Pet> pets = diaryCreateRequest.pets().stream()
             .map((id) ->
                 petRepository.findById(id).orElseThrow(RuntimeException::new)
@@ -50,6 +54,7 @@ public class DiaryService {
             .isShared(diaryCreateRequest.isShare())
             .diaryImages(images)
             .member(currentMember)
+            .group(currentMember.getGroup())
             .pets(pets)
             .date(diaryCreateRequest.date())
             .build();
