@@ -1,6 +1,7 @@
 package com.codeit.donggrina.domain.ProfileImage.entity;
 
 import com.codeit.donggrina.common.Timestamp;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +19,11 @@ public class ProfileImage extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String url;
 
     @Builder
