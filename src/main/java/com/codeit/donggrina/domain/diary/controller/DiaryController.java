@@ -2,6 +2,7 @@ package com.codeit.donggrina.domain.diary.controller;
 
 import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryCreateRequest;
+import com.codeit.donggrina.domain.diary.dto.request.DiarySearchRequest;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryUpdateRequest;
 import com.codeit.donggrina.domain.diary.dto.response.DiaryFindListResponse;
 import com.codeit.donggrina.domain.diary.dto.response.DiaryFindResponse;
@@ -92,6 +93,19 @@ public class DiaryController {
             .message("다이어리 상세 조회 성공")
             .data(diaryService.findDiary(diaryId, user.getMemberId()))
             .build();
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<List<DiaryFindListResponse>> searchDiaries(
+        @Validated DiarySearchRequest diarySearchRequest,
+        @AuthenticationPrincipal CustomOAuth2User user) {
+        
+        return ApiResponse.<List<DiaryFindListResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .message("다이어리 검색 성공")
+            .data(diaryService.searchDiaries(diarySearchRequest, user.getMemberId()))
+            .build();
+
     }
 
 }
