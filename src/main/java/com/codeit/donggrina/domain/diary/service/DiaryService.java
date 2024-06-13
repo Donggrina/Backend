@@ -71,7 +71,7 @@ public class DiaryService {
     public void updateDiary(Long diaryId, DiaryUpdateRequest diaryUpdateRequest, Long memberId) {
         Diary targetDiary = diaryRepository.findById(diaryId).orElseThrow(RuntimeException::new);
 
-        if (targetDiary.getMember().getId() != memberId) {
+        if (!targetDiary.getMember().getId().equals(memberId)) {
             throw new RuntimeException("수정 불가");
         }
 
@@ -93,7 +93,7 @@ public class DiaryService {
     @Transactional
     public void deleteDiary(Long diaryId, Long memberId) {
         Diary targetDiary = diaryRepository.findById(diaryId).orElseThrow(RuntimeException::new);
-        if(targetDiary.getMember().getId() == memberId) {
+        if(targetDiary.getMember().getId().equals(memberId)) {
             diaryRepository.delete(targetDiary);
             return;
         }
@@ -119,7 +119,7 @@ public class DiaryService {
                     .petImages(petImages)
                     .content(diary.getContent())
                     .contentImage(diary.getDiaryImages().get(0).getUrl())
-                    .isMyDiary(currentMember.getId() == diary.getMember().getId())
+                    .isMyDiary(currentMember.getId().equals(diary.getMember().getId()))
                     .build();
             })
             .toList();
@@ -148,7 +148,7 @@ public class DiaryService {
             .contentImages(contentImages)
             .content(foundDiary.getContent())
             .weather(foundDiary.getWeather())
-            .isMyDiary(author.getId() == memberId)
+            .isMyDiary(author.getId().equals(memberId))
             .build();
     }
 
@@ -182,7 +182,7 @@ public class DiaryService {
                     .petImages(imageUrls)
                     .contentImage(imageUrl)
                     .content(diary.getContent())
-                    .isMyDiary(currentMember.getId() == diary.getMember().getId())
+                    .isMyDiary(currentMember.getId().equals(diary.getMember().getId()))
                     .build();
             })
             .toList();
