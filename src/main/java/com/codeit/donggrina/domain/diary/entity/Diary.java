@@ -21,17 +21,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Slf4j
 public class Diary extends Timestamp {
 
     @Id
@@ -103,8 +100,8 @@ public class Diary extends Timestamp {
     }
 
     private void unLinkDiaryImageToDiary(List<DiaryImage> diaryImages) {
-        for(DiaryImage diaryImage : this.diaryImages) {
-            if(!diaryImages.contains(diaryImage)) {
+        for (DiaryImage diaryImage : this.diaryImages) {
+            if (!diaryImages.contains(diaryImage)) {
                 diaryImage.unLinkDiary();
             }
         }
@@ -124,7 +121,8 @@ public class Diary extends Timestamp {
         diaryPets.clear();
         addDiaryPets(pets);
     }
-    private void updateImages(List<DiaryImage> images){
+
+    private void updateImages(List<DiaryImage> images) {
         linkDiaryImageToDiary(images);
         unLinkDiaryImageToDiary(images);
     }
