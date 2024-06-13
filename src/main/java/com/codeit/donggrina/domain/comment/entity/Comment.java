@@ -74,4 +74,8 @@ public class Comment extends Timestamp {
     public void updateContent(String content) {
         this.content = content;
     }
+
+    public void updateIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }
