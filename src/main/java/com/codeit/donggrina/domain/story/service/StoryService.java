@@ -16,7 +16,7 @@ public class StoryService {
     public void createStory(Long diaryId, Long memberId) {
         Diary targetDiary = diaryRepository.findById(diaryId).orElseThrow(RuntimeException::new);
 
-        if(targetDiary.getMember().getId() != memberId) {
+        if(!targetDiary.getMember().getId().equals(memberId)) {
             throw new RuntimeException();
         }
 
