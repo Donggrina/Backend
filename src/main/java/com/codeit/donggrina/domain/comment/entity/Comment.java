@@ -70,4 +70,8 @@ public class Comment extends Timestamp {
         this.children.add(childComment);
         childComment.updateParent(this);
     }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
