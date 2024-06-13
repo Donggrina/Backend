@@ -37,7 +37,7 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
 
     @Override
     public List<Diary> searchDiaries(DiarySearchRequest request) {
-        List<Diary> fetch = queryFactory.selectFrom(diary)
+        return queryFactory.selectFrom(diary)
             .leftJoin(diary.member, member).fetchJoin()
             .leftJoin(diary.diaryImages).fetchJoin()
             .leftJoin(diary.diaryPets, diaryPet).fetchJoin()
@@ -50,8 +50,6 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
                 eqKeyword(request.keyword())
             )
             .fetch();
-        System.err.println(2);
-        return fetch;
     }
 
     private BooleanExpression eqDate(LocalDate date) {
@@ -65,7 +63,7 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         for (String author : authors){
-            booleanBuilder.or(member.nickname.contains(author));
+            booleanBuilder.or(member.nickname.containsIgnoreCase(author));
         }
 
         return booleanBuilder;
