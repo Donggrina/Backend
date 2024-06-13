@@ -13,7 +13,6 @@ import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.entity.Pet;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
@@ -106,7 +105,7 @@ public class CalendarService {
             .title(request.title())
             .memo(request.memo())
             .category(request.category())
-            .dateTime(LocalDateTime.parse(request.dateTime()))
+            .dateTime(request.getLocalDateTime())
             .pet(pet)
             .member(member)
             .build();

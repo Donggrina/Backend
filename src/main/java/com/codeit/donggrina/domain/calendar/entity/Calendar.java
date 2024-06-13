@@ -69,7 +69,7 @@ public class Calendar extends Timestamp {
         this.title = request.title();
         this.memo = request.memo();
         this.category = request.category();
-        this.dateTime = LocalDateTime.parse(request.dateTime());
+        this.dateTime = request.getLocalDateTime();
         this.pet = pet;
     }
 
