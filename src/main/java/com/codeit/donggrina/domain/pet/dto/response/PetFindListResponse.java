@@ -12,7 +12,7 @@ public record PetFindListResponse(
     public static PetFindListResponse from(Pet pet) {
         return PetFindListResponse.builder()
             .petId(pet.getId())
-//            .imageUrl(pet.getProfileImage().getUrl())
+            .imageUrl(pet.getProfileImage().getUrl())
             .name(pet.getName())
             .build();
     }
