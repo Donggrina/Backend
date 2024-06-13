@@ -3,6 +3,10 @@ package com.codeit.donggrina.domain.calendar.dto.request;
 import com.codeit.donggrina.domain.calendar.entity.CalendarCategory;
 import com.codeit.donggrina.domain.calendar.util.IsoDateTime;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public record CalendarAppendRequest(
     @NotBlank(message = "제목을 입력해주세요.")
@@ -16,4 +20,9 @@ public record CalendarAppendRequest(
     String dateTime
 ) {
 
+    public LocalDateTime getLocalDateTime() {
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse(dateTime,
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        return offsetDateTime.atZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+    }
 }
