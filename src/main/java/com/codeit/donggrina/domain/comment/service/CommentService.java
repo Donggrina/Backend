@@ -1,6 +1,7 @@
 package com.codeit.donggrina.domain.comment.service;
 
 import com.codeit.donggrina.domain.comment.dto.request.CommentAppendRequest;
+import com.codeit.donggrina.domain.comment.dto.request.CommentUpdateRequest;
 import com.codeit.donggrina.domain.comment.entity.Comment;
 import com.codeit.donggrina.domain.comment.repository.CommentRepository;
 import com.codeit.donggrina.domain.diary.entity.Diary;
@@ -45,5 +46,20 @@ public class CommentService {
             .ifPresent(parentComment -> parentComment.addChildComment(comment));
 
         return commentRepository.save(comment).getId();
+    }
+
+    @Transactional
+    public void update(Long commentId, CommentUpdateRequest request, Long memberId) {
+        // 댓글을 수정하는 로그인 멤버와 수정할 댓글을 조회합니다.
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+
+        // 댓글을 수정합니다. 댓글을 작성한 사람이 아니라면 예외를 발생시킵니다.
+        if (!comment.getMember().equals(member)) {
+            throw new IllegalArgumentException("본인의 댓글만 수정할 수 있습니다.");
+        }
+        comment.updateContent(request.content());
     }
 }
