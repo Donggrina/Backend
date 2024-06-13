@@ -21,8 +21,8 @@ public record CalendarUpdateRequest(
 ) {
 
     public LocalDateTime getLocalDateTime() {
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(dateTime,
-            DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        return offsetDateTime.atZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, formatter);
+        return localDateTime.atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
     }
 }
