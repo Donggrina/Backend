@@ -135,4 +135,8 @@ public class Diary extends Timestamp {
         this.isShared = true;
     }
 
+    public void unShareToStory() {
+        this.isShared = false;
+    }
+
 }

@@ -29,5 +29,9 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, CustomDiary
         + " where d.id = :diaryId")
     Optional<Diary> findByIdWithDetails(Long diaryId);
 
+
+    @Query("select d from Diary d left join fetch d.member where d.id = :diaryId")
+    Optional<Diary> findByIdWithMember(Long diaryId);
+
 }
 
