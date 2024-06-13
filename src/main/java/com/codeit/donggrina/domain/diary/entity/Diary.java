@@ -1,6 +1,7 @@
 package com.codeit.donggrina.domain.diary.entity;
 
 import com.codeit.donggrina.common.Timestamp;
+import com.codeit.donggrina.domain.comment.entity.Comment;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.pet.entity.Pet;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -65,6 +65,9 @@ public class Diary extends Timestamp {
     @Column(nullable = false)
     private int heartCount;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", cascade = CascadeType.REMOVE)
+    private final List<Comment> comments = new ArrayList<>();
+
     @Builder
     private Diary(Long id, String content, String weather, boolean isShared, LocalDate date,
         Member member, Group group, List<Pet> pets, List<DiaryImage> diaryImages) {
@@ -97,8 +100,8 @@ public class Diary extends Timestamp {
     }
 
     private void unLinkDiaryImageToDiary(List<DiaryImage> diaryImages) {
-        for(DiaryImage diaryImage : this.diaryImages) {
-            if(!diaryImages.contains(diaryImage)) {
+        for (DiaryImage diaryImage : this.diaryImages) {
+            if (!diaryImages.contains(diaryImage)) {
                 diaryImage.unLinkDiary();
             }
         }
@@ -118,9 +121,14 @@ public class Diary extends Timestamp {
         diaryPets.clear();
         addDiaryPets(pets);
     }
-    private void updateImages(List<DiaryImage> images){
+
+    private void updateImages(List<DiaryImage> images) {
         linkDiaryImageToDiary(images);
         unLinkDiaryImageToDiary(images);
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 
 }
