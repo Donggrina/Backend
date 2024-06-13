@@ -53,7 +53,6 @@ public class DiaryService {
         Diary diary = Diary.builder()
             .content(diaryCreateRequest.content())
             .weather(diaryCreateRequest.weather())
-            .isShared(diaryCreateRequest.isShare())
             .diaryImages(images)
             .member(currentMember)
             .group(currentMember.getGroup())
@@ -61,11 +60,11 @@ public class DiaryService {
             .date(diaryCreateRequest.date())
             .build();
 
-        diaryRepository.save(diary);
-
         if (diaryCreateRequest.isShare()) {
-            // ToDo: 스토리 추가 로직
+            diary.shareToStory();
         }
+
+        diaryRepository.save(diary);
     }
 
     @Transactional

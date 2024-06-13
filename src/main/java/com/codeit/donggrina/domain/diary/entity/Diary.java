@@ -69,16 +69,16 @@ public class Diary extends Timestamp {
     private final List<Comment> comments = new ArrayList<>();
 
     @Builder
-    private Diary(Long id, String content, String weather, boolean isShared, LocalDate date,
+    private Diary(Long id, String content, String weather, LocalDate date,
         Member member, Group group, List<Pet> pets, List<DiaryImage> diaryImages) {
         this.id = id;
         this.content = content;
         this.weather = weather;
-        this.isShared = isShared;
         this.date = date;
         this.member = member;
         this.group = group;
         this.heartCount = 0;
+        this.isShared = false;
         addDiaryPets(pets);
         linkDiaryImageToDiary(diaryImages);
     }
@@ -129,6 +129,10 @@ public class Diary extends Timestamp {
 
     public void addComment(Comment comment) {
         this.comments.add(comment);
+    }
+
+    public void shareToStory() {
+        this.isShared = true;
     }
 
 }
