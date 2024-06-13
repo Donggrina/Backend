@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,6 +47,32 @@ public class CommentController {
         return ApiResponse.<Void>builder()
             .code(HttpStatus.OK.value())
             .message("댓글 수정 성공")
+            .build();
+    }
+
+    @DeleteMapping("/comments/parent/{commentId}")
+    public ApiResponse<Void> deleteParentComment(
+        @PathVariable Long commentId,
+        @AuthenticationPrincipal CustomOAuth2User member
+    ) {
+        Long memberId = member.getMemberId();
+        commentService.deleteParentComment(commentId, memberId);
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.OK.value())
+            .message("부모 댓글 삭제 성공")
+            .build();
+    }
+
+    @DeleteMapping("/comments/child/{commentId}")
+    public ApiResponse<Void> deleteChildComment(
+        @PathVariable Long commentId,
+        @AuthenticationPrincipal CustomOAuth2User member
+    ) {
+        Long memberId = member.getMemberId();
+        commentService.deleteChildComment(commentId, memberId);
+        return ApiResponse.<Void>builder()
+            .code(HttpStatus.OK.value())
+            .message("대댓글 삭제 성공")
             .build();
     }
 }
