@@ -1,6 +1,7 @@
 package com.codeit.donggrina.domain.story.service;
 
 import com.codeit.donggrina.domain.comment.dto.response.CommentFindResponse;
+import com.codeit.donggrina.domain.comment.entity.Comment;
 import com.codeit.donggrina.domain.diary.entity.Diary;
 import com.codeit.donggrina.domain.diary.entity.DiaryImage;
 import com.codeit.donggrina.domain.diary.repository.DiaryRepository;
@@ -68,13 +69,28 @@ public class StoryService {
         if(foundStory.getComments() != null) {
             comments = foundStory.getComments().stream()
                 .map(comment -> {
-                    Member commentAuthor = comment.getMember();
 
+                    List<CommentFindResponse> children = new ArrayList<>();
+                    for(Comment child : comment.getChildren()) {
+                        Member commentAuthor = child.getMember();
+
+                        children.add(CommentFindResponse.builder()
+                            .commentId(child.getId())
+                            .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
+                            .commentAuthor(commentAuthor.getName())
+                            .comment(child.getContent())
+                            .date(child.getDate())
+                            .build());
+                    }
+
+                    Member commentAuthor = comment.getMember();
                     return CommentFindResponse.builder()
                         .commentId(comment.getId())
                         .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
                         .commentAuthor(commentAuthor.getName())
                         .comment(comment.getContent())
+                        .date(comment.getDate())
+                        .children(children)
                         .build();
                 })
                 .toList();
