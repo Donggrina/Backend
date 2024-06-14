@@ -57,10 +57,10 @@ public class Diary extends Timestamp {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(nullable = false)
-    Set<DiaryPet> diaryPets = new HashSet<>();
+    private Set<DiaryPet> diaryPets = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "diary", orphanRemoval = true)
-    List<DiaryImage> diaryImages = new ArrayList<>();
+    private List<DiaryImage> diaryImages = new ArrayList<>();
 
     @Column(nullable = false)
     private int heartCount;
