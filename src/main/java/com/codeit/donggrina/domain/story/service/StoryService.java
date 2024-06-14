@@ -7,14 +7,18 @@ import com.codeit.donggrina.domain.diary.entity.DiaryImage;
 import com.codeit.donggrina.domain.diary.repository.DiaryRepository;
 import com.codeit.donggrina.domain.heart.entity.Heart;
 import com.codeit.donggrina.domain.heart.repository.HeartRepository;
-import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
+import com.codeit.donggrina.domain.story.dto.response.StoryFindListPage;
+import com.codeit.donggrina.domain.story.dto.response.StoryFindListResponse;
 import com.codeit.donggrina.domain.story.dto.response.StoryFindResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -107,6 +111,45 @@ public class StoryService {
             .favoriteState(heartOptional.isPresent())
             .favoriteCount(foundStory.getHeartCount())
             .comments(comments)
+            .build();
+    }
+
+    public StoryFindListPage findStories(Long memberId, Pageable pageable) {
+
+        Slice<Diary> page = diaryRepository.findPage(pageable);
+        List<StoryFindListResponse> response = page.stream()
+            .map(diary -> {
+
+                List<String> images = diary.getDiaryImages().stream()
+                    .map(DiaryImage::getUrl)
+                    .toList();
+
+                int commentCount = diary.getComments().size();
+                for (Comment comment : diary.getComments()) {
+                    commentCount += comment.getChildren().size();
+                }
+
+                Member author = diary.getMember();
+
+                return StoryFindListResponse.builder()
+                    .diaryId(diary.getId())
+                    .authorImage(author.getProfileImage().getUrl())
+                    .author(author.getName())
+                    .authorGroup(author.getGroup().getName())
+                    .images(images)
+                    .content(diary.getContent())
+                    .commentCount(commentCount)
+                    .favoriteCount(diary.getHeartCount())
+                    .createdDate(diary.getCreatedAt())
+                    .isMyStory(author.getId().equals(memberId))
+                    .build();
+            })
+            .toList();
+
+        return StoryFindListPage.builder()
+            .response(response)
+            .currentPage(page.getNumber())
+            .hasMore(page.hasNext())
             .build();
     }
 }

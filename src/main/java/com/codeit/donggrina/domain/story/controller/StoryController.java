@@ -2,9 +2,13 @@ package com.codeit.donggrina.domain.story.controller;
 
 import com.codeit.donggrina.common.api.ApiResponse;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
+import com.codeit.donggrina.domain.story.dto.response.StoryFindListPage;
+import com.codeit.donggrina.domain.story.dto.response.StoryFindListResponse;
 import com.codeit.donggrina.domain.story.dto.response.StoryFindResponse;
 import com.codeit.donggrina.domain.story.service.StoryService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,6 +55,16 @@ public class StoryController {
             .code(HttpStatus.OK.value())
             .message("스토리 상세 조회 성공")
             .data(storyService.findStory(diaryId, user.getMemberId()))
+            .build();
+    }
+
+    @GetMapping
+    public ApiResponse<StoryFindListPage> findStories(@AuthenticationPrincipal CustomOAuth2User user, Pageable pageable) {
+
+        return ApiResponse.<StoryFindListPage>builder()
+            .code(HttpStatus.OK.value())
+            .message("스토리 리스트 조회 성공")
+            .data(storyService.findStories(user.getMemberId(), pageable))
             .build();
     }
 }
