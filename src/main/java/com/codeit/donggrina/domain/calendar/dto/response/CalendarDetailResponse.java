@@ -15,6 +15,7 @@ public record CalendarDetailResponse(
     String writerProfileImageUrl,
     String writerNickName,
     String petProfileImageUrl,
+    String petName,
     boolean isFinished,
     boolean isMine
 ) {
@@ -29,6 +30,7 @@ public record CalendarDetailResponse(
             .writerProfileImageUrl(calendar.getMember().getProfileImage().getUrl())
             .writerNickName(calendar.getMember().getNickname())
             .petProfileImageUrl(calendar.getPet().getProfileImage().getUrl())
+            .petName(calendar.getPet().getName())
             .isFinished(calendar.isFinished())
             .isMine(isMine)
             .build();
