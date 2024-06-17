@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface HeartRepository extends JpaRepository<Heart, Long> {
 
     Optional<Heart> findByMemberAndDiary(Member member, Diary diary);
+
+    Optional<Heart> findByMemberIdAndDiary(Long memberId, Diary diary);
 }
