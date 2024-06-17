@@ -41,19 +41,21 @@ public class DiaryService {
     @Transactional
     public void createDiary(DiaryCreateRequest diaryCreateRequest, Long memberId) {
         Member currentMember = memberRepository.findById(memberId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
         List<DiaryImage> images = new ArrayList<>();
-        if(diaryCreateRequest.images() != null) {
+        if (diaryCreateRequest.images() != null) {
             images = diaryCreateRequest.images().stream()
                 .map((imageId) ->
-                    diaryImageRepository.findById(imageId).orElseThrow(RuntimeException::new))
+                    diaryImageRepository.findById(imageId)
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이미지입니다.")))
                 .toList();
 
         }
         List<Pet> pets = diaryCreateRequest.pets().stream()
             .map((id) ->
-                petRepository.findById(id).orElseThrow(RuntimeException::new)
+                petRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려동물입니다."))
             )
             .toList();
 
@@ -76,21 +78,29 @@ public class DiaryService {
 
     @Transactional
     public void updateDiary(Long diaryId, DiaryUpdateRequest diaryUpdateRequest, Long memberId) {
-        Diary targetDiary = diaryRepository.findById(diaryId).orElseThrow(RuntimeException::new);
+        Diary targetDiary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
 
-        if (!targetDiary.getMember().getId().equals(memberId)) {
-            throw new RuntimeException("수정 불가");
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
+
+        if (!targetDiary.getMember().getId().equals(memberId) && !targetDiary.getGroup()
+            .getCreator()
+            .equals(currentMember.getUsername())) {
+            throw new IllegalArgumentException("삭제가 불가능합니다.");
         }
 
         List<Pet> pets = diaryUpdateRequest.pets().stream()
             .map((id) ->
-                petRepository.findById(id).orElseThrow(RuntimeException::new)
+                petRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려동물입니다."))
             )
             .toList();
 
         List<DiaryImage> images = diaryUpdateRequest.images().stream()
             .map((imageId) ->
-                diaryImageRepository.findById(imageId).orElseThrow(RuntimeException::new))
+                diaryImageRepository.findById(imageId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다.")))
             .toList();
 
         targetDiary.update(diaryUpdateRequest.content(), diaryUpdateRequest.weather(),
@@ -99,17 +109,19 @@ public class DiaryService {
 
     @Transactional
     public void deleteDiary(Long diaryId, Long memberId) {
-        Diary targetDiary = diaryRepository.findById(diaryId).orElseThrow(RuntimeException::new);
-        if(targetDiary.getMember().getId().equals(memberId)) {
+        Diary targetDiary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
+
+        if (targetDiary.getMember().getId().equals(memberId)) {
             diaryRepository.delete(targetDiary);
             return;
         }
-        throw new RuntimeException("본인만 삭제 가능");
+        throw new IllegalArgumentException("삭제가 불가능합니다.");
     }
 
     public List<DiaryFindListResponse> findDiaries(Long memberId, LocalDate date) {
-        Member currentMember = memberRepository.findByIdWithGroupAndProfileImage(memberId)
-            .orElseThrow(RuntimeException::new);
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
         List<Diary> foundDiaries = diaryRepository.findAllByDate(date, currentMember.getGroup());
 
         return foundDiaries.stream()
@@ -120,10 +132,10 @@ public class DiaryService {
                     .toList();
 
                 String contentImage = null;
-                if(!diary.getDiaryImages().isEmpty()) {
+                if (!diary.getDiaryImages().isEmpty()) {
                     contentImage = diary.getDiaryImages().get(FIRST_IMAGE).getUrl();
                 }
-              
+
                 int commentCount = getCommentCount(diary);
 
                 Optional<Heart> favoriteOptional = heartRepository.findByMemberAndDiary(
@@ -147,7 +159,7 @@ public class DiaryService {
 
     public DiaryFindResponse findDiary(Long diaryId, Long memberId) {
         Diary foundDiary = diaryRepository.findByIdWithDetails(diaryId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
 
         List<Pet> pets = foundDiary.getDiaryPets().stream()
             .map(DiaryPet::getPet)
@@ -208,8 +220,10 @@ public class DiaryService {
             .build();
     }
 
-    public List<DiaryFindListResponse> searchDiaries(DiarySearchRequest diarySearchRequest, Long memberId) {
-        Member currentMember = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+    public List<DiaryFindListResponse> searchDiaries(DiarySearchRequest diarySearchRequest,
+        Long memberId) {
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
         List<Diary> foundDiaries = diaryRepository.searchDiaries(diarySearchRequest);
 
         return foundDiaries.stream()
@@ -227,7 +241,7 @@ public class DiaryService {
                     .toList();
 
                 String imageUrl = null;
-                if(!diary.getDiaryImages().isEmpty()) {
+                if (!diary.getDiaryImages().isEmpty()) {
                     imageUrl = diary.getDiaryImages().get(FIRST_IMAGE).getUrl();
                 }
 

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -33,10 +32,14 @@ public class StoryService {
     @Transactional
     public void createStory(Long diaryId, Long memberId) {
         Diary targetDiary = diaryRepository.findByIdWithMember(diaryId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
-        if(!targetDiary.getMember().getId().equals(memberId)) {
-            throw new RuntimeException();
+        if (!targetDiary.getMember().getId().equals(memberId) && !targetDiary.getGroup()
+            .getCreator().equals(currentMember.getUsername())) {
+
+            throw new IllegalArgumentException("스토리 생성이 불가능합니다.");
         }
 
         targetDiary.shareToStory();
@@ -45,10 +48,14 @@ public class StoryService {
     @Transactional
     public void deleteStory(Long diaryId, Long memberId) {
         Diary targetDiary = diaryRepository.findByIdWithMember(diaryId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
-        if(!targetDiary.getMember().getId().equals(memberId)) {
-            throw new RuntimeException();
+        if (!targetDiary.getMember().getId().equals(memberId) && !targetDiary.getGroup()
+            .getCreator().equals(currentMember.getUsername())) {
+
+            throw new IllegalArgumentException("스토리 생성이 불가능합니다.");
         }
 
         targetDiary.unShareToStory();
@@ -56,10 +63,10 @@ public class StoryService {
 
     public StoryFindResponse findStory(Long diaryId, Long memberId) {
         Member currentMember = memberRepository.findById(memberId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
-        Diary foundStory = diaryRepository.findStoryWithDetails(diaryId)
-            .orElseThrow(RuntimeException::new);
+        Diary foundStory = diaryRepository.findByIdWithMember(diaryId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
 
         List<String> images = foundStory.getDiaryImages().stream()
             .map(DiaryImage::getUrl)
@@ -70,12 +77,12 @@ public class StoryService {
 
         List<CommentFindResponse> comments = new ArrayList<>();
 
-        if(foundStory.getComments() != null) {
+        if (foundStory.getComments() != null) {
             comments = foundStory.getComments().stream()
                 .map(comment -> {
 
                     List<CommentFindResponse> children = new ArrayList<>();
-                    for(Comment child : comment.getChildren()) {
+                    for (Comment child : comment.getChildren()) {
                         Member commentAuthor = child.getMember();
 
                         children.add(CommentFindResponse.builder()
