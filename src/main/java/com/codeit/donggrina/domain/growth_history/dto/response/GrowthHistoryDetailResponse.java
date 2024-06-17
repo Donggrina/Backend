@@ -15,6 +15,7 @@ public record GrowthHistoryDetailResponse(
     GrowthHistoryContentDto content,
     LocalDateTime dateTime,
     String nickname,
+    String petName,
     boolean isMine
 ) {
     public static GrowthHistoryDetailResponse from(GrowthHistory growthHistory, boolean isMine) {
@@ -37,6 +38,7 @@ public record GrowthHistoryDetailResponse(
             .content(content)
             .dateTime(growthHistory.getCreatedAt())
             .nickname(growthHistory.getMember().getNickname())
+            .petName(growthHistory.getPet().getName())
             .isMine(isMine)
             .build();
     }
