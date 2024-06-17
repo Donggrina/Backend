@@ -51,7 +51,8 @@ public class Pet extends Timestamp {
     private LocalDate adoptionDate;
 
     @Column(nullable = false)
-    private String type;
+    @Convert(converter = TypeValueConverter.class)
+    private Type type;
 
     @Column(nullable = false)
     private String species;
@@ -72,7 +73,7 @@ public class Pet extends Timestamp {
 
     @Builder
     private Pet(Long id, String name, Sex sex, LocalDate birthDate, LocalDate adoptionDate,
-        String type,
+        Type type,
         String species, double weight, boolean isNeutered, Group group,
         ProfileImage profileImage) {
         this.id = id;
@@ -88,7 +89,7 @@ public class Pet extends Timestamp {
         this.profileImage = profileImage;
     }
 
-    public void update(String name, Sex sex, LocalDate birthDate, LocalDate adoptionDate, String type,
+    public void update(String name, Sex sex, LocalDate birthDate, LocalDate adoptionDate, Type type,
         String species, double weight, boolean isNeutered, ProfileImage profileImage) {
         this.name = name;
         this.sex = sex;
