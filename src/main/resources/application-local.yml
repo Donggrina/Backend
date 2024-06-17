@@ -12,7 +12,7 @@ spring:
     password: ${DONGGRINA_LOCAL_DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -36,7 +36,7 @@ spring:
           kakao:
             client-id: ${OAUTH2_KAKAO_CLIENT_ID}
             client-secret: ${OAUTH2_KAKAO_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/members/login/kakao
+            redirect-uri: http://localhost:8080/members/login
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
@@ -46,7 +46,7 @@ spring:
           google:
             client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
             client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/members/login/google
+            redirect-uri: http://localhost:8080/members/login
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
