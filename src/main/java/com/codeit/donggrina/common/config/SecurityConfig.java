@@ -59,8 +59,8 @@ public class SecurityConfig {
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
             )
             .oauth2Login((oauth2) -> oauth2
-                .redirectionEndpoint(endpoint -> endpoint.baseUri("/members/login/kakao"))
-                .redirectionEndpoint(endpoint -> endpoint.baseUri("/members/login/google"))
+//                .redirectionEndpoint(endpoint -> endpoint.baseUri("/members/login/kakao"))
+                .redirectionEndpoint(endpoint -> endpoint.baseUri("/members/login"))
                 .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                     .userService(customOAuth2UserService))
                 .successHandler(oAuth2LoginSuccessHandler)
