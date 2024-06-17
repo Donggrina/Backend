@@ -3,8 +3,10 @@ package com.codeit.donggrina.domain.member.service;
 import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
 import com.codeit.donggrina.domain.ProfileImage.repository.ProfileImageRepository;
 import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
+import com.codeit.donggrina.domain.member.dto.response.GoogleResponse;
 import com.codeit.donggrina.domain.member.dto.response.KakaoResponse;
 import com.codeit.donggrina.domain.member.dto.request.MemberSecurityDto;
+import com.codeit.donggrina.domain.member.dto.response.OAuth2Response;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import java.util.Optional;
@@ -31,26 +33,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        KakaoResponse kakaoResponse = null;
+        OAuth2Response oAuth2Response = null;
         if(registrationId.equals("kakao")) {
-            kakaoResponse = new KakaoResponse(DEFAULT_IMAGE_URL, oAuth2User.getAttributes());
+            oAuth2Response = new KakaoResponse(DEFAULT_IMAGE_URL, oAuth2User.getAttributes());
         }else {
-            return null;
+            oAuth2Response = new GoogleResponse(DEFAULT_IMAGE_URL, oAuth2User.getAttributes());;
         }
 
-        String username = kakaoResponse.getProvider() + " " + kakaoResponse.getProviderId();
+        String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
 
         Optional<Member> foundMemberOptional = memberRepository.findByUsername(username);
         MemberSecurityDto memberSecurityDto = null;
         if(foundMemberOptional.isEmpty()) {
             ProfileImage profileImage = ProfileImage.builder()
-                    .name("kakao_profile_image")
-                    .url(kakaoResponse.getProfileImageUrl())
+                    .name("member_profile_image")
+                    .url(oAuth2Response.getProfileImageUrl())
                     .build();
 
             Member member = Member.builder()
                 .username(username)
-                .name(kakaoResponse.getName())
+                .name(oAuth2Response.getName())
                 .profileImage(profileImage)
                 .role("ROLE_USER")
                 .build();
