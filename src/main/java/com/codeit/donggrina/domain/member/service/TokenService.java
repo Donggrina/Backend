@@ -11,17 +11,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TokenService {
 
-    private final long REFRESH_EXPIRED_MS = 1000 * 60 * 60 * 24 * 7;
+    //    private final long ACCESS_EXPIRED_MS = 1000 * 60 * 60 * 3;
+    private final long ACCESS_EXPIRED_MS = 1000 * 60;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final JwtUtil jwtUtil;
 
     public String getAccessToken(RefreshTokenRequest refreshTokenRequest) {
-        String accessToken = refreshTokenRequest.accessToken();
-        if(refreshTokenRedisRepository.hasRefreshToken(refreshTokenRequest.refreshToken())) {
-            Long memberId = jwtUtil.getMemberId(accessToken);
-            String username = jwtUtil.getUsername(accessToken);
-            String role = jwtUtil.getRole(accessToken);
-            return jwtUtil.createJwt(memberId, username, role, REFRESH_EXPIRED_MS);
+        String refreshToken = refreshTokenRequest.refreshToken();
+        if(refreshTokenRedisRepository.hasRefreshToken(refreshToken)) {
+            Long memberId = jwtUtil.getMemberId(refreshToken);
+            String username = jwtUtil.getUsername(refreshToken);
+            String role = jwtUtil.getRole(refreshToken);
+
+            return jwtUtil.createJwt(memberId, username, role, ACCESS_EXPIRED_MS);
         }
         throw new IllegalArgumentException("로그인이 만료되었습니다.");
     }
