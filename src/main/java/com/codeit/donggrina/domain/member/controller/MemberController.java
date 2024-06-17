@@ -23,16 +23,16 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/{memberId}")
-    public ApiResponse<MyProfileGetResponse> getMyProfile(@PathVariable("memberId") Long memberId) {
+    @GetMapping
+    public ApiResponse<MyProfileGetResponse> getMyProfile(@AuthenticationPrincipal CustomOAuth2User user) {
         return ApiResponse.<MyProfileGetResponse>builder()
             .code(HttpStatus.OK.value())
             .message("프로필 조회 성공")
-            .data(memberService.getMyProfile(memberId))
+            .data(memberService.getMyProfile(user.getMemberId()))
             .build();
     }
 
-    @PutMapping("/memberId")
+    @PutMapping
     public ApiResponse<Void> updateMyProfile(@AuthenticationPrincipal CustomOAuth2User user,
         @RequestBody MemberUpdateRequest memberUpdateRequest) {
         memberService.updateMyProfile(user.getMemberId(), memberUpdateRequest);
