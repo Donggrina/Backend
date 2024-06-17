@@ -11,6 +11,7 @@ public record CommentFindResponse(
     String commentAuthor,
     String comment,
     LocalDate date,
+    boolean isMyComment,
     List<CommentFindResponse> children
 ) {
 
