@@ -42,7 +42,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String accessToken = jwtUtil.createJwt(id, username, role, ACCESS_EXPIRED_MS);
         String refreshToken = jwtUtil.createJwt(id, username, role, REFRESH_EXPIRED_MS);
-        refreshTokenRedisRepository.save(refreshToken);
+        refreshTokenRedisRepository.save(refreshToken, REFRESH_EXPIRED_MS);
 
         response.addHeader(HttpHeaders.SET_COOKIE, createCookie("AccessToken", accessToken).toString());
         response.addHeader(HttpHeaders.SET_COOKIE, createCookie("RefreshToken", refreshToken).toString());

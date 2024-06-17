@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 public class RefreshTokenRedisRepository {
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void save(String refreshToken) {
-        redisTemplate.opsForValue().set(refreshToken, "true");
+    public void save(String refreshToken, long expireTime) {
+        redisTemplate.opsForValue().set(refreshToken, "true", expireTime);
     }
 
     public boolean hasRefreshToken(String refreshToken) {
