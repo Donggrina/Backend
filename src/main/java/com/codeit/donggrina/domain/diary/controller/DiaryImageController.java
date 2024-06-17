@@ -13,12 +13,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/diaries")
 public class DiaryImageController {
 
     private final DiaryImageService diaryImageService;
 
-    @PostMapping("/images")
+    @PostMapping("/images/diaries")
     public ApiResponse<List<Long>> uploadImages(@RequestParam List<MultipartFile> images) {
         return ApiResponse.<List<Long>>builder()
             .code(HttpStatus.CREATED.value())

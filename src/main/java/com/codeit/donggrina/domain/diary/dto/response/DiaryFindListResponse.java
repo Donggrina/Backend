@@ -11,9 +11,9 @@ public record DiaryFindListResponse(
     List<String> petImages,
     String content,
     String contentImage,
-//    int commentCount,
-//    int favoriteCount,
-//    boolean favoriteState,
+    int commentCount,
+    int favoriteCount,
+    boolean favoriteState,
     boolean isMyDiary
 ) {
 

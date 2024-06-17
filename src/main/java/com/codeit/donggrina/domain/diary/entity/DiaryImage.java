@@ -30,7 +30,7 @@ public class DiaryImage extends Timestamp {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "diary_id", nullable = false, foreignKey = @ForeignKey(name = "fk_diary_diary_image"))
+    @JoinColumn(name = "diary_id", foreignKey = @ForeignKey(name = "fk_diary_diary_image"))
     private Diary diary;
 
     @Builder

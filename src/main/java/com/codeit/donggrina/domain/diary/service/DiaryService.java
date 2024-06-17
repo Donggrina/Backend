@@ -1,6 +1,8 @@
 package com.codeit.donggrina.domain.diary.service;
 
 import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
+import com.codeit.donggrina.domain.comment.dto.response.CommentFindResponse;
+import com.codeit.donggrina.domain.comment.entity.Comment;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryCreateRequest;
 import com.codeit.donggrina.domain.diary.dto.request.DiarySearchRequest;
 import com.codeit.donggrina.domain.diary.dto.request.DiaryUpdateRequest;
@@ -11,6 +13,8 @@ import com.codeit.donggrina.domain.diary.entity.DiaryImage;
 import com.codeit.donggrina.domain.diary.entity.DiaryPet;
 import com.codeit.donggrina.domain.diary.repository.DiaryImageRepository;
 import com.codeit.donggrina.domain.diary.repository.DiaryRepository;
+import com.codeit.donggrina.domain.heart.entity.Heart;
+import com.codeit.donggrina.domain.heart.repository.HeartRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
 import com.codeit.donggrina.domain.pet.entity.Pet;
@@ -18,6 +22,7 @@ import com.codeit.donggrina.domain.pet.repository.PetRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +36,7 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final PetRepository petRepository;
     private final DiaryImageRepository diaryImageRepository;
+    private final HeartRepository heartRepository;
 
     @Transactional
     public void createDiary(DiaryCreateRequest diaryCreateRequest, Long memberId) {
@@ -117,6 +123,11 @@ public class DiaryService {
                 if(!diary.getDiaryImages().isEmpty()) {
                     contentImage = diary.getDiaryImages().get(FIRST_IMAGE).getUrl();
                 }
+              
+                int commentCount = getCommentCount(diary);
+
+                Optional<Heart> favoriteOptional = heartRepository.findByMemberAndDiary(
+                    currentMember, diary);
 
                 return DiaryFindListResponse.builder()
                     .diaryId(diary.getId())
@@ -125,6 +136,9 @@ public class DiaryService {
                     .petImages(petImages)
                     .content(diary.getContent())
                     .contentImage(contentImage)
+                    .commentCount(commentCount)
+                    .favoriteCount(diary.getHeartCount())
+                    .favoriteState(favoriteOptional.isPresent())
                     .isMyDiary(currentMember.getId().equals(diary.getMember().getId()))
                     .build();
             })
@@ -145,6 +159,39 @@ public class DiaryService {
             .map(DiaryImage::getUrl)
             .toList();
 
+        Optional<Heart> favoriteOptional = heartRepository.findByMemberIdAndDiary(memberId,
+            foundDiary);
+
+        List<CommentFindResponse> comments = foundDiary.getComments().stream()
+            .map(comment -> {
+
+                List<CommentFindResponse> childrenResponse = new ArrayList<>();
+                List<Comment> children = comment.getChildren();
+
+                for (Comment child : children) {
+                    Member commentAuthor = child.getMember();
+
+                    childrenResponse.add(CommentFindResponse.builder()
+                        .commentId(child.getId())
+                        .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
+                        .commentAuthor(commentAuthor.getNickname())
+                        .date(child.getCreatedAt().toLocalDate())
+                        .isMyComment(commentAuthor.getId().equals(memberId))
+                        .build());
+                }
+                Member commentAuthor = comment.getMember();
+
+                return CommentFindResponse.builder()
+                    .commentId(comment.getId())
+                    .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
+                    .commentAuthor(commentAuthor.getNickname())
+                    .date(comment.getCreatedAt().toLocalDate())
+                    .isMyComment(commentAuthor.getId().equals(memberId))
+                    .children(childrenResponse)
+                    .build();
+            })
+            .toList();
+
         Member author = foundDiary.getMember();
 
         return DiaryFindResponse.builder()
@@ -154,6 +201,9 @@ public class DiaryService {
             .contentImages(contentImages)
             .content(foundDiary.getContent())
             .weather(foundDiary.getWeather())
+            .favoriteState(favoriteOptional.isPresent())
+            .favoriteCount(foundDiary.getHeartCount())
+            .comments(comments)
             .isMyDiary(author.getId().equals(memberId))
             .build();
     }
@@ -178,8 +228,13 @@ public class DiaryService {
 
                 String imageUrl = null;
                 if(!diary.getDiaryImages().isEmpty()) {
-                    imageUrl = diary.getDiaryImages().get(0).getUrl();
+                    imageUrl = diary.getDiaryImages().get(FIRST_IMAGE).getUrl();
                 }
+
+                int commentCount = getCommentCount(diary);
+
+                Optional<Heart> favoriteOptional = heartRepository.findByMemberAndDiary(
+                    currentMember, diary);
 
                 return DiaryFindListResponse.builder()
                     .diaryId(diary.getId())
@@ -188,9 +243,22 @@ public class DiaryService {
                     .petImages(imageUrls)
                     .contentImage(imageUrl)
                     .content(diary.getContent())
+                    .commentCount(commentCount)
+                    .favoriteCount(diary.getHeartCount())
+                    .favoriteState(favoriteOptional.isPresent())
                     .isMyDiary(currentMember.getId().equals(diary.getMember().getId()))
                     .build();
             })
             .toList();
+    }
+
+    private int getCommentCount(Diary diary) {
+        int commentCount = diary.getComments().size();
+        List<Comment> comments = diary.getComments();
+        for (Comment comment : comments) {
+            commentCount += comment.getChildren().size();
+        }
+
+        return commentCount;
     }
 }
