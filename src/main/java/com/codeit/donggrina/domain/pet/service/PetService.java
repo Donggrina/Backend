@@ -23,25 +23,25 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PetService {
 
+    private final MemberRepository memberRepository;
+    private final PetRepository petRepository;
+    private final ProfileImageRepository profileImageRepository;
     @Value("${image.url.default.dog}")
     private String DOG_DEFAULT_IMAGE_URL;
     @Value("${image.url.default.cat}")
     private String CAT_DEFAULT_IMAGE_URL;
 
-    private final MemberRepository memberRepository;
-    private final PetRepository petRepository;
-    private final ProfileImageRepository profileImageRepository;
-
     @Transactional
     public void addPet(Long memberId, PetAddRequest petAddRequest) {
         Member currentMember = memberRepository.findById(memberId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
         ProfileImage image = null;
-        if(petAddRequest.imageId() != null) {
-            image = profileImageRepository.findById(petAddRequest.imageId()).orElseThrow(RuntimeException::new);
+        if (petAddRequest.imageId() != null) {
+            image = profileImageRepository.findById(petAddRequest.imageId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이미지입니다."));
 
-        }else {
+        } else {
             String url = DOG_DEFAULT_IMAGE_URL;
             if (petAddRequest.type().equals(Type.CAT)) {
                 url = CAT_DEFAULT_IMAGE_URL;
@@ -72,7 +72,7 @@ public class PetService {
 
     public List<PetFindListResponse> findPetList(Long memberId) {
         Member currentMember = memberRepository.findById(memberId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
         List<Pet> pets = currentMember.getGroup().getPets();
         return pets.stream()
@@ -81,7 +81,8 @@ public class PetService {
     }
 
     public PetFindResponse findPet(Long petId) {
-        return petRepository.findPetResponseById(petId).orElseThrow(RuntimeException::new);
+        return petRepository.findPetResponseById(petId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려동물입니다."));
     }
 
     @Transactional
@@ -91,12 +92,14 @@ public class PetService {
 
     @Transactional
     public void updatePet(Long petId, PetUpdateRequest petUpdateRequest) {
-        Pet targetPet = petRepository.findById(petId).orElseThrow(RuntimeException::new);
+        Pet targetPet = petRepository.findById(petId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려동물입니다."));
         ProfileImage updatedProfileImage = profileImageRepository.findById(
                 petUpdateRequest.imageId())
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이미지입니다."));
 
-        targetPet.update(petUpdateRequest.name(), petUpdateRequest.sex(), petUpdateRequest.birthDate(),
+        targetPet.update(petUpdateRequest.name(), petUpdateRequest.sex(),
+            petUpdateRequest.birthDate(),
             petUpdateRequest.adoptionDate(), petUpdateRequest.type(), petUpdateRequest.species(),
             petUpdateRequest.weight(), petUpdateRequest.isNeutered(), updatedProfileImage);
     }

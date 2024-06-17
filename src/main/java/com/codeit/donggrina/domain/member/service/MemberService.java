@@ -18,15 +18,17 @@ public class MemberService {
     private final ProfileImageRepository profileImageRepository;
 
     public MyProfileGetResponse getMyProfile(Long memberId) {
-        return memberRepository.findMyProfileById(memberId).orElseThrow(RuntimeException::new);
+        return memberRepository.findMyProfileById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
     }
 
     @Transactional
     public void updateMyProfile(Long memberId, MemberUpdateRequest memberUpdateRequest) {
         Member currentMember = memberRepository.findById(memberId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
         ProfileImage updatedProfileImage = profileImageRepository.findById(
-                memberUpdateRequest.imageId()).orElseThrow(RuntimeException::new);
+                memberUpdateRequest.imageId())
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이미지입니다."));
 
         currentMember.updateNickname(memberUpdateRequest.name());
         currentMember.updateProfileImage(updatedProfileImage);
