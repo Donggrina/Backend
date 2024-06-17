@@ -23,13 +23,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         int exceptionCode = (Integer) request.getAttribute("exceptionCode");
 
         if(exceptionCode == HttpStatus.UNAUTHORIZED.value()) {
-            sendResponse(response, exceptionCode, "토큰이 만료되었습니다.");
+            sendResponse(response, exceptionCode, "토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED.value());
         } else if(exceptionCode == HttpStatus.BAD_REQUEST.value()) {
-            sendResponse(response, exceptionCode, "토큰이 존재하지않습니다.");
+            sendResponse(response, exceptionCode, "토큰이 존재하지않습니다.", HttpStatus.BAD_REQUEST.value());
         }
     }
 
-    private void sendResponse(HttpServletResponse response, int exceptionCode, String message) {
+    private void sendResponse(HttpServletResponse response, int exceptionCode, String message, int status) {
+        response.setStatus(status);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         ErrorResponse errorResponse = ErrorResponse.builder()
