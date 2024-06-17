@@ -10,6 +10,7 @@ import com.codeit.donggrina.domain.pet.dto.request.PetUpdateRequest;
 import com.codeit.donggrina.domain.pet.dto.response.PetFindListResponse;
 import com.codeit.donggrina.domain.pet.dto.response.PetFindResponse;
 import com.codeit.donggrina.domain.pet.entity.Pet;
+import com.codeit.donggrina.domain.pet.entity.Type;
 import com.codeit.donggrina.domain.pet.repository.PetRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class PetService {
 
     @Value("${image.url.default.dog}")
-    private String DEFAULT_IMAGE_URL;
+    private String DOG_DEFAULT_IMAGE_URL;
+    @Value("${image.url.default.cat}")
+    private String CAT_DEFAULT_IMAGE_URL;
+
     private final MemberRepository memberRepository;
     private final PetRepository petRepository;
     private final ProfileImageRepository profileImageRepository;
@@ -38,9 +42,14 @@ public class PetService {
             image = profileImageRepository.findById(petAddRequest.imageId()).orElseThrow(RuntimeException::new);
 
         }else {
+            String url = DOG_DEFAULT_IMAGE_URL;
+            if (petAddRequest.type().equals(Type.CAT)) {
+                url = CAT_DEFAULT_IMAGE_URL;
+            }
+
             image = ProfileImage.builder()
                 .name("pet_default_image")
-                .url(DEFAULT_IMAGE_URL)
+                .url(url)
                 .build();
         }
 
