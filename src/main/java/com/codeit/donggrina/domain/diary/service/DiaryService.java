@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DiaryService {
 
+    private final int FIRST_IMAGE = 0;
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
     private final PetRepository petRepository;
@@ -118,6 +119,11 @@ public class DiaryService {
                     .map(diaryPet -> diaryPet.getPet().getProfileImage().getUrl())
                     .toList();
 
+                String contentImage = null;
+                if(!diary.getDiaryImages().isEmpty()) {
+                    contentImage = diary.getDiaryImages().get(FIRST_IMAGE).getUrl();
+                }
+              
                 int commentCount = getCommentCount(diary);
 
                 Optional<Heart> favoriteOptional = heartRepository.findByMemberAndDiary(
@@ -129,7 +135,7 @@ public class DiaryService {
                     .author(currentMember.getNickname())
                     .petImages(petImages)
                     .content(diary.getContent())
-                    .contentImage(diary.getDiaryImages().get(0).getUrl())
+                    .contentImage(contentImage)
                     .commentCount(commentCount)
                     .favoriteCount(diary.getHeartCount())
                     .favoriteState(favoriteOptional.isPresent())
@@ -222,7 +228,7 @@ public class DiaryService {
 
                 String imageUrl = null;
                 if(!diary.getDiaryImages().isEmpty()) {
-                    imageUrl = diary.getDiaryImages().get(0).getUrl();
+                    imageUrl = diary.getDiaryImages().get(FIRST_IMAGE).getUrl();
                 }
 
                 int commentCount = getCommentCount(diary);
