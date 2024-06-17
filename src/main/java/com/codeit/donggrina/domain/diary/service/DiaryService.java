@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DiaryService {
 
+    private final int FIRST_IMAGE = 0;
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
     private final PetRepository petRepository;
@@ -112,13 +113,18 @@ public class DiaryService {
                     .map(diaryPet -> diaryPet.getPet().getProfileImage().getUrl())
                     .toList();
 
+                String contentImage = null;
+                if(!diary.getDiaryImages().isEmpty()) {
+                    contentImage = diary.getDiaryImages().get(FIRST_IMAGE).getUrl();
+                }
+
                 return DiaryFindListResponse.builder()
                     .diaryId(diary.getId())
                     .authorImage(currentMember.getProfileImage().getUrl())
                     .author(currentMember.getNickname())
                     .petImages(petImages)
                     .content(diary.getContent())
-                    .contentImage(diary.getDiaryImages().get(0).getUrl())
+                    .contentImage(contentImage)
                     .isMyDiary(currentMember.getId().equals(diary.getMember().getId()))
                     .build();
             })

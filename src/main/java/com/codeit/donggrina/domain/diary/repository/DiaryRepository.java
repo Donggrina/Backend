@@ -18,7 +18,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, CustomDiary
         + " join fetch d.diaryPets dp"
         + " join fetch dp.pet p"
         + " join fetch p.profileImage"
-        + " join fetch d.diaryImages"
+        + " left join fetch d.diaryImages"
         + " where d.group = :group and d.date = :date")
     List<Diary> findAllByDate(LocalDate date, Group group);
 
