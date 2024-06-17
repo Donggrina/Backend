@@ -75,3 +75,4 @@ image:
     default:
       member: ${MEMBER_DEFAULT_IMAGE_URL}
       dog: ${DOG_DEFAULT_IMAGE_URL}
+      cat: ${CAT_DEFAULT_IMAGE_URL}
