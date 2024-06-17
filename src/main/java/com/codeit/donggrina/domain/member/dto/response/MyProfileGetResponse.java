@@ -8,6 +8,7 @@ public record MyProfileGetResponse(
     Long id,
     String name,
     String nickname,
+    Long imageId,
     String profileImageUrl
 ) {
     public static MyProfileGetResponse from(Member member) {
@@ -15,6 +16,7 @@ public record MyProfileGetResponse(
             .id(member.getId())
             .name(member.getName())
             .nickname(member.getNickname())
+            .imageId(member.getProfileImage().getId())
             .profileImageUrl(member.getProfileImage().getUrl())
             .build();
     }
