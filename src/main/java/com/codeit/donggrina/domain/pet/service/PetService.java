@@ -94,20 +94,34 @@ public class PetService {
 
     @Transactional
     public void deletePet(Long petId) {
-        petRepository.deleteById(petId);
+        Pet targetPet = petRepository.findById(petId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려동물입니다."));
+        petRepository.delete(targetPet);
     }
 
     @Transactional
     public void updatePet(Long petId, PetUpdateRequest petUpdateRequest) {
         Pet targetPet = petRepository.findById(petId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 반려동물입니다."));
-        ProfileImage updatedProfileImage = profileImageRepository.findById(
-                petUpdateRequest.imageId())
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이미지입니다."));
+
+        ProfileImage updateProfileImage = null;
+        if(petUpdateRequest.imageId() == null) {
+            String url = DOG_DEFAULT_IMAGE_URL;
+            updateProfileImage = targetPet.getProfileImage();
+            if(petUpdateRequest.type().equals(Type.CAT)) {
+                url = CAT_DEFAULT_IMAGE_URL;
+            }
+
+            updateProfileImage.updateUrl(url);
+        } else {
+            updateProfileImage = profileImageRepository.findById(
+                    petUpdateRequest.imageId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이미지입니다."));
+        }
 
         targetPet.update(petUpdateRequest.name(), petUpdateRequest.sex(),
             petUpdateRequest.birthDate(),
             petUpdateRequest.adoptionDate(), petUpdateRequest.type(), petUpdateRequest.species(),
-            petUpdateRequest.weight(), petUpdateRequest.isNeutered(), updatedProfileImage);
+            petUpdateRequest.weight(), petUpdateRequest.isNeutered(), updateProfileImage);
     }
 }
