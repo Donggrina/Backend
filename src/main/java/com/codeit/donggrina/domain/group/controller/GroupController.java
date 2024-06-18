@@ -73,41 +73,38 @@ public class GroupController {
             .build();
     }
 
-    @PutMapping("/my/groups/{groupId}")
+    @PutMapping("/my/groups")
     public ApiResponse<Void> update(
-        @PathVariable Long groupId,
         @RequestBody @Validated GroupUpdateRequest request,
         @AuthenticationPrincipal CustomOAuth2User user
     ) {
         Long userId = user.getMemberId();
-        groupService.update(groupId, request, userId);
+        groupService.update(request, userId);
         return ApiResponse.<Void>builder()
             .code(HttpStatus.OK.value())
             .message("가족(그룹) 정보 수정 성공")
             .build();
     }
 
-    @DeleteMapping("/my/groups/{groupId}")
+    @DeleteMapping("/my/groups")
     public ApiResponse<Void> delete(
-        @PathVariable Long groupId,
         @AuthenticationPrincipal CustomOAuth2User user
     ) {
         Long userId = user.getMemberId();
-        groupService.delete(groupId, userId);
+        groupService.delete(userId);
         return ApiResponse.<Void>builder()
             .code(HttpStatus.OK.value())
             .message("가족(그룹) 삭제 성공")
             .build();
     }
 
-    @PostMapping("/my/groups/{groupId}/members/{targetId}")
+    @PostMapping("/my/groups/members/{targetId}")
     public ApiResponse<Void> deleteMember(
         @PathVariable Long targetId,
-        @PathVariable Long groupId,
         @AuthenticationPrincipal CustomOAuth2User user
     ) {
         Long userId = user.getMemberId();
-        groupService.deleteMember(targetId, groupId, userId);
+        groupService.deleteMember(targetId, userId);
         return ApiResponse.<Void>builder()
             .code(HttpStatus.OK.value())
             .message("가족(그룹) 멤버 삭제 성공")

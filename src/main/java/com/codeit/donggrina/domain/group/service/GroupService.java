@@ -93,11 +93,11 @@ public class GroupService {
     }
 
     @Transactional
-    public void update(Long groupId, GroupUpdateRequest request, Long userId) {
-        Member member = memberRepository.findById(userId)
+    public void update(GroupUpdateRequest request, Long userId) {
+        Member member = memberRepository.findByIdWithGroup(userId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        Group group = groupRepository.findById(groupId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
+        Group group = Optional.ofNullable(member.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
         // 그룹의 생성자와 로그인한 사용자가 일치하는지 확인하고 일치하지 않으면 예외를 발생시킵니다.
         if (!group.getCreator().equals(member.getUsername())) {
@@ -109,11 +109,11 @@ public class GroupService {
     }
 
     @Transactional
-    public void delete(Long groupId, Long userId) {
-        Member member = memberRepository.findById(userId)
+    public void delete(Long userId) {
+        Member member = memberRepository.findByIdWithGroup(userId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        Group group = groupRepository.findById(groupId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
+        Group group = Optional.ofNullable(member.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
         // 그룹의 생성자가 아닌 경우에는 그룹을 삭제할 수 없습니다.
         if (!group.getCreator().equals(member.getUsername())) {
@@ -129,12 +129,12 @@ public class GroupService {
     }
 
     @Transactional
-    public void deleteMember(Long targetId, Long groupId, Long userId) {
+    public void deleteMember(Long targetId, Long userId) {
         // 그룹과 로그인 유저, 삭제 대상 유저를 조회합니다.
-        Group group = groupRepository.findById(groupId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 그룹입니다."));
-        Member loginMember = memberRepository.findById(userId)
+        Member loginMember = memberRepository.findByIdWithGroup(userId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Group group = Optional.ofNullable(loginMember.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
         Member targetMember = memberRepository.findById(targetId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
