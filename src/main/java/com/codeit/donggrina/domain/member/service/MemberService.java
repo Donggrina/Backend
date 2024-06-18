@@ -40,7 +40,7 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이미지입니다."));
         }
 
-        currentMember.updateNickname(memberUpdateRequest.name());
+        currentMember.updateNickname(memberUpdateRequest.nickname());
         currentMember.updateProfileImage(updateImage);
     }
 }
