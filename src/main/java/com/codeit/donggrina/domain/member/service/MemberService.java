@@ -32,10 +32,8 @@ public class MemberService {
 
         ProfileImage updateImage = null;
         if(memberUpdateRequest.imageId() == null) {
-            updateImage = ProfileImage.builder()
-                .url(MEMBER_DEFAULT_IMAGE)
-                .name("member_profile_image")
-                .build();
+            updateImage = currentMember.getProfileImage();
+            updateImage.updateUrl(MEMBER_DEFAULT_IMAGE);
         }else {
             updateImage = profileImageRepository.findById(
                     memberUpdateRequest.imageId())
