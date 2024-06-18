@@ -56,7 +56,8 @@ public class CalendarService {
         return calendarRepository.getDayListByDate(groupId, date)
             .stream()
             .map(calendar -> {
-                boolean isMine = calendar.getMember().equals(member);
+                boolean isMine = calendar.getMember().equals(member) || member.getUsername()
+                    .equals(group.getCreator());
                 return CalendarListResponse.from(calendar, isMine);
             })
             .toList();
@@ -66,12 +67,13 @@ public class CalendarService {
         // 로그인 한 유저를 조회합니다.
         Member member = memberRepository.findByIdWithGroup(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        Optional.ofNullable(member.getGroup())
+        Group group = Optional.ofNullable(member.getGroup())
             .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
         // 일정을 조회하고, 조회한 일정이 로그인한 유저가 작성한 일정인지 확인합니다.
         Calendar findCalendar = calendarRepository.getDetail(calendarId);
-        boolean isMine = findCalendar.getMember().equals(member);
+        boolean isMine = findCalendar.getMember().equals(member) || member.getUsername()
+            .equals(group.getCreator());
 
         return CalendarDetailResponse.from(findCalendar, isMine);
     }
@@ -86,7 +88,8 @@ public class CalendarService {
         return calendarRepository.findBySearchFilter(groupId, searchFilter)
             .stream()
             .map(calendar -> {
-                boolean isMine = calendar.getMember().equals(member);
+                boolean isMine = calendar.getMember().equals(member) || member.getUsername()
+                    .equals(group.getCreator());
                 return CalendarListResponse.from(calendar, isMine);
             })
             .toList();

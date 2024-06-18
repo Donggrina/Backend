@@ -35,7 +35,8 @@ public class GrowthHistoryService {
         return growthHistoryRepository.findGrowthHistoryDetailByDate(groupId, date)
             .stream()
             .map(growthHistory -> {
-                boolean isMine = growthHistory.getMember().equals(member);
+                boolean isMine = growthHistory.getMember().equals(member) || member.getUsername()
+                    .equals(group.getCreator());
                 return GrowthHistoryListResponse.from(growthHistory, isMine);
             })
             .toList();
@@ -44,11 +45,12 @@ public class GrowthHistoryService {
     public GrowthHistoryDetailResponse getDetail(Long growthId, Long memberId) {
         Member member = memberRepository.findByIdWithGroup(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        Optional.ofNullable(member.getGroup())
+        Group group = Optional.ofNullable(member.getGroup())
             .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
         GrowthHistory growthHistory = growthHistoryRepository.findGrowthHistoryDetail(growthId);
-        boolean isMine = growthHistory.getMember().equals(member);
+        boolean isMine = growthHistory.getMember().equals(member) || member.getUsername()
+            .equals(group.getCreator());
         return GrowthHistoryDetailResponse.from(growthHistory, isMine);
     }
 
@@ -62,7 +64,8 @@ public class GrowthHistoryService {
         return growthHistoryRepository.findGrowthHistoryBySearchFilter(groupId, searchFilter)
             .stream()
             .map(growthHistory -> {
-                boolean isMine = growthHistory.getMember().equals(member);
+                boolean isMine = growthHistory.getMember().equals(member) || member.getUsername()
+                    .equals(group.getCreator());
                 return GrowthHistoryListResponse.from(growthHistory, isMine);
             })
             .toList();
