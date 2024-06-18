@@ -15,5 +15,5 @@ public interface CustomCalendarRepository {
 
     Calendar getDetail(Long calendarId);
 
-    List<Calendar> findBySearchFilter(SearchFilter searchFilter);
+    List<Calendar> findBySearchFilter(Long groupId, SearchFilter searchFilter);
 }

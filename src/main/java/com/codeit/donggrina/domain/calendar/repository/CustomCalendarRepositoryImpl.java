@@ -86,7 +86,7 @@ public class CustomCalendarRepositoryImpl implements CustomCalendarRepository {
     }
 
     @Override
-    public List<Calendar> findBySearchFilter(SearchFilter searchFilter) {
+    public List<Calendar> findBySearchFilter(Long groupId, SearchFilter searchFilter) {
         return queryFactory
             .selectFrom(calendar)
             .leftJoin(calendar.member, member).fetchJoin()
@@ -96,7 +96,8 @@ public class CustomCalendarRepositoryImpl implements CustomCalendarRepository {
             .where(
                 containsKeyword(searchFilter.keyword()),
                 inPetNames(searchFilter.petNames()),
-                inWriterNames(searchFilter.writerNames())
+                inWriterNames(searchFilter.writerNames()),
+                calendar.member.group.id.eq(groupId)
             )
             .orderBy(calendar.id.desc())
             .fetch();
