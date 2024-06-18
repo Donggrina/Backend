@@ -43,6 +43,9 @@ public class DiaryService {
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
+        Optional.ofNullable(currentMember.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
+
         List<DiaryImage> images = new ArrayList<>();
         if (diaryCreateRequest.images() != null) {
             images = diaryCreateRequest.images().stream()
@@ -50,7 +53,6 @@ public class DiaryService {
                     diaryImageRepository.findById(imageId)
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이미지입니다.")))
                 .toList();
-
         }
         List<Pet> pets = diaryCreateRequest.pets().stream()
             .map((id) ->
@@ -83,6 +85,9 @@ public class DiaryService {
 
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
+
+        Optional.ofNullable(currentMember.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
         if (!targetDiary.getMember().getId().equals(memberId) && !targetDiary.getGroup()
             .getCreator()
@@ -122,6 +127,10 @@ public class DiaryService {
     public List<DiaryFindListResponse> findDiaries(Long memberId, LocalDate date) {
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
+
+        Optional.ofNullable(currentMember.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
+
         List<Diary> foundDiaries = diaryRepository.findAllByDate(date, currentMember.getGroup());
 
         return foundDiaries.stream()
@@ -224,6 +233,10 @@ public class DiaryService {
         Long memberId) {
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
+
+        Optional.ofNullable(currentMember.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
+
         List<Diary> foundDiaries = diaryRepository.searchDiaries(diarySearchRequest);
 
         return foundDiaries.stream()
