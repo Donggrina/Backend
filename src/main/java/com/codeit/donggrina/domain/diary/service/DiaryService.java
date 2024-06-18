@@ -13,6 +13,7 @@ import com.codeit.donggrina.domain.diary.entity.DiaryImage;
 import com.codeit.donggrina.domain.diary.entity.DiaryPet;
 import com.codeit.donggrina.domain.diary.repository.DiaryImageRepository;
 import com.codeit.donggrina.domain.diary.repository.DiaryRepository;
+import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.heart.entity.Heart;
 import com.codeit.donggrina.domain.heart.repository.HeartRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
@@ -83,15 +84,15 @@ public class DiaryService {
         Diary targetDiary = diaryRepository.findById(diaryId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
 
-        Member currentMember = memberRepository.findById(memberId)
+        Member currentMember = memberRepository.findByIdWithGroup(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
         Optional.ofNullable(currentMember.getGroup())
             .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
         if (!targetDiary.getMember().getId().equals(memberId) && !targetDiary.getGroup()
-            .getCreator()
-            .equals(currentMember.getUsername())) {
+            .getCreator().equals(currentMember.getUsername())) {
+
             throw new IllegalArgumentException("삭제가 불가능합니다.");
         }
 
@@ -114,10 +115,15 @@ public class DiaryService {
 
     @Transactional
     public void deleteDiary(Long diaryId, Long memberId) {
+        Member currentMember = memberRepository.findByIdWithGroup(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
+
         Diary targetDiary = diaryRepository.findById(diaryId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
 
-        if (targetDiary.getMember().getId().equals(memberId)) {
+        if (targetDiary.getMember().getId().equals(memberId) || targetDiary.getGroup().getCreator()
+            .equals(currentMember.getUsername())) {
+
             diaryRepository.delete(targetDiary);
             return;
         }
@@ -125,7 +131,7 @@ public class DiaryService {
     }
 
     public List<DiaryFindListResponse> findDiaries(Long memberId, LocalDate date) {
-        Member currentMember = memberRepository.findById(memberId)
+        Member currentMember = memberRepository.findByIdWithGroup(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
         Optional.ofNullable(currentMember.getGroup())
@@ -160,7 +166,8 @@ public class DiaryService {
                     .commentCount(commentCount)
                     .favoriteCount(diary.getHeartCount())
                     .favoriteState(favoriteOptional.isPresent())
-                    .isMyDiary(currentMember.getId().equals(diary.getMember().getId()))
+                    .isMyDiary(currentMember.getId().equals(diary.getMember().getId())
+                        || currentMember.getGroup().getCreator().equals(currentMember.getUsername()))
                     .build();
             })
             .toList();
@@ -169,6 +176,11 @@ public class DiaryService {
     public DiaryFindResponse findDiary(Long diaryId, Long memberId) {
         Diary foundDiary = diaryRepository.findByIdWithDetails(diaryId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
+
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
+
+        Group foundDiaryGroup = foundDiary.getGroup();
 
         List<Pet> pets = foundDiary.getDiaryPets().stream()
             .map(DiaryPet::getPet)
@@ -197,7 +209,8 @@ public class DiaryService {
                         .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
                         .commentAuthor(commentAuthor.getNickname())
                         .date(child.getCreatedAt().toLocalDate())
-                        .isMyComment(commentAuthor.getId().equals(memberId))
+                        .isMyComment(commentAuthor.getId().equals(memberId)
+                            || foundDiaryGroup.getCreator().equals(currentMember.getUsername()))
                         .build());
                 }
                 Member commentAuthor = comment.getMember();
@@ -207,7 +220,8 @@ public class DiaryService {
                     .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
                     .commentAuthor(commentAuthor.getNickname())
                     .date(comment.getCreatedAt().toLocalDate())
-                    .isMyComment(commentAuthor.getId().equals(memberId))
+                    .isMyComment(commentAuthor.getId().equals(memberId)
+                        || foundDiaryGroup.getCreator().equals(currentMember.getUsername()))
                     .children(childrenResponse)
                     .build();
             })
@@ -225,19 +239,21 @@ public class DiaryService {
             .favoriteState(favoriteOptional.isPresent())
             .favoriteCount(foundDiary.getHeartCount())
             .comments(comments)
-            .isMyDiary(author.getId().equals(memberId))
+            .isMyDiary(author.getId().equals(memberId)
+                || foundDiaryGroup.getCreator().equals(currentMember.getUsername()))
             .build();
     }
 
     public List<DiaryFindListResponse> searchDiaries(DiarySearchRequest diarySearchRequest,
         Long memberId) {
-        Member currentMember = memberRepository.findById(memberId)
+        Member currentMember = memberRepository.findByIdWithGroup(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
         Optional.ofNullable(currentMember.getGroup())
             .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
-        List<Diary> foundDiaries = diaryRepository.searchDiaries(diarySearchRequest);
+        List<Diary> foundDiaries = diaryRepository.searchDiaries(diarySearchRequest,
+            currentMember.getGroup());
 
         return foundDiaries.stream()
             .map(diary -> {
@@ -273,7 +289,8 @@ public class DiaryService {
                     .commentCount(commentCount)
                     .favoriteCount(diary.getHeartCount())
                     .favoriteState(favoriteOptional.isPresent())
-                    .isMyDiary(currentMember.getId().equals(diary.getMember().getId()))
+                    .isMyDiary(currentMember.getId().equals(diary.getMember().getId())
+                        || currentMember.getGroup().getCreator().equals(currentMember.getUsername()))
                     .build();
             })
             .toList();
