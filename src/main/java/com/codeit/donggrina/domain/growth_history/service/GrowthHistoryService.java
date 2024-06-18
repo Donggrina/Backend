@@ -55,10 +55,11 @@ public class GrowthHistoryService {
     public List<GrowthHistoryListResponse> search(SearchFilter searchFilter, Long memberId) {
         Member member = memberRepository.findByIdWithGroup(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        Optional.ofNullable(member.getGroup())
+        Group group = Optional.ofNullable(member.getGroup())
             .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
+        Long groupId = group.getId();
 
-        return growthHistoryRepository.findGrowthHistoryBySearchFilter(searchFilter)
+        return growthHistoryRepository.findGrowthHistoryBySearchFilter(groupId, searchFilter)
             .stream()
             .map(growthHistory -> {
                 boolean isMine = growthHistory.getMember().equals(member);

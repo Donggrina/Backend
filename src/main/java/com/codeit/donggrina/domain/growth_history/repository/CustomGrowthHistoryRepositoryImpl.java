@@ -54,6 +54,7 @@ public class CustomGrowthHistoryRepositoryImpl implements CustomGrowthHistoryRep
 
     @Override
     public List<GrowthHistory> findGrowthHistoryBySearchFilter(
+        Long groupId,
         SearchFilter searchFilter) {
         return queryFactory
             .selectFrom(growthHistory)
@@ -64,7 +65,8 @@ public class CustomGrowthHistoryRepositoryImpl implements CustomGrowthHistoryRep
             .where(
                 containsKeyword(searchFilter.keyword()),
                 inPetNames(searchFilter.petNames()),
-                inWriterNames(searchFilter.writerNames())
+                inWriterNames(searchFilter.writerNames()),
+                member.group.id.eq(groupId)
             )
             .orderBy(growthHistory.id.desc())
             .fetch();
