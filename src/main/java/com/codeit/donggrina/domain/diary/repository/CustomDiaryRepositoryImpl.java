@@ -7,6 +7,7 @@ import static com.codeit.donggrina.domain.pet.entity.QPet.*;
 
 import com.codeit.donggrina.domain.diary.dto.request.DiarySearchRequest;
 import com.codeit.donggrina.domain.diary.entity.Diary;
+import com.codeit.donggrina.domain.group.entity.Group;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -36,7 +37,7 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
     }
 
     @Override
-    public List<Diary> searchDiaries(DiarySearchRequest request) {
+    public List<Diary> searchDiaries(DiarySearchRequest request, Group group) {
         return queryFactory.selectFrom(diary)
             .leftJoin(diary.member, member).fetchJoin()
             .leftJoin(diary.diaryImages).fetchJoin()
@@ -44,12 +45,17 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
             .leftJoin(diaryPet.pet, pet).fetchJoin()
             .leftJoin(pet.profileImage).fetchJoin()
             .where(
+                eqGroup(group),
                 eqDate(request.date()),
                 eqAuthor(request.authors()),
                 eqPet(request.petIds()),
                 eqKeyword(request.keyword())
             )
             .fetch();
+    }
+
+    private BooleanExpression eqGroup(Group group) {
+        return diary.group.eq(group);
     }
 
     private BooleanExpression eqDate(LocalDate date) {
