@@ -7,7 +7,9 @@ import com.codeit.donggrina.domain.group.dto.response.GroupDetailResponse;
 import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.entity.QGroup;
 import com.codeit.donggrina.domain.member.dto.response.MyProfileGetResponse;
+import com.codeit.donggrina.domain.member.entity.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,6 +45,7 @@ public class CustomGroupRepositoryImpl implements CustomGroupRepository {
         // MyProfileGetResponse 기반 members 생성
         List<MyProfileGetResponse> members = group.getMembers()
             .stream()
+            .sorted(Comparator.comparing(Member::getJoinGroupAt))
             .map(MyProfileGetResponse::from)
             .collect(Collectors.toList());
 

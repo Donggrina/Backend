@@ -16,6 +16,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,6 +54,8 @@ public class Member extends Timestamp {
     @JoinColumn(name = "clusters_id", foreignKey = @ForeignKey(name = "fk_clusters_member"))
     private Group group;
 
+    private LocalDateTime joinGroupAt;
+
     @Builder
     private Member(Long id, String username, String name, String role, ProfileImage profileImage,
         String nickname) {
@@ -66,6 +69,7 @@ public class Member extends Timestamp {
 
     public void joinGroup(Group group) {
         this.group = group;
+        this.joinGroupAt = LocalDateTime.now();
     }
 
     public void leaveGroup() {
