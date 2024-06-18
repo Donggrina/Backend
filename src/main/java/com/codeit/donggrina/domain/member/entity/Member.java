@@ -43,7 +43,7 @@ public class Member extends Timestamp {
     @Column(nullable = false)
     private String role;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "profile_image_id", nullable = false, foreignKey = @ForeignKey(name = "fk_profile_image_member"))
     private ProfileImage profileImage;
 

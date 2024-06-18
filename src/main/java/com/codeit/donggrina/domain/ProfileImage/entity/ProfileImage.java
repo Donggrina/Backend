@@ -32,4 +32,8 @@ public class ProfileImage extends Timestamp {
         this.name = name;
         this.url = url;
     }
+
+    public void updateUrl(String url) {
+        this.url = url;
+    }
 }
