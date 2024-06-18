@@ -58,8 +58,11 @@ public class CommentService {
     @Transactional
     public void update(Long commentId, CommentUpdateRequest request, Long memberId) {
         // 댓글을 수정하는 로그인 멤버와 수정할 댓글을 조회합니다.
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByIdWithGroup(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Optional.ofNullable(member.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다." ));
+
         Comment comment = commentRepository.findById(commentId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
