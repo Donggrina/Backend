@@ -9,10 +9,7 @@ import com.codeit.donggrina.domain.group.entity.Group;
 import com.codeit.donggrina.domain.group.repository.GroupRepository;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.member.repository.MemberRepository;
-import com.codeit.donggrina.domain.pet.dto.request.PetAddRequest;
-import com.codeit.donggrina.domain.pet.dto.response.PetFindListResponse;
-import com.codeit.donggrina.domain.pet.entity.Pet;
-import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,21 +28,21 @@ public class GroupService {
 
     @Transactional(readOnly = true)
     public GroupDetailResponse getDetail(Long userId) {
-        Member member = memberRepository.findById(userId)
+        Member member = memberRepository.findByIdWithGroup(userId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        if (member.getGroup() == null) {
-            throw new IllegalArgumentException("그룹에 소속되어 있지 않습니다.");
-        }
+        Optional.ofNullable(member.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
+
         Long groupId = member.getGroup().getId();
         return groupRepository.findGroupDetail(groupId);
     }
 
     public GroupCodeResponse getGroupCode(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByIdWithGroup(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        if (member.getGroup() == null) {
-            throw new IllegalArgumentException("그룹에 소속되어 있지 않습니다.");
-        }
+        Optional.ofNullable(member.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
+
         Long groupId = member.getGroup().getId();
         String invitationCode = member.getGroup().getCode();
         return GroupCodeResponse.builder()
