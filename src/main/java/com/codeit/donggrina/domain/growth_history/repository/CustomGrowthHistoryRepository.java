@@ -11,5 +11,5 @@ public interface CustomGrowthHistoryRepository {
 
     GrowthHistory findGrowthHistoryDetail(Long growthId);
 
-    List<GrowthHistory> findGrowthHistoryBySearchFilter(SearchFilter searchFilter);
+    List<GrowthHistory> findGrowthHistoryBySearchFilter(Long groupId, SearchFilter searchFilter);
 }
