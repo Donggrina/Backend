@@ -13,6 +13,7 @@ import com.codeit.donggrina.domain.pet.entity.Pet;
 import com.codeit.donggrina.domain.pet.entity.Type;
 import com.codeit.donggrina.domain.pet.repository.PetRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,9 @@ public class PetService {
     public void addPet(Long memberId, PetAddRequest petAddRequest) {
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
+
+        Optional.ofNullable(currentMember.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
         ProfileImage image = null;
         if (petAddRequest.imageId() != null) {
@@ -73,6 +77,9 @@ public class PetService {
     public List<PetFindListResponse> findPetList(Long memberId) {
         Member currentMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
+
+        Optional.ofNullable(currentMember.getGroup())
+            .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
         List<Pet> pets = currentMember.getGroup().getPets();
         return pets.stream()
