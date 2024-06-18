@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record PetUpdateRequest(
-    @NotNull(message = "이미지 아이디를 입력해주세요.")
     Long imageId,
     @NotBlank(message = "이름을 입력해주세요.")
     String name,
