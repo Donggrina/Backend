@@ -14,6 +14,6 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
         "from Pet p " +
         "join p.profileImage pi " +
         "WHERE p.id = :petId")
-    Optional<PetFindResponse> findPetResponseById(Long petId);
+    Optional<PetFindResponse> findPetDetailById(Long petId);
 
 }

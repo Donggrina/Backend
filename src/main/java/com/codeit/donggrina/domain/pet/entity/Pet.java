@@ -73,9 +73,7 @@ public class Pet extends Timestamp {
 
     @Builder
     private Pet(Long id, String name, Sex sex, LocalDate birthDate, LocalDate adoptionDate,
-        Type type,
-        String species, double weight, boolean isNeutered, Group group,
-        ProfileImage profileImage) {
+        Type type, String species, double weight, boolean isNeutered, ProfileImage profileImage) {
         this.id = id;
         this.name = name;
         this.sex = sex;
@@ -85,7 +83,6 @@ public class Pet extends Timestamp {
         this.species = species;
         this.weight = weight;
         this.isNeutered = isNeutered;
-        this.group = group;
         this.profileImage = profileImage;
     }
 
@@ -100,5 +97,9 @@ public class Pet extends Timestamp {
         this.weight = weight;
         this.isNeutered = isNeutered;
         this.profileImage = profileImage;
+    }
+
+    public void joinGroup(Group group) {
+        this.group = group;
     }
 }

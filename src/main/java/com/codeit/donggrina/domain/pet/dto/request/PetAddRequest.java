@@ -12,7 +12,7 @@ public record PetAddRequest(
     @NotBlank(message = "이름을 입력해주세요.")
     String name,
     Sex sex,
-    @NotNull(message = "생일 입력해주세요.")
+    @NotNull(message = "생일을 입력해주세요.")
     LocalDate birthDate,
     @NotNull(message = "입양일을 입력해주세요.")
     LocalDate adoptionDate,

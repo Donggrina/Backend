@@ -18,15 +18,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/my/pets")
 public class PetController {
 
     private final PetService petService;
 
-    @PostMapping("/my/pets")
+    @PostMapping
     public ApiResponse<Void> addPet(@AuthenticationPrincipal CustomOAuth2User user,
         @RequestBody @Validated PetAddRequest petAddRequest) {
 
@@ -37,7 +39,7 @@ public class PetController {
             .build();
     }
 
-    @GetMapping("/my/pets")
+    @GetMapping
     public ApiResponse<List<PetFindListResponse>> findPetList(
         @AuthenticationPrincipal CustomOAuth2User user) {
 
@@ -48,8 +50,8 @@ public class PetController {
             .build();
     }
 
-    @GetMapping("/my/pets/{petId}")
-    public ApiResponse<PetFindResponse> findPetList(@PathVariable Long petId) {
+    @GetMapping("/{petId}")
+    public ApiResponse<PetFindResponse> findPet(@PathVariable Long petId) {
 
         return ApiResponse.<PetFindResponse>builder()
             .code(HttpStatus.OK.value())
@@ -58,7 +60,7 @@ public class PetController {
             .build();
     }
 
-    @DeleteMapping("/my/pets/{petId}")
+    @DeleteMapping("/{petId}")
     public ApiResponse<Void> deletePet(@PathVariable Long petId) {
         petService.deletePet(petId);
 
@@ -68,7 +70,7 @@ public class PetController {
             .build();
     }
 
-    @PutMapping("my/pets/{petId}")
+    @PutMapping("/{petId}")
     public ApiResponse<Void> updatePet(@PathVariable @Validated Long petId,
         @RequestBody PetUpdateRequest petUpdateRequest) {
         petService.updatePet(petId, petUpdateRequest);
