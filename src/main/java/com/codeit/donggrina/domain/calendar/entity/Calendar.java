@@ -5,6 +5,7 @@ import com.codeit.donggrina.domain.calendar.dto.request.CalendarUpdateRequest;
 import com.codeit.donggrina.domain.calendar.util.CalendarCategoryEnumConverter;
 import com.codeit.donggrina.domain.member.entity.Member;
 import com.codeit.donggrina.domain.pet.entity.Pet;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -20,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -44,6 +47,7 @@ public class Calendar extends Timestamp {
     private LocalDateTime dateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pet_id", nullable = false, foreignKey = @ForeignKey(name = "fk_pet_calendar"))
     private Pet pet;
 
