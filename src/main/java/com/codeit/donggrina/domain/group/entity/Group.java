@@ -67,5 +67,6 @@ public class Group extends Timestamp {
 
     public void addPet(Pet pet) {
         this.pets.add(pet);
+        pet.joinGroup(this);
     }
 }
