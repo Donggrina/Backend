@@ -4,11 +4,9 @@ import com.codeit.donggrina.domain.member.dto.request.CustomOAuth2User;
 import com.codeit.donggrina.domain.member.dto.request.MemberSecurityDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import javax.security.sasl.AuthenticationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,8 +48,9 @@ public class JwtFilter extends OncePerRequestFilter {
         Long id = jwtUtil.getMemberId(token);
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
+        boolean isFamily = jwtUtil.getIsFamily(token);
 
-        CustomOAuth2User customOAuth2User = new CustomOAuth2User(new MemberSecurityDto(id, role, username));
+        CustomOAuth2User customOAuth2User = new CustomOAuth2User(new MemberSecurityDto(id, role, username, isFamily));
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(customOAuth2User, null,
             customOAuth2User.getAuthorities());

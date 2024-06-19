@@ -34,21 +34,24 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String username = customOAuth2User.getUserName();
         Long id = customOAuth2User.getMemberId();
+        boolean isFamily = customOAuth2User.getIsFamily();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         String role = iterator.next().getAuthority();
 
-        String accessToken = jwtUtil.createJwt(id, username, role, ACCESS_EXPIRED_MS);
-        String refreshToken = jwtUtil.createJwt(id, username, role, REFRESH_EXPIRED_MS);
+        String accessToken = jwtUtil.createJwt(id, username, role, isFamily, ACCESS_EXPIRED_MS);
+        String refreshToken = jwtUtil.createJwt(id, username, role, isFamily, REFRESH_EXPIRED_MS);
         refreshTokenRedisRepository.save(refreshToken, REFRESH_EXPIRED_MS);
 
         response.addHeader(HttpHeaders.SET_COOKIE, createCookie("AccessToken", accessToken).toString());
         response.addHeader(HttpHeaders.SET_COOKIE, createCookie("RefreshToken", refreshToken).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, createCookie("isFamily", String.valueOf(isFamily)).toString());
 //        response.sendRedirect("https://www.donggrina.click/start-family");
         response.sendRedirect(
             "http://localhost:3000/start-family?accessToken=" + accessToken + "&refreshToken="
-                + refreshToken);
+                + refreshToken + "&isFamily=" + isFamily);
+
     }
 
     private ResponseCookie createCookie(String key, String value) {
