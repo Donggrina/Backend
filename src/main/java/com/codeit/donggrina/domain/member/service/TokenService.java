@@ -21,8 +21,9 @@ public class TokenService {
             Long memberId = jwtUtil.getMemberId(refreshToken);
             String username = jwtUtil.getUsername(refreshToken);
             String role = jwtUtil.getRole(refreshToken);
+            boolean isFamily = jwtUtil.getIsFamily(refreshToken);
 
-        return jwtUtil.createJwt(memberId, username, role, ACCESS_EXPIRED_MS);
+        return jwtUtil.createJwt(memberId, username, role, isFamily, ACCESS_EXPIRED_MS);
         }
         throw new IllegalArgumentException("로그인이 만료되었습니다.");
     }

@@ -60,11 +60,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member savedMember = memberRepository.save(member);
 
             memberSecurityDto = new MemberSecurityDto(savedMember.getId(), savedMember.getRole(),
-                savedMember.getName(), savedMember.getUsername());
+                savedMember.getName(), savedMember.getUsername(), false);
         } else {
             Member foundMember = foundMemberOptional.get();
             memberSecurityDto = new MemberSecurityDto(foundMember.getId(), foundMember.getRole(),
-                foundMember.getName(), foundMember.getUsername());
+                foundMember.getName(), foundMember.getUsername(), foundMember.getGroup() != null);
         }
 
         return new CustomOAuth2User(memberSecurityDto);

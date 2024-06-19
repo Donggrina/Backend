@@ -42,4 +42,8 @@ public class CustomOAuth2User implements OAuth2User {
         return memberSecurityDto.getId();
     }
 
+    public boolean getIsFamily() {
+        return memberSecurityDto.isFamily();
+    }
+
 }

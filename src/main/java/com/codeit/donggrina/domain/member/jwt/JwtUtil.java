@@ -34,6 +34,11 @@ public class JwtUtil {
             .get("role", String.class);
     }
 
+    public boolean getIsFamily(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+            .get("isFamily", Boolean.class);
+    }
+
     public Boolean isExpired(String token) {
         try {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
@@ -43,11 +48,12 @@ public class JwtUtil {
         return false;
     }
 
-    public String createJwt(Long id, String username, String role, long expiredMs) {
+    public String createJwt(Long id, String username, String role, boolean isFamily, long expiredMs) {
         return Jwts.builder()
             .claim("id", id)
             .claim("username", username)
             .claim("role", role)
+            .claim("isFamily", isFamily)
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + expiredMs))
             .signWith(secretKey)
