@@ -75,6 +75,7 @@ public class Member extends Timestamp {
     public void leaveGroup() {
         this.group = null;
         this.joinGroupAt = null;
+        this.nickname = "그룹 탈퇴자";
     }
 
     public void updateNickname(String nickname) {
