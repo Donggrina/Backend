@@ -45,6 +45,12 @@ public class ProfileImageService {
     @Scheduled(cron = "0 0 0 * * ?")
     public void deleteUnlinkedImageInDBAndS3() {
         List<Long> unlinkedProfileImageIds = imageRepository.findUnlinkedProfileImageIds();
+        List<String> excludeFileNames = List.of(
+            "default-profile.svg",
+            "dog-default.svg",
+            "cat-default.svg"
+        );
+
         unlinkedProfileImageIds.forEach(id -> {
             ProfileImage profileImage = imageRepository.findById(id)
                 .orElseThrow(() -> {
@@ -52,8 +58,14 @@ public class ProfileImageService {
                     return new IllegalArgumentException("존재하지 않는 프로필 이미지입니다.");
                 });
             String fileName = profileImage.getUrl().split("/")[3];
-            CompletableFuture<Void> deleteFuture = s3Handler.delete(fileName);
-            deleteFuture.thenRun(() -> imageRepository.delete(profileImage));
+            boolean isDefaultImage = excludeFileNames.stream().anyMatch(fileName::contains);
+
+            if (!isDefaultImage) {
+                CompletableFuture<Void> deleteFuture = s3Handler.delete(fileName);
+                deleteFuture.thenRun(() -> imageRepository.delete(profileImage));
+            } else {
+                imageRepository.delete(profileImage);
+            }
         });
     }
 }
