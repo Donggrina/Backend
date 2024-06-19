@@ -55,6 +55,7 @@ public class DiaryService {
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이미지입니다.")))
                 .toList();
         }
+
         List<Pet> pets = diaryCreateRequest.pets().stream()
             .map((id) ->
                 petRepository.findById(id)
@@ -90,8 +91,8 @@ public class DiaryService {
         Optional.ofNullable(currentMember.getGroup())
             .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
-        if (!targetDiary.getMember().getId().equals(memberId) && !targetDiary.getGroup()
-            .getCreator().equals(currentMember.getUsername())) {
+        if (!targetDiary.getMember().equals(currentMember)
+            && !targetDiary.getGroup().getCreator().equals(currentMember.getUsername())) {
 
             throw new IllegalArgumentException("삭제가 불가능합니다.");
         }
@@ -103,11 +104,14 @@ public class DiaryService {
             )
             .toList();
 
-        List<DiaryImage> images = diaryUpdateRequest.images().stream()
-            .map((imageId) ->
-                diaryImageRepository.findById(imageId)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다.")))
-            .toList();
+        List<DiaryImage> images = new ArrayList<>();
+        if (diaryUpdateRequest.images() != null) {
+            images = diaryUpdateRequest.images().stream()
+                .map((imageId) ->
+                    diaryImageRepository.findById(imageId)
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다.")))
+                .toList();
+        }
 
         targetDiary.update(diaryUpdateRequest.content(), diaryUpdateRequest.weather(),
             diaryUpdateRequest.isShare(), diaryUpdateRequest.date(), pets, images);
@@ -121,8 +125,8 @@ public class DiaryService {
         Diary targetDiary = diaryRepository.findById(diaryId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다."));
 
-        if (targetDiary.getMember().getId().equals(memberId) || targetDiary.getGroup().getCreator()
-            .equals(currentMember.getUsername())) {
+        if (targetDiary.getMember().equals(currentMember)
+            || targetDiary.getGroup().getCreator().equals(currentMember.getUsername())) {
 
             diaryRepository.delete(targetDiary);
             return;
@@ -134,14 +138,13 @@ public class DiaryService {
         Member currentMember = memberRepository.findByIdWithGroup(memberId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
-        Optional.ofNullable(currentMember.getGroup())
+        Group group = Optional.ofNullable(currentMember.getGroup())
             .orElseThrow(() -> new IllegalArgumentException("그룹에 속해 있지 않은 사용자입니다."));
 
-        List<Diary> foundDiaries = diaryRepository.findAllByDate(date, currentMember.getGroup());
+        List<Diary> foundDiaries = diaryRepository.findAllByDate(date, group);
 
         return foundDiaries.stream()
             .map(diary -> {
-
                 List<String> petImages = diary.getDiaryPets().stream()
                     .map(diaryPet -> diaryPet.getPet().getProfileImage().getUrl())
                     .toList();
@@ -166,8 +169,8 @@ public class DiaryService {
                     .commentCount(commentCount)
                     .favoriteCount(diary.getHeartCount())
                     .favoriteState(favoriteOptional.isPresent())
-                    .isMyDiary(currentMember.getId().equals(diary.getMember().getId())
-                        || currentMember.getGroup().getCreator().equals(currentMember.getUsername()))
+                    .isMyDiary(diary.getMember().equals(currentMember)
+                        || group.getCreator().equals(currentMember.getUsername()))
                     .build();
             })
             .toList();
@@ -185,9 +188,11 @@ public class DiaryService {
         List<Pet> pets = foundDiary.getDiaryPets().stream()
             .map(DiaryPet::getPet)
             .toList();
+
         List<String> petImageUrls = pets.stream()
             .map(pet -> pet.getProfileImage().getUrl())
             .toList();
+
         List<String> contentImages = foundDiary.getDiaryImages().stream()
             .map(DiaryImage::getUrl)
             .toList();
@@ -209,7 +214,7 @@ public class DiaryService {
                         .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
                         .commentAuthor(commentAuthor.getNickname())
                         .date(child.getCreatedAt().toLocalDate())
-                        .isMyComment(commentAuthor.getId().equals(memberId)
+                        .isMyComment(commentAuthor.equals(currentMember)
                             || foundDiaryGroup.getCreator().equals(currentMember.getUsername()))
                         .build());
                 }
@@ -220,7 +225,7 @@ public class DiaryService {
                     .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
                     .commentAuthor(commentAuthor.getNickname())
                     .date(comment.getCreatedAt().toLocalDate())
-                    .isMyComment(commentAuthor.getId().equals(memberId)
+                    .isMyComment(commentAuthor.equals(currentMember)
                         || foundDiaryGroup.getCreator().equals(currentMember.getUsername()))
                     .children(childrenResponse)
                     .build();
@@ -239,7 +244,7 @@ public class DiaryService {
             .favoriteState(favoriteOptional.isPresent())
             .favoriteCount(foundDiary.getHeartCount())
             .comments(comments)
-            .isMyDiary(author.getId().equals(memberId)
+            .isMyDiary(author.equals(currentMember)
                 || foundDiaryGroup.getCreator().equals(currentMember.getUsername()))
             .build();
     }
@@ -290,7 +295,8 @@ public class DiaryService {
                     .favoriteCount(diary.getHeartCount())
                     .favoriteState(favoriteOptional.isPresent())
                     .isMyDiary(currentMember.getId().equals(diary.getMember().getId())
-                        || currentMember.getGroup().getCreator().equals(currentMember.getUsername()))
+                        || currentMember.getGroup().getCreator()
+                        .equals(currentMember.getUsername()))
                     .build();
             })
             .toList();

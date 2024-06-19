@@ -1,9 +1,9 @@
 package com.codeit.donggrina.domain.diary.repository;
 
 import static com.codeit.donggrina.domain.diary.entity.QDiary.diary;
-import static com.codeit.donggrina.domain.diary.entity.QDiaryPet.*;
+import static com.codeit.donggrina.domain.diary.entity.QDiaryPet.diaryPet;
 import static com.codeit.donggrina.domain.member.entity.QMember.member;
-import static com.codeit.donggrina.domain.pet.entity.QPet.*;
+import static com.codeit.donggrina.domain.pet.entity.QPet.pet;
 
 import com.codeit.donggrina.domain.diary.dto.request.DiarySearchRequest;
 import com.codeit.donggrina.domain.diary.entity.Diary;
@@ -63,12 +63,12 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
     }
 
     private BooleanBuilder eqAuthor(List<String> authors) {
-        if(authors == null) {
+        if (authors == null) {
             return null;
         }
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        for (String author : authors){
+        for (String author : authors) {
             booleanBuilder.or(member.nickname.containsIgnoreCase(author));
         }
 
@@ -76,11 +76,11 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
     }
 
     private BooleanBuilder eqPet(List<Long> petIds) {
-        if(petIds == null) {
+        if (petIds == null) {
             return null;
         }
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        for(Long petId : petIds){
+        for (Long petId : petIds) {
             booleanBuilder.or(pet.id.eq(petId));
         }
 
