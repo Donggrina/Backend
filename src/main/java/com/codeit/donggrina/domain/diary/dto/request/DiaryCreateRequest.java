@@ -14,7 +14,7 @@ public record DiaryCreateRequest(
     String weather,
     @NotNull(message = "공유 여부를 선택해주세요")
     Boolean isShare,
-    @NotNull(message = "날짜를 입력해해주세요")
+    @NotNull(message = "날짜를 입력해주세요")
     LocalDate date
 ) {
 

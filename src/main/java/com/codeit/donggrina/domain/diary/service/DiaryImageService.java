@@ -1,6 +1,5 @@
 package com.codeit.donggrina.domain.diary.service;
 
-import com.codeit.donggrina.domain.ProfileImage.entity.ProfileImage;
 import com.codeit.donggrina.domain.ProfileImage.util.S3Handler;
 import com.codeit.donggrina.domain.diary.entity.DiaryImage;
 import com.codeit.donggrina.domain.diary.repository.DiaryImageRepository;
