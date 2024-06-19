@@ -213,6 +213,7 @@ public class DiaryService {
                         .commentId(child.getId())
                         .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
                         .commentAuthor(commentAuthor.getNickname())
+                        .comment(child.getContent())
                         .date(child.getCreatedAt().toLocalDate())
                         .isMyComment(commentAuthor.equals(currentMember)
                             || foundDiaryGroup.getCreator().equals(currentMember.getUsername()))
@@ -224,6 +225,7 @@ public class DiaryService {
                     .commentId(comment.getId())
                     .commentAuthorImage(commentAuthor.getProfileImage().getUrl())
                     .commentAuthor(commentAuthor.getNickname())
+                    .comment(comment.getContent())
                     .date(comment.getCreatedAt().toLocalDate())
                     .isMyComment(commentAuthor.equals(currentMember)
                         || foundDiaryGroup.getCreator().equals(currentMember.getUsername()))
@@ -235,6 +237,7 @@ public class DiaryService {
         Member author = foundDiary.getMember();
 
         return DiaryFindResponse.builder()
+            .date(foundDiary.getDate())
             .authorImage(author.getProfileImage().getUrl())
             .author(author.getNickname())
             .petImages(petImageUrls)
