@@ -107,14 +107,21 @@ public class StoryService {
                 .toList();
         }
 
+        List<String> petImages = foundStory.getDiaryPets().stream()
+            .map(diaryPet -> diaryPet.getPet().getProfileImage().getUrl())
+            .toList();
+
         Member author = foundStory.getMember();
 
         return StoryFindResponse.builder()
             .authorImage(author.getProfileImage().getUrl())
+            .author(author.getName())
+            .petImages(petImages)
+            .weather(foundStory.getWeather())
             .authorGroup(author.getGroup().getName())
             .images(images)
             .content(foundStory.getContent())
-            .createdDate(foundStory.getCreatedAt())
+            .date(foundStory.getDate())
             .favoriteState(heartOptional.isPresent())
             .favoriteCount(foundStory.getHeartCount())
             .comments(comments)
@@ -136,18 +143,24 @@ public class StoryService {
                     commentCount += comment.getChildren().size();
                 }
 
+                List<String> petImages = diary.getDiaryPets().stream()
+                    .map(diaryPet -> diaryPet.getPet().getProfileImage().getUrl())
+                    .toList();
+
                 Member author = diary.getMember();
 
                 return StoryFindListResponse.builder()
                     .diaryId(diary.getId())
                     .authorImage(author.getProfileImage().getUrl())
                     .author(author.getName())
+                    .petImages(petImages)
+                    .weather(diary.getWeather())
                     .authorGroup(author.getGroup().getName())
                     .images(images)
                     .content(diary.getContent())
                     .commentCount(commentCount)
                     .favoriteCount(diary.getHeartCount())
-                    .createdDate(diary.getCreatedAt())
+                    .date(diary.getDate())
                     .isMyStory(author.getId().equals(memberId))
                     .build();
             })
