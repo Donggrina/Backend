@@ -195,6 +195,7 @@ public class DiaryService {
 
         List<String> contentImages = foundDiary.getDiaryImages().stream()
             .map(DiaryImage::getUrl)
+            .distinct()
             .toList();
 
         Optional<Heart> favoriteOptional = heartRepository.findByMemberIdAndDiary(memberId,
