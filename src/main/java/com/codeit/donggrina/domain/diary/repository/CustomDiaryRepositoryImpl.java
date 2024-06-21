@@ -46,7 +46,6 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
             .leftJoin(pet.profileImage).fetchJoin()
             .where(
                 eqGroup(group),
-                eqDate(request.date()),
                 eqAuthor(request.authors()),
                 eqPet(request.petIds()),
                 eqKeyword(request.keyword())
@@ -56,10 +55,6 @@ public class CustomDiaryRepositoryImpl implements CustomDiaryRepository {
 
     private BooleanExpression eqGroup(Group group) {
         return diary.group.eq(group);
-    }
-
-    private BooleanExpression eqDate(LocalDate date) {
-        return diary.date.eq(date);
     }
 
     private BooleanBuilder eqAuthor(List<String> authors) {
