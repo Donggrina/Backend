@@ -144,6 +144,9 @@ public class StoryService {
         List<StoryFindListResponse> response = page.stream()
             .map(diary -> {
 
+                Optional<Heart> heartOptional = heartRepository.findByMemberAndDiary(currentMember,
+                    diary);
+
                 List<String> images = diary.getDiaryImages().stream()
                     .map(DiaryImage::getUrl)
                     .toList();
@@ -170,6 +173,7 @@ public class StoryService {
                     .content(diary.getContent())
                     .commentCount(commentCount)
                     .favoriteCount(diary.getHeartCount())
+                    .favoriteState(heartOptional.isPresent())
                     .date(diary.getDate())
                     .isMyStory(author.equals(currentMember)
                         || author.getGroup().getCreator().equals(currentMember.getUsername()))
