@@ -115,6 +115,7 @@ public class StoryService {
 
         List<String> petImages = foundStory.getDiaryPets().stream()
             .map(diaryPet -> diaryPet.getPet().getProfileImage().getUrl())
+            .sorted()
             .toList();
 
         Member author = foundStory.getMember();
@@ -158,6 +159,7 @@ public class StoryService {
 
                 List<String> petImages = diary.getDiaryPets().stream()
                     .map(diaryPet -> diaryPet.getPet().getProfileImage().getUrl())
+                    .sorted()
                     .toList();
 
                 Member author = diary.getMember();
