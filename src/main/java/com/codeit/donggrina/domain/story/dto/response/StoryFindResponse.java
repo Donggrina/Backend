@@ -16,6 +16,7 @@ public record StoryFindResponse(
     List<String> images,
     String content,
     LocalDate date,
+    boolean isMyStory,
     boolean favoriteState,
     int favoriteCount,
     List<CommentFindResponse> comments
