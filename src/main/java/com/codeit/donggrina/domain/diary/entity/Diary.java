@@ -25,6 +25,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -52,6 +54,7 @@ public class Diary extends Timestamp {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "clusters_id", nullable = false, foreignKey = @ForeignKey(name = "fk_group_diary"))
     private Group group;
 
