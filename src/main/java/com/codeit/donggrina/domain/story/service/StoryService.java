@@ -91,6 +91,9 @@ public class StoryService {
                             .commentAuthor(commentAuthor.getName())
                             .comment(child.getContent())
                             .date(child.getDate())
+                            .isMyComment(
+                                commentAuthor.equals(currentMember) || commentAuthor.getGroup()
+                                    .getCreator().equals(currentMember.getUsername()))
                             .build());
                     }
 
@@ -101,6 +104,9 @@ public class StoryService {
                         .commentAuthor(commentAuthor.getName())
                         .comment(comment.getContent())
                         .date(comment.getDate())
+                        .isMyComment(
+                            commentAuthor.equals(currentMember) || commentAuthor.getGroup()
+                                .getCreator().equals(currentMember.getUsername()))
                         .children(children)
                         .build();
                 })
@@ -122,6 +128,8 @@ public class StoryService {
             .images(images)
             .content(foundStory.getContent())
             .date(foundStory.getDate())
+            .isMyStory(foundStory.getMember().equals(currentMember)
+                || foundStory.getGroup().getCreator().equals(currentMember.getUsername()))
             .favoriteState(heartOptional.isPresent())
             .favoriteCount(foundStory.getHeartCount())
             .comments(comments)
@@ -129,6 +137,8 @@ public class StoryService {
     }
 
     public StoryFindListPage findStories(Long memberId, Pageable pageable) {
+        Member currentMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
 
         Slice<Diary> page = diaryRepository.findPage(pageable);
         List<StoryFindListResponse> response = page.stream()
@@ -161,7 +171,8 @@ public class StoryService {
                     .commentCount(commentCount)
                     .favoriteCount(diary.getHeartCount())
                     .date(diary.getDate())
-                    .isMyStory(author.getId().equals(memberId))
+                    .isMyStory(author.equals(currentMember)
+                        || author.getGroup().getCreator().equals(currentMember.getUsername()))
                     .build();
             })
             .toList();
