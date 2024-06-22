@@ -13,6 +13,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -31,6 +33,7 @@ public class DiaryImage extends Timestamp {
 
     @ManyToOne
     @JoinColumn(name = "diary_id", foreignKey = @ForeignKey(name = "fk_diary_diary_image"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Diary diary;
 
     @Builder
