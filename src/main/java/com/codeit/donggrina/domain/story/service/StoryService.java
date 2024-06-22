@@ -70,6 +70,7 @@ public class StoryService {
 
         List<String> images = foundStory.getDiaryImages().stream()
             .map(DiaryImage::getUrl)
+            .distinct()
             .toList();
 
         Optional<Heart> heartOptional = heartRepository.findByMemberAndDiary(currentMember,
@@ -151,6 +152,7 @@ public class StoryService {
 
                 List<String> images = diary.getDiaryImages().stream()
                     .map(DiaryImage::getUrl)
+                    .distinct()
                     .toList();
 
                 int commentCount = diary.getComments().size();
