@@ -27,6 +27,7 @@ public class DiaryPet extends Timestamp {
 
     @ManyToOne
     @JoinColumn(name = "diary_id", nullable = false, foreignKey = @ForeignKey(name = "fk_diary_diary_pet"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Diary diary;
 
     @ManyToOne

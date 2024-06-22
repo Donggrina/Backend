@@ -20,6 +20,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -52,6 +54,7 @@ public class Comment extends Timestamp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id", nullable = false, foreignKey = @ForeignKey(name = "fk_diary_comment"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Diary diary;
 
     @Builder

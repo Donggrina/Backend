@@ -22,6 +22,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -65,6 +67,7 @@ public class Pet extends Timestamp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clusters_id", nullable = false, foreignKey = @ForeignKey(name = "fk_clusters_pet"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Group group;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
