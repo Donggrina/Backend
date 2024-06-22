@@ -79,6 +79,7 @@ public class StoryService {
 
         if (foundStory.getComments() != null) {
             comments = foundStory.getComments().stream()
+                .filter(comment -> comment.getParent() == null)
                 .map(comment -> {
 
                     List<CommentFindResponse> children = new ArrayList<>();
