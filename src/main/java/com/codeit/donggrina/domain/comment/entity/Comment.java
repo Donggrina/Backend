@@ -47,6 +47,7 @@ public class Comment extends Timestamp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", foreignKey = @ForeignKey(name = "fk_parent_comment"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Comment parent;
 
     @OneToMany(mappedBy = "parent", orphanRemoval = true)
