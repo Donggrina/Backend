@@ -202,6 +202,7 @@ public class DiaryService {
             foundDiary);
 
         List<CommentFindResponse> comments = foundDiary.getComments().stream()
+            .filter(comment -> comment.getParent() == null)
             .map(comment -> {
 
                 List<CommentFindResponse> childrenResponse = new ArrayList<>();
