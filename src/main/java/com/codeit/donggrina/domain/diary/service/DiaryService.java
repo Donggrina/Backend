@@ -109,7 +109,7 @@ public class DiaryService {
             images = diaryUpdateRequest.images().stream()
                 .map((imageId) ->
                     diaryImageRepository.findById(imageId)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리입니다.")))
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리 이미지입니다.")))
                 .toList();
         }
 
