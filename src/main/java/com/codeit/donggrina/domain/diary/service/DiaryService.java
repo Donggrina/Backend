@@ -104,7 +104,7 @@ public class DiaryService {
             )
             .toList();
 
-        List<DiaryImage> images = targetDiary.getDiaryImages();
+        List<DiaryImage> images = new ArrayList<>();
         if (diaryUpdateRequest.images() != null) {
             images = diaryUpdateRequest.images().stream()
                 .map((imageId) ->
