@@ -189,8 +189,17 @@ public class DiaryService {
             .map(DiaryPet::getPet)
             .toList();
 
+        List<Long> petIds = pets.stream()
+            .map(Pet::getId)
+            .toList();
+
         List<String> petImageUrls = pets.stream()
             .map(pet -> pet.getProfileImage().getUrl())
+            .toList();
+
+        List<Long> imageIds = foundDiary.getDiaryImages().stream()
+            .map(DiaryImage::getId)
+            .distinct()
             .toList();
 
         List<String> contentImages = foundDiary.getDiaryImages().stream()
@@ -242,7 +251,9 @@ public class DiaryService {
             .date(foundDiary.getDate())
             .authorImage(author.getProfileImage().getUrl())
             .author(author.getNickname())
+            .petIds(petIds)
             .petImages(petImageUrls)
+            .contentImageIds(imageIds)
             .contentImages(contentImages)
             .content(foundDiary.getContent())
             .weather(foundDiary.getWeather())
