@@ -44,20 +44,21 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtUtil.createJwt(id, username, role, isFamily, REFRESH_EXPIRED_MS);
         refreshTokenRedisRepository.save(refreshToken, REFRESH_EXPIRED_MS);
 
-        response.addHeader(HttpHeaders.SET_COOKIE, createCookie("AccessToken", accessToken).toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, createCookie("RefreshToken", refreshToken).toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, createCookie("isFamily", String.valueOf(isFamily)).toString());
-        response.sendRedirect("https://www.donggrina.click/start-family");
-//        response.sendRedirect(
-//            "http://localhost:3000/start-family?accessToken=" + accessToken + "&refreshToken="
-//                + refreshToken + "&isFamily=" + isFamily);
+//        response.addHeader(HttpHeaders.SET_COOKIE, createCookie("AccessToken", accessToken).toString());
+//        response.addHeader(HttpHeaders.SET_COOKIE, createCookie("RefreshToken", refreshToken).toString());
+//        response.addHeader(HttpHeaders.SET_COOKIE, createCookie("isFamily", String.valueOf(isFamily)).toString());
+//        response.sendRedirect("https://www.donggrina.click/start-family?accessToken=" + accessToken + "&refreshToken="
+//            + refreshToken + "&isFamily=" + isFamily);
+        response.sendRedirect(
+            "http://localhost:3000/start-family?accessToken=" + accessToken + "&refreshToken="
+                + refreshToken + "&isFamily=" + isFamily);
 
     }
 
     private ResponseCookie createCookie(String key, String value) {
         return ResponseCookie.from(key, value)
             .maxAge(60 * 60 * 60 * 60)
-            .httpOnly(false)
+            .httpOnly(true)
             .secure(true)
             .domain("donggrina.click")
             .sameSite("None")
