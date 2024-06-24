@@ -47,10 +47,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader(HttpHeaders.SET_COOKIE, createCookie("AccessToken", accessToken).toString());
         response.addHeader(HttpHeaders.SET_COOKIE, createCookie("RefreshToken", refreshToken).toString());
         response.addHeader(HttpHeaders.SET_COOKIE, createCookie("isFamily", String.valueOf(isFamily)).toString());
-//        response.sendRedirect("https://www.donggrina.click/start-family");
-        response.sendRedirect(
-            "http://localhost:3000/start-family?accessToken=" + accessToken + "&refreshToken="
-                + refreshToken + "&isFamily=" + isFamily);
+        response.sendRedirect("https://www.donggrina.click/start-family");
+//        response.sendRedirect(
+//            "http://localhost:3000/start-family?accessToken=" + accessToken + "&refreshToken="
+//                + refreshToken + "&isFamily=" + isFamily);
 
     }
 
