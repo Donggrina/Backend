@@ -260,6 +260,7 @@ public class DiaryService {
             .favoriteState(favoriteOptional.isPresent())
             .favoriteCount(foundDiary.getHeartCount())
             .comments(comments)
+            .isShare(foundDiary.isShared())
             .isMyDiary(author.equals(currentMember)
                 || foundDiaryGroup.getCreator().equals(currentMember.getUsername()))
             .build();

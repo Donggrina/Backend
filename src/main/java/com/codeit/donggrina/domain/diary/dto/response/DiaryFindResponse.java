@@ -19,6 +19,7 @@ public record DiaryFindResponse(
     boolean favoriteState,
     int favoriteCount,
     List<CommentFindResponse> comments,
+    boolean isShare,
     boolean isMyDiary
 ) {
 
