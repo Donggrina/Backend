@@ -321,10 +321,12 @@ public class DiaryService {
 
     private int getCommentCount(Diary diary) {
         int commentCount = diary.getComments().size();
-        List<Comment> comments = diary.getComments();
-        for (Comment comment : comments) {
-            commentCount += comment.getChildren().size();
-        }
+//        List<Comment> comments = diary.getComments();
+//        for (Comment comment : comments) {
+//            if(comment.getParent() == null) {
+//                commentCount++;
+//            }
+//        }
 
         return commentCount;
     }
