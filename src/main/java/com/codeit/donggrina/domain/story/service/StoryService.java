@@ -156,9 +156,9 @@ public class StoryService {
                     .toList();
 
                 int commentCount = diary.getComments().size();
-                for (Comment comment : diary.getComments()) {
-                    commentCount += comment.getChildren().size();
-                }
+//                for (Comment comment : diary.getComments()) {
+//                    commentCount += comment.getChildren().size();
+//                }
 
                 List<String> petImages = diary.getDiaryPets().stream()
                     .map(diaryPet -> diaryPet.getPet().getProfileImage().getUrl())
