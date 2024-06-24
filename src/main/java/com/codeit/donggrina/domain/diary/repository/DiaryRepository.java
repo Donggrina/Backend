@@ -50,6 +50,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, CustomDiary
         + " left join fetch d.member m"
         + " left join fetch m.profileImage"
         + " left join fetch m.group"
+        + " where d.isShared = true"
         + " order by d.id desc")
     Slice<Diary> findPage(Pageable pageable);
 }
