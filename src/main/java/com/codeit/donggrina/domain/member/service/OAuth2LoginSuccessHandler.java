@@ -57,7 +57,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private ResponseCookie createCookie(String key, String value) {
         return ResponseCookie.from(key, value)
             .maxAge(60 * 60 * 60 * 60)
-            .httpOnly(true)
+            .httpOnly(false)
             .secure(true)
             .domain("donggrina.click")
             .sameSite("None")
